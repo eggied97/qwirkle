@@ -1,4 +1,4 @@
-package nl.utwente.ewi.qwirkle.server;
+package nl.utwente.ewi.qwirkle.server.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +41,7 @@ public class Bag {
 	/**
 	 * @return random <code> Tile </code> from the bag
 	 */
-	protected Tile getRandomTile() {
+	public Tile getRandomTile() {
 		Tile t = tiles.get((int) (Math.random() * tiles.size()));
 		tiles.remove(t);
 		return t;
@@ -54,7 +54,7 @@ public class Bag {
 	 *            - the amount of random tiles from the bag
 	 * @return <code> List<Tile> </code> of random tiles
 	 **/
-	protected List<Tile> getRandomTile(int amount) {
+	public List<Tile> getRandomTile(int amount) {
 		List<Tile> l = new ArrayList<>();
 
 		for (int i = 0; i < amount; i++) {
@@ -67,7 +67,7 @@ public class Bag {
 	/**
 	 * @return <code> List<tile> </code> containing the tiles from the bag
 	 */
-	protected List<Tile> getBag() {
+	public List<Tile> getBag() {
 		return this.tiles;
 	}
 	
@@ -75,7 +75,7 @@ public class Bag {
 	 * 
 	 * @return returns true if the bag is empty
 	 */
-	protected boolean isEmpty() {
+	public boolean isEmpty() {
 		return getBag().isEmpty();
 	}
 	

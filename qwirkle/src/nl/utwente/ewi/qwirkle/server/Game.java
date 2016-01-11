@@ -5,6 +5,7 @@ import java.util.List;
 
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.player.Player;
+import nl.utwente.ewi.qwirkle.server.model.Bag;
 
 public class Game {
 	
