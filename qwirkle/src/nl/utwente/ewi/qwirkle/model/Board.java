@@ -36,5 +36,37 @@ public class Board {
 			putTile((int) p.getX(), (int) p.getY(), m.getTile());
 		}
 	}
+	
+	public boolean isSquare() {
+		if(map.keySet().size() != 36) {
+			return false;
+		}
+		
+		double maxX = 0;
+		double maxY = 0;
+		double minX = 1000;
+		double minY = 1000;
+		
+		for(Point p :map.keySet()) {
+			if(p.getX() > maxX) {
+				maxX = p.getX();
+			}
+			if(p.getY() > maxY) {
+				maxY = p.getY();
+			}
+			if(p.getX() < minX) {
+				minX = p.getX();
+			}
+			if(p.getY() <  minY) {
+				minY = p.getY();
+			}
+		}
+		
+		if(maxX - minX == 6 && maxY - minY == 6) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }
