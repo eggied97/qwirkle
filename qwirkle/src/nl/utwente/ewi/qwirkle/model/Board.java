@@ -23,13 +23,9 @@ public class Board {
 		return map.get(new Point(x, y));
 	}
 
-	public void putTile(int x, int y, Tile t) throws PlaceOccupiedException {
-		if (this.getTile(x, y) == null) {
-			map.put(new Point(x, y), t);
+	public void putTile(int x, int y, Tile t) {
+		map.put(new Point(x, y), t);
 			// TODO iets met een callback en update?
-		} else {
-			throw new PlaceOccupiedException(new Point(x, y));
-		}
 	}
 
 }
