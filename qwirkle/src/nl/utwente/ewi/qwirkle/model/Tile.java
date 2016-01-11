@@ -9,14 +9,11 @@ public class Tile {
 	
 	private Color c;
 	private Shape s;
-	private Point loc;
 	
 	
-	public Tile(int x, int y, Color c, Shape s){
+	public Tile( Color c, Shape s){
 		this.c = c;
-		this.s= s;
-		
-		this.loc = new Point(x, y);
+		this.s= s;		
 	}
 	
 	public Shape getShape(){
