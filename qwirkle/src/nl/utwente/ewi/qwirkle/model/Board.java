@@ -48,18 +48,10 @@ public class Board {
 		double minY = 1000;
 		
 		for(Point p :map.keySet()) {
-			if(p.getX() > maxX) {
-				maxX = p.getX();
-			}
-			if(p.getY() > maxY) {
-				maxY = p.getY();
-			}
-			if(p.getX() < minX) {
-				minX = p.getX();
-			}
-			if(p.getY() <  minY) {
-				minY = p.getY();
-			}
+			maxX = Math.max(maxX, p.getX());
+			maxY = Math.max(maxY, p.getY());
+			minX = Math.min(minX, p.getX());
+			minY = Math.min(minY, p.getY());
 		}
 		
 		if(maxX - minX == 6 && maxY - minY == 6) {

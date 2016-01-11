@@ -16,6 +16,7 @@ public class Game {
 	
 	public Game() {
 		this.board = new Board();
+		//TODO iets met protocol
 		this.players = new ArrayList<>();
 		this.UI = new TUIView();
 	}
