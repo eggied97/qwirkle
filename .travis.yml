@@ -12,4 +12,9 @@ qsX7Kf/tIF8DIaWYhiga2NxylfOhH1uXHz/lEZsEw0mIVgopJQhlZNrqFxxGkltGBxdfCq9G7GxC/0uM
 4/Q7kBxUzkPU+HHwQTqgif1NjoXUvdbOj+s5HUhIbLpezSMG6tU+iX36XSkdyuEUFOCp3LmA8HQv8BTDvXMbOmnIZmixdth8TqZDlwsPxwXuhEmL8MlPglZk29FNvCK2qFvUZ9plpqRxVaWFaEmhFUUtxpgeRw7vC2/7uPWowZzl8i3wIMR8zeg5t8yjzKEWNyhH/R1FQtUFHKAmLDk4LLYjW4="
 
 after_success:
-- .utility/push-javadoc-to-gh-pages.sh
+  - util/deploy_snapshot.sh
+  - util/update_snapshot_docs.sh
+
+  branches:
+  except:
+    - gh-pages
