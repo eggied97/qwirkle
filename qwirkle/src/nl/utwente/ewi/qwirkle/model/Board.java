@@ -36,29 +36,51 @@ public class Board {
 			putTile((int) p.getX(), (int) p.getY(), m.getTile());
 		}
 	}
-	
+
+	/**
+	 * @return boundaries of the board in [left, top, right, bottom]
+	 */
+	private double[] getBoundaries() {
+		double[] result = new double[4];
+
+		for (Point p : map.keySet()) {
+			result[2] = Math.max(result[2], p.getX());
+			result[3] = Math.max(result[3], p.getY());
+			result[0] = Math.min(result[0], p.getX());
+			result[1] = Math.min(result[1], p.getY());
+		}
+
+		return result;
+	}
+
 	public boolean isSquare() {
-		if(map.keySet().size() != 36) {
+		if (map.keySet().size() != 36) {
 			return false;
 		}
-		
-		double maxX = 0;
-		double maxY = 0;
-		double minX = 1000;
-		double minY = 1000;
-		
-		for(Point p :map.keySet()) {
-			maxX = Math.max(maxX, p.getX());
-			maxY = Math.max(maxY, p.getY());
-			minX = Math.min(minX, p.getX());
-			minY = Math.min(minY, p.getY());
-		}
-		
-		if(maxX - minX == 6 && maxY - minY == 6) {
+
+		double[] bound = getBoundaries();
+
+		if (bound[2] - bound[0] == 6 && bound[3] - bound[1] == 6) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	public String toString(){
+		double[] bound = getBoundaries();
+		String result = "";
+		
+		for(int y = (int)bound[1]; y < bound[3]; y++){
+			for(int x = (int)bound[0]; x < bound[2]; x++){
+				result += getTile(x, y).toString();
+				result += " | ";
+			}
+			result += "\n";
+		}
+		
+		return result;
+		
 	}
 
 }
