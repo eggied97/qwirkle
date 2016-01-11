@@ -20,4 +20,12 @@ public class Game {
 		// TODO PROTOCOL IMPLEMENTATION
 	}
 	
+	/**
+	 * 
+	 * @return true if the <code> Player </code> is unable to perform any move
+	 */
+	public boolean noMoves() {
+			return bag.isEmpty() || board.isSquare();
+	}
+	
 }

@@ -41,7 +41,9 @@ public class Bag {
 	 * @return random <code> Tile </code> from the bag
 	 */
 	public Tile getRandomTile() {
-		return tiles.get((int) (Math.random() * tiles.size()));
+		Tile t = tiles.get((int) (Math.random() * tiles.size()));
+		tiles.remove(t);
+		return t;
 	}
 
 	/**
@@ -67,5 +69,14 @@ public class Bag {
 	public List<Tile> getBag() {
 		return this.tiles;
 	}
+	
+	/**
+	 * 
+	 * @return returns true if the bag is empty
+	 */
+	public boolean isEmpty() {
+		return getBag().isEmpty();
+	}
+
 
 }

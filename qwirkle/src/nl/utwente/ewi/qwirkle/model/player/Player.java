@@ -29,7 +29,7 @@ public abstract class Player {
 	}
 	
 	/**
-	 * Determinet the move to be played by the player
+	 * Determine the move to be played by the player
 	 * @param board
 	 * @return return a <code> Map </code> consisting of <code> Point </code> and <code> Tile </code> pairs 
 	 */
