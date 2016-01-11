@@ -25,6 +25,9 @@ public class ClientHandler extends Thread {
 		}
 	}
 	
+	/**
+	 * Reads input from client and passes it to the server
+	 */
 	public void run() {
 		while(true) {
 			try {
@@ -36,6 +39,10 @@ public class ClientHandler extends Thread {
 		}
 	}
 	
+	/**
+	 * Sends a message to the client
+	 * @param msg
+	 */
 	public void sendMessage(String msg) {
 		try {
 			out.write(msg);
