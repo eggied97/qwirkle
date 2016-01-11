@@ -12,12 +12,10 @@ public class HumanPlayer extends Player {
 
 	public HumanPlayer(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public List<Move> determineMove(Board board) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

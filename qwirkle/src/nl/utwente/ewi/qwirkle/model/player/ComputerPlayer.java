@@ -12,12 +12,10 @@ public class ComputerPlayer extends Player {
 
 	public ComputerPlayer(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public List<Move> determineMove(Board board) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
