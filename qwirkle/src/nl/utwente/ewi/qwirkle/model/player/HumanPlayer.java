@@ -16,6 +16,8 @@ public class HumanPlayer extends Player {
 
 	@Override
 	public List<Move> determineMove(Board board) {
+		// TODO user input from GUI/TUI, add to a move List
+		
 		return null;
 	}
 

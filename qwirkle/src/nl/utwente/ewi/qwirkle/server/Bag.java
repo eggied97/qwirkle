@@ -1,9 +1,10 @@
-package nl.utwente.ewi.qwirkle.model;
+package nl.utwente.ewi.qwirkle.server;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.enums.Color;
 import nl.utwente.ewi.qwirkle.model.enums.Shape;
 
@@ -40,7 +41,7 @@ public class Bag {
 	/**
 	 * @return random <code> Tile </code> from the bag
 	 */
-	public Tile getRandomTile() {
+	protected Tile getRandomTile() {
 		Tile t = tiles.get((int) (Math.random() * tiles.size()));
 		tiles.remove(t);
 		return t;
@@ -53,7 +54,7 @@ public class Bag {
 	 *            - the amount of random tiles from the bag
 	 * @return <code> List<Tile> </code> of random tiles
 	 **/
-	public List<Tile> getRandomTile(int amount) {
+	protected List<Tile> getRandomTile(int amount) {
 		List<Tile> l = new ArrayList<>();
 
 		for (int i = 0; i < amount; i++) {
@@ -66,7 +67,7 @@ public class Bag {
 	/**
 	 * @return <code> List<tile> </code> containing the tiles from the bag
 	 */
-	public List<Tile> getBag() {
+	protected List<Tile> getBag() {
 		return this.tiles;
 	}
 	
@@ -74,8 +75,12 @@ public class Bag {
 	 * 
 	 * @return returns true if the bag is empty
 	 */
-	public boolean isEmpty() {
+	protected boolean isEmpty() {
 		return getBag().isEmpty();
+	}
+	
+	public int getAmountOfTiles() {
+		return this.tiles.size();
 	}
 
 

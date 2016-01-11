@@ -3,7 +3,6 @@ package nl.utwente.ewi.qwirkle.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.utwente.ewi.qwirkle.model.Bag;
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 
