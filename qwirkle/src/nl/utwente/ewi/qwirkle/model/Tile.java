@@ -25,6 +25,7 @@ public class Tile {
 	}
 
 	public String toString(){
+		//TODO doe volgens protcol
 		return getShape().i + " / " + getColor().i;
 	}
 }

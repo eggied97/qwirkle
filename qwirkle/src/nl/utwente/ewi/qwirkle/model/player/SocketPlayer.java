@@ -2,8 +2,10 @@ package nl.utwente.ewi.qwirkle.model.player;
 
 import java.awt.Point;
 import java.util.HashMap;
+import java.util.List;
 
 import nl.utwente.ewi.qwirkle.model.Board;
+import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Tile;
 
 public class SocketPlayer extends Player {
@@ -14,7 +16,7 @@ public class SocketPlayer extends Player {
 	}
 
 	@Override
-	public HashMap<Point, Tile> determineMove(Board board) {
+	public List<Move> determineMove(Board board) {
 		// TODO Auto-generated method stub
 		return null;
 	}

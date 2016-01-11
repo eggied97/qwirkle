@@ -2,6 +2,7 @@ package nl.utwente.ewi.qwirkle.model;
 
 import java.awt.Point;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import nl.utwente.ewi.qwirkle.model.exceptions.PlaceOccupiedException;
@@ -25,7 +26,15 @@ public class Board {
 
 	public void putTile(int x, int y, Tile t) {
 		map.put(new Point(x, y), t);
-			// TODO iets met een callback en update?
+		// TODO iets met een callback en update?
+	}
+
+	public void putTile(List<Move> moves) {
+		for (Move m : moves) {
+			Point p = m.getPoint();
+
+			putTile((int) p.getX(), (int) p.getY(), m.getTile());
+		}
 	}
 
 }

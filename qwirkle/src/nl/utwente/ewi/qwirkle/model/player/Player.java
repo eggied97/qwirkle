@@ -33,7 +33,7 @@ public abstract class Player {
 	 * @param board
 	 * @return return a <code> Map </code> consisting of <code> Point </code> and <code> Tile </code> pairs 
 	 */
-	public abstract HashMap<Point, Tile> determineMove(Board board);
+	public abstract List<Move> determineMove(Board board);
 	
 	
 	/**
@@ -41,8 +41,11 @@ public abstract class Player {
 	 * @param board
 	 */
 	public void makeMove(Board board) {
-		HashMap<Point, Tile> move = determineMove(board);
+		List<Move> moves = determineMove(board);
 		// TODO WAIT FOR CONFIRMATION FROM SERVER
+		if(true){
+			board.putTile(moves);
+		}
 	}
 	
 	/**

@@ -41,6 +41,10 @@ public class Move {
 		return tile;
 	}
 	
+	public String toString(){
+		return String.format("%i@%i,%i", this.tile.toString(), this.getPoint().getX(), this.getPoint().getY());
+	}
+	
 	
 	
 	
