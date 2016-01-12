@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.List;
+
+import nl.utwente.ewi.qwirkle.protocol.IProtocol;
+import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 
 public class ClientHandler extends Thread {
 
@@ -13,6 +17,7 @@ public class ClientHandler extends Thread {
 	private BufferedReader in;
 	private BufferedWriter out;
 	private String clientName;
+	private List<Feature> features;
 
 	public ClientHandler(Server server, Socket socket) {
 		this.server = server;
@@ -32,11 +37,19 @@ public class ClientHandler extends Thread {
 		while(true) {
 			try {
 				String input = in.readLine();
-				// TODO sent notification to server about the input that has been send by client
+				server.getCommand(input, this);
 			} catch(IOException e) {
 				
 			}
 		}
+	}
+	
+	public void setClientName(String name) {
+		this.clientName = name;
+	}
+	
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
 	}
 	
 	/**

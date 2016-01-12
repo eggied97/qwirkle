@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import nl.utwente.ewi.qwirkle.protocol.IProtocol;
+import nl.utwente.ewi.qwirkle.server.HandleCommand;
+
 public class Server {
 
 	public static void main(String[] args) {
@@ -25,7 +28,9 @@ public class Server {
 	private List<ClientHandler> identified;
 	private Map<Integer, List<ClientHandler>> queues;
 	private Map<Integer, List<ClientHandler>> games;
-
+	private HandleCommand handle = HandleCommand.getInstance();
+	
+	
 	public Server(int port) {
 		this.port = port;
 		queues.put(2, new ArrayList<ClientHandler>());
@@ -80,6 +85,46 @@ public class Server {
 			}
 		}
 
+	}
+	// TODO error handling
+	public void getCommand(String str, ClientHandler ch) {
+		String[] s = str.split(" ");
+		if (s[0] == null) {
+			ch.sendMessage(IProtocol.Error.COMMAND_NOT_FOUND.toString());
+			return;
+		}
+		
+		switch (s[0]) {
+		
+		case IProtocol.CLIENT_IDENTIFY:
+			String name = handle.handleIdentifyName(s);
+			if(name.equals(null)) {
+				ch.sendMessage(IProtocol.Error.NAME_INVALID.toString());
+				return;
+			}
+			ch.setClientName(name);
+			List<IProtocol.Feature> features = handle.handleIdentifyFeatures(s);
+			ch.setFeatures(features);
+			removeHandler(ch);
+			identified.add(ch);
+			break;
+		case IProtocol.CLIENT_QUIT:
+		case IProtocol.CLIENT_MOVE_PUT:
+		case IProtocol.CLIENT_MOVE_TRADE:
+		case IProtocol.CLIENT_QUEUE:
+
+			/*
+			 * case IProtocol.CLIENT_CHAT: 
+			 * case IProtocol.CLIENT_CHALLENGE: 
+			 * case IProtocol.CLIENT_CHALLENGE_ACCEPT: 
+			 * case IProtocol.CLIENT_CHALLENGE_DECLINE: 
+			 * case IProtocol.CLIENT_LEADERBOARD: 
+			 * case IProtocol.CLIENT_LOBBY:
+			 */
+		default:
+			ch.sendMessage(IProtocol.Error.COMMAND_NOT_FOUND.toString());
+			break;
+		}
 	}
 
 }
