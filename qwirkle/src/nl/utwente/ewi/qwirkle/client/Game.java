@@ -14,11 +14,11 @@ public class Game {
 	private List<Player> players;
 	public UserInterface UI;
 	
-	public Game() {
+	public Game(UserInterface UI) {
 		this.board = new Board();
 		//TODO iets met protocol
 		this.players = new ArrayList<>();
-		this.UI = new TUIView();
+		this.UI = UI;
 	}
 
 }
