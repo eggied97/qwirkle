@@ -9,9 +9,23 @@ import nl.utwente.ewi.qwirkle.model.player.Player;
 public class protocol implements IProtocol {
 	private final static boolean DEBUG = true;
 
+	public protocol() {
+	}
+
+	public static protocol getInstance() {
+		return new protocol();
+	}
+
 	/*
 	 * Client
 	 */
+
+	public void printDebug(String result) {
+		if (DEBUG) {
+			System.out.println(result);
+		}
+	}
+
 	public String clientGetConnectString(String name, String[] features) {
 		String result = "";
 
@@ -30,9 +44,7 @@ public class protocol implements IProtocol {
 			count += 1;
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -42,9 +54,7 @@ public class protocol implements IProtocol {
 
 		result += this.CLIENT_QUIT;
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -67,9 +77,7 @@ public class protocol implements IProtocol {
 			count += 1;
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -96,9 +104,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -121,9 +127,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -150,9 +154,7 @@ public class protocol implements IProtocol {
 			count += 1;
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -175,9 +177,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -209,9 +209,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -223,9 +221,7 @@ public class protocol implements IProtocol {
 		result += " ";
 		result += p.getName();
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -248,9 +244,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -277,9 +271,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -291,9 +283,7 @@ public class protocol implements IProtocol {
 		result += " ";
 		result += noOfTilesTraded;
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -314,9 +304,7 @@ public class protocol implements IProtocol {
 			result += message;
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -334,9 +322,7 @@ public class protocol implements IProtocol {
 		result += " ";
 		result += message;
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -352,9 +338,7 @@ public class protocol implements IProtocol {
 		result += " ";
 		result += message;
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}

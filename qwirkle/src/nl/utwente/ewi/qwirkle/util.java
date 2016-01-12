@@ -41,10 +41,10 @@ public class util {
 		boolean StringRead = false;
 		do {
 			System.out.print(prompt);
-			try (Scanner line = new Scanner(System.in); Scanner scannerLine = new Scanner(line.nextLine());) {
-				if (scannerLine.hasNextLine()) {
+			try (Scanner line = new Scanner(System.in);) {
+				if (line.hasNextLine()) {
 					StringRead = true;
-					value = scannerLine.nextLine();
+					value = line.nextLine();
 				}
 			}
 		} while (!StringRead);

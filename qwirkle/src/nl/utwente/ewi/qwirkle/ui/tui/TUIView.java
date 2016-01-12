@@ -24,7 +24,7 @@ public class TUIView implements UserInterface {
 
 	@Override
 	public int[] queueWithHowManyPlayers() {
-		String queue = util.readString(QUESTION_ASK_NAME);
+		String queue = util.readString(QUESTION_QUEUE);
 
 		String[] queues = queue.split(",");
 
@@ -37,7 +37,6 @@ public class TUIView implements UserInterface {
 			for (int i = 0; i < result.length; i++) {
 				result[i] = Integer.parseInt(queues[i]);
 			}
-
 			return result;
 		}
 	}
