@@ -19,7 +19,6 @@ public class protocol implements IProtocol {
 	/*
 	 * Client
 	 */
-	
 	public void printDebug(String result) {
 		if (DEBUG) {
 			System.out.println(result);
