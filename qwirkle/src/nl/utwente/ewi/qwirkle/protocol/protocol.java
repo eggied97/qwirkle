@@ -24,12 +24,6 @@ public class protocol implements IProtocol {
 			System.out.println(result);
 		}
 	}
-
-	public void printDebug(String result) {
-		if (DEBUG) {
-			System.out.println(result);
-		}
-	}
 	
 	public String clientGetConnectString(String name, String[] features) {
 		String result = "";
