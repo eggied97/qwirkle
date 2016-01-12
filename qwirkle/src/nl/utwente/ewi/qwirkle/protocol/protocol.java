@@ -12,6 +12,12 @@ public class protocol implements IProtocol {
 	/*
 	 * Client
 	 */
+	public void printDebug(String result) {
+		if (DEBUG) {
+			System.out.println(result);
+		}
+	}
+	
 	public String clientGetConnectString(String name, String[] features) {
 		String result = "";
 
@@ -30,9 +36,7 @@ public class protocol implements IProtocol {
 			count += 1;
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -42,9 +46,7 @@ public class protocol implements IProtocol {
 
 		result += this.CLIENT_QUIT;
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -67,9 +69,7 @@ public class protocol implements IProtocol {
 			count += 1;
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -96,9 +96,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -121,9 +119,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -150,9 +146,7 @@ public class protocol implements IProtocol {
 			count += 1;
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -175,9 +169,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -209,9 +201,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -223,9 +213,7 @@ public class protocol implements IProtocol {
 		result += " ";
 		result += p.getName();
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -248,9 +236,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -277,9 +263,7 @@ public class protocol implements IProtocol {
 			}
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -314,9 +298,7 @@ public class protocol implements IProtocol {
 			result += message;
 		}
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -334,9 +316,7 @@ public class protocol implements IProtocol {
 		result += " ";
 		result += message;
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
@@ -352,9 +332,7 @@ public class protocol implements IProtocol {
 		result += " ";
 		result += message;
 
-		if (DEBUG) {
-			System.out.println(result);
-		}
+		printDebug(result);
 
 		return result;
 	}
