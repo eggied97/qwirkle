@@ -16,6 +16,14 @@ public class Tile {
 		this.s= s;		
 	}
 	
+	public Tile(int i){
+		int iShape = i % 6;
+		int iColor = (i - iShape) / 6;
+		
+		this.c = Color.getColorByInt(iColor);
+		this.s = Shape.getShapeByInt(iShape);
+	}
+	
 	public Shape getShape(){
 		return this.s;
 	}
@@ -24,8 +32,13 @@ public class Tile {
 		return this.c;
 	}
 
+	@Override
 	public String toString(){
 		//TODO doe volgens protocol
-		return getShape().i + " / " + getColor().i;
+		return getIntOfTile()+"";
+	}
+	
+	private int getIntOfTile(){
+		return getColor().getInt() * 6 + getShape().getInt();
 	}
 }
