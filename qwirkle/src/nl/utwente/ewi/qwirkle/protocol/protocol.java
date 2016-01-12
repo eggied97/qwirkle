@@ -287,16 +287,16 @@ public class protocol implements IProtocol {
 		return result;
 	}
 
-	public String serverError(int errorCode) {
+	public String serverError(Error errorCode) {
 		return serverError(errorCode, null);
 	}
 
-	public String serverError(int errorCode, String message) {
+	public String serverError(Error err, String message) {
 		String result = "";
 
 		result += this.SERVER_ERROR;
 		result += " ";
-		result += errorCode;
+		result += err.toString();
 
 		if (message != null) {
 			result += " ";

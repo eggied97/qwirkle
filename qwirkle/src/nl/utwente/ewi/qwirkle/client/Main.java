@@ -35,7 +35,6 @@ public class Main implements resultCallback {
 		// setupConnectionToServer(args);
 
 		authenticateUser();
-
 	}
 
 	private static void authenticateUser() {
@@ -100,6 +99,10 @@ public class Main implements resultCallback {
 		case IProtocol.SERVER_IDENITFY:
 			handleServerIdentify(args);
 			break;
+		
+		case IProtocol.SERVER_GAMESTART:
+			handleGameStart(args);
+			break;
 
 		case IProtocol.SERVER_ERROR:
 			break;
@@ -107,6 +110,10 @@ public class Main implements resultCallback {
 		default:
 			break;
 		}
+	}
+	
+	private void handleGameStart(String[] args){
+		
 	}
 
 	private void handleServerIdentify(String[] args) {
