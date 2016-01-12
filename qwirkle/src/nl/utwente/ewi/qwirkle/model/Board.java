@@ -67,20 +67,25 @@ public class Board {
 		}
 	}
 
-	public String toString(){
+	public String toString() {
 		double[] bound = getBoundaries();
 		String result = "";
-		
-		for(int y = (int)bound[1]; y < bound[3]; y++){
-			for(int x = (int)bound[0]; x < bound[2]; x++){
-				result += getTile(x, y).toString();
+
+		for (int y = (int) bound[1]; y < bound[3]; y++) {
+			for (int x = (int) bound[0]; x < bound[2]; x++) {
+				Tile t = getTile(x, y);
+				if (t != null) {
+					result += getTile(x, y).toString();
+				} else {
+					result += "(" + x + "," + y + ")";
+				}
 				result += " | ";
 			}
 			result += "\n";
 		}
-		
+
 		return result;
-		
+
 	}
 
 }
