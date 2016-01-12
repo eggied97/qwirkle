@@ -37,6 +37,13 @@ public class Bag {
 		}
 		Collections.shuffle(tiles);
 	}
+	
+	public void addTiles(List<Integer> t) {
+		for(Integer tile : t) {
+			this.tiles.add(new Tile(tile));
+		}
+		Collections.shuffle(this.tiles);
+	}
 
 	/**
 	 * @return random <code> Tile </code> from the bag

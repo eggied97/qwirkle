@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.server.connect.ClientHandler;
@@ -84,6 +85,31 @@ public class HandleCommand {
 	}
 
 	public void handleMoveTrade(String[] strAy, ClientHandler ch) {
+		List<Integer> tiles = new ArrayList<>();
+		for(int i = 1; i < strAy.length; i++) {
+			tiles.add(Integer.parseInt(strAy[i]));
+		}
 		
+		if(ch.getGame().getBag().isEmpty() || ch.getGame().getBag().getAmountOfTiles() - tiles.size() < 0) {
+			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.DECK_EMPTY);
+		} else if(ch.getGame().getBoard().isEmpty()) {
+			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.TRADE_FIRST_TURN);
+		} else if(checkTiles(tiles)) {
+			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_TILES_UNOWNED);
+		}
+		
+		List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
+		List<Integer> newTilesInt = new ArrayList<>();;
+		for (Tile t : newTiles) {
+			newTilesInt.add(t.getIntOfTile());		
+		}
+		// TODO create string and replace tiles
+		
+		ch.sendMessage(protocol.SERVER_DRAWTILE);
+	}
+	
+	public boolean checkTiles(List<Integer> tiles) {
+		// TODO fix this
+		return false;
 	}
 }

@@ -87,5 +87,9 @@ public class Board {
 		return result;
 
 	}
+	
+	public boolean isEmpty() {
+		return this.map.isEmpty();
+	}
 
 }

@@ -28,4 +28,16 @@ public class Game {
 			return bag.isEmpty() || board.isSquare();
 	}
 	
+	public Bag getBag() {
+		return this.bag;
+	}
+	
+	public Board getBoard() {
+		return this.board;
+	}
+	
+	public List<Player> getPlayers() {
+		return this.players;
+	}
+	
 }

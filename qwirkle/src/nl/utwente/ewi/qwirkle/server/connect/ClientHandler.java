@@ -10,6 +10,7 @@ import java.util.List;
 
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
+import nl.utwente.ewi.qwirkle.server.Game;
 
 public class ClientHandler extends Thread {
 
@@ -19,7 +20,8 @@ public class ClientHandler extends Thread {
 	private BufferedWriter out;
 	private String clientName;
 	private List<Feature> features;
-
+	private Game game;
+	
 	public ClientHandler(Server server, Socket socket) throws IOException {
 		this.server = server;
 		this.sock = socket;
@@ -39,6 +41,10 @@ public class ClientHandler extends Thread {
 
 			}
 		}
+	}
+	
+	public Game getGame() {
+		return this.game;
 	}
 
 	public void setClientName(String name) {
