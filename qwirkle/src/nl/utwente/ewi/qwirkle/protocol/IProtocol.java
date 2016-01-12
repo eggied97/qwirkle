@@ -32,6 +32,8 @@ public interface IProtocol {
         INVALID_CHANNEL,
         CHALLENGE_SELF, NOT_CHALLENGED
     }
+    
+
 
     /**
      * <p>Sent by the client when connecting to a server to identify itself.</p>

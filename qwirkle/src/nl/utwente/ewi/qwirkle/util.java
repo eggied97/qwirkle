@@ -2,6 +2,8 @@ package nl.utwente.ewi.qwirkle;
 
 import java.util.Scanner;
 
+import nl.utwente.ewi.qwirkle.protocol.IProtocol;
+
 public class util {
 
 	/**
@@ -50,6 +52,16 @@ public class util {
 		} while (!StringRead);
 
 		return value;
+	}
+
+	public static boolean FeatureArrayContains(IProtocol.Feature[] s, IProtocol.Feature a) {
+		for (IProtocol.Feature ftr : s) {
+			if (ftr.equals(a)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

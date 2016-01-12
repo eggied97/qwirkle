@@ -15,6 +15,7 @@ public class Client extends Thread {
 	private static BufferedReader systemIn;
 	private BufferedReader in;
 	private BufferedWriter out;
+	private resultCallback rc = null;
 
 	public Client(InetAddress host, int port) {
 		this.clientName = host.getHostAddress();
@@ -29,10 +30,16 @@ public class Client extends Thread {
 		}
 	}
 	
+	public void setCallback(resultCallback rc){
+		this.rc = rc;
+	}
+	
 	public void run() {
 		try {
 			while(true) {
-				System.out.println(in.readLine());
+				if(rc != null){
+					rc.resultFromServer(in.readLine());
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

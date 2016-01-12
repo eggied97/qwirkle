@@ -8,7 +8,7 @@ import nl.utwente.ewi.qwirkle.model.player.Player;
 
 public class protocol implements IProtocol {
 	private final static boolean DEBUG = true;
-
+	
 	public protocol() {
 	}
 
@@ -25,7 +25,7 @@ public class protocol implements IProtocol {
 		}
 	}
 	
-	public String clientGetConnectString(String name, String[] features) {
+	public String clientGetConnectString(String name, IProtocol.Feature[] features) {
 		String result = "";
 
 		result += this.CLIENT_IDENTIFY;
@@ -33,12 +33,12 @@ public class protocol implements IProtocol {
 
 		int count = 0;
 
-		for (String f : features) {
+		for (Feature f : features) {
 			if (count >= 1) {
 				result += ",";
 			}
 
-			result += f;
+			result += f.toString();
 
 			count += 1;
 		}
