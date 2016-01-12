@@ -14,46 +14,44 @@ import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 public class ClientHandler extends Thread {
 
 	private Server server;
+	private Socket sock;
 	private BufferedReader in;
 	private BufferedWriter out;
 	private String clientName;
 	private List<Feature> features;
 
-	public ClientHandler(Server server, Socket socket) {
+	public ClientHandler(Server server, Socket socket) throws IOException {
 		this.server = server;
-
-		try {
-			this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.sock = socket;
+		this.out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
+		this.in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 	}
-	
+
 	/**
 	 * Reads input from client and passes it to the server
 	 */
 	public void run() {
-		while(true) {
+		while (true) {
 			try {
 				String input = in.readLine();
 				server.getCommand(input, this);
-			} catch(IOException e) {
-				
+			} catch (IOException e) {
+
 			}
 		}
 	}
-	
+
 	public void setClientName(String name) {
 		this.clientName = name;
 	}
-	
+
 	public void setFeatures(List<Feature> features) {
 		this.features = features;
 	}
-	
+
 	/**
 	 * Sends a message to the client
+	 * 
 	 * @param msg
 	 */
 	public void sendMessage(String msg) {
@@ -66,9 +64,16 @@ public class ClientHandler extends Thread {
 			shutDown();
 		}
 	}
-	
-	private void shutDown() {
+
+	public void shutDown() {
 		server.removeHandler(this);
+		try {
+			in.close();
+			out.close();
+			sock.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

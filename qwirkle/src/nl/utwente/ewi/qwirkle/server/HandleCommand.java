@@ -2,17 +2,23 @@ package nl.utwente.ewi.qwirkle.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
+import nl.utwente.ewi.qwirkle.protocol.protocol;
+import nl.utwente.ewi.qwirkle.server.connect.ClientHandler;
+import nl.utwente.ewi.qwirkle.server.connect.Server;
 
 public class HandleCommand {
+	
+	private Server server;
 
-	public HandleCommand() {
-
+	public HandleCommand(Server server) {
+		this.server = server;
 	}
 
-	public static HandleCommand getInstance() {
-		return new HandleCommand();
+	public static HandleCommand getInstance(Server server) {
+		return new HandleCommand(server);
 	}
 
 	public String handleIdentifyName(String[] strAy) {
@@ -51,4 +57,33 @@ public class HandleCommand {
 		
 	}
 	
+	public void handleQueue(String[] strAy, ClientHandler ch) {
+		String queue = strAy[1];
+		String[] queueSpl = queue.split(",");
+		Map<Integer, List<ClientHandler>> map = server.getQueues();
+		for(int i = 0; i < queueSpl.length; i++) {
+			switch(Integer.parseInt(queueSpl[i])) {
+			case 2:
+				map.get(2).add(ch);
+				break;
+				// TODO check if queue full
+				// TODO test
+			case 3:
+				map.get(3).add(ch);
+				break;
+			case 4:
+				map.get(4).add(ch);
+				break;
+			default:
+				ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.QUEUE_INVALID);
+				break;
+			}
+		}
+		
+		
+	}
+
+	public void handleMoveTrade(String[] strAy, ClientHandler ch) {
+		
+	}
 }
