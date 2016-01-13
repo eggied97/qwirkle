@@ -25,6 +25,7 @@ public class Server {
 
 	private int port;
 	private ServerSocket serverSock;
+	private List<ClientHandler> all;
 	private List<ClientHandler> start;
 	private List<ClientHandler> identified;
 	private Map<Integer, List<ClientHandler>> queues;
@@ -55,12 +56,17 @@ public class Server {
 				System.out.println("Client connected!");
 				ClientHandler handler = new ClientHandler(this, client);
 				handler.start();
+				all.add(handler);
 				start.add(handler);
 				sendIdentifier();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public List<ClientHandler> getAll() {
+		return this.all;
 	}
 
 	public void sendIdentifier() {
@@ -101,14 +107,8 @@ public class Server {
 		switch (s[0]) {
 
 		case IProtocol.CLIENT_IDENTIFY:
-			String name = handle.handleIdentifyName(s);
-			if (name.equals(null)) {
-				ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.NAME_INVALID.toString());
-				return;
-			}
-			ch.setClientName(name);
-			List<IProtocol.Feature> features = handle.handleIdentifyFeatures(s);
-			ch.setFeatures(features);
+			handle.handleIdentifyName(s,ch);
+			handle.handleIdentifyFeatures(s,ch);
 			removeHandler(ch);
 			identified.add(ch);
 			break;
@@ -121,6 +121,7 @@ public class Server {
 
 		case IProtocol.CLIENT_MOVE_TRADE:
 			handle.handleMoveTrade(s, ch);
+			break;
 
 		case IProtocol.CLIENT_QUEUE:
 			removeHandler(ch);

@@ -22,17 +22,23 @@ public class HandleCommand {
 		return new HandleCommand(server);
 	}
 
-	public String handleIdentifyName(String[] strAy) {
+	public void handleIdentifyName(String[] strAy, ClientHandler ch) {
 		String name = strAy[1];
-		if (name.matches("^[a-zA-Z0-9-_]$")) {
-			return name;
+		if (name.matches("^[a-zA-Z0-9-_]$") || !name.equals(null)) {
+			for(ClientHandler handler : server.getAll() ) {
+				if(handler.getClientName().equals(name)) {
+					ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.NAME_USED);
+					return;
+				}
+			}
+			ch.setClientName(name);
 		} else {
-			return null;
+			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.NAME_INVALID);
 		}
 
 	}
 
-	public List<IProtocol.Feature> handleIdentifyFeatures(String[] strAy) {
+	public void handleIdentifyFeatures(String[] strAy, ClientHandler ch) {
 		List<IProtocol.Feature> features = new ArrayList<>();
 		
 		for(int i = 2; i < strAy.length; i++) {
@@ -54,7 +60,7 @@ public class HandleCommand {
 		}
 			i++;
 		}
-		return features;
+		ch.setFeatures(features);
 		
 	}
 	
@@ -111,5 +117,9 @@ public class HandleCommand {
 	public boolean checkTiles(List<Integer> tiles) {
 		// TODO fix this
 		return false;
+	}
+
+	public void handleMovePut(String[] strAy, ClientHandler ch) {
+		
 	}
 }
