@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,9 +43,20 @@ public class Server {
 
 	public Server(int port) {
 		this.port = port;
+		init();
 		queues.put(2, new ArrayList<ClientHandler>());
 		queues.put(3, new ArrayList<ClientHandler>());
 		queues.put(4, new ArrayList<ClientHandler>());
+	}
+	
+	public void init() {
+		queues = new HashMap<>();
+		games = new HashMap<>();
+		all = new ArrayList<>();
+		start = new ArrayList<>();
+		identified = new ArrayList<>();
+		
+		
 	}
 
 	public void run() {
@@ -71,6 +83,12 @@ public class Server {
 	
 	public List<ClientHandler> getAll() {
 		return this.all;
+	}
+	
+	public void broadcast(List<ClientHandler> list, String msg) {
+		for(ClientHandler ch : list) {
+			ch.sendMessage(msg);
+		}
 	}
 	
 	public void removeFromAll(ClientHandler ch) {
@@ -110,11 +128,9 @@ public class Server {
 		for(ClientHandler ch : list) {
 			players.add(ch.getPlayer());
 		}
-
-		Game game = new Game(players);
-		
+		Game game = new Game(list);
+		broadcast(list, protocol.getInstance().serverStartGame(players));
 		for(ClientHandler ch : list) {
-			ch.sendMessage(protocol.getInstance().serverStartGame(players));
 			ch.setGame(game);
 		}
 		
@@ -148,13 +164,17 @@ public class Server {
 		switch (s[0]) {
 
 		case IProtocol.CLIENT_IDENTIFY:
-			
+			if(ch.getGame() != null) {
+				ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.INVALID_COMMAND.toString());
+				break;
+			}
 			handle.handleIdentifyName(s,ch);
 			handle.handleIdentifyFeatures(s,ch);
 			if(handle.getWentWell()) {
 				removeHandler(ch);
 				identified.add(ch);	
 			}
+			handle.setWentWell(true);
 			break;
 
 		case IProtocol.CLIENT_QUIT:

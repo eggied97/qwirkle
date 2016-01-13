@@ -22,7 +22,7 @@ public class ClientHandler extends Thread {
 	private BufferedWriter out;
 	private String clientName;
 	private List<Feature> features;
-	private Game game;
+	private Game game = null;
 	private Player player;
 	
 	public ClientHandler(Server server, Socket socket) throws IOException {
