@@ -14,10 +14,10 @@ public class Game {
 	private List<Player> players;
 	public UserInterface UI;
 	
-	public Game(UserInterface UI) {
+	public Game(UserInterface UI, List<Player> players) {
 		this.board = new Board();
-		//TODO iets met protocol
-		this.players = new ArrayList<>();
+		
+		this.players = players;
 		this.UI = UI;
 	}
 
