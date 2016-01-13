@@ -6,9 +6,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
+import nl.utwente.ewi.qwirkle.server.Game;
 import nl.utwente.ewi.qwirkle.server.HandleCommand;
 
 public class Server {
@@ -31,6 +34,7 @@ public class Server {
 	private Map<Integer, List<ClientHandler>> queues;
 	private Map<Integer, List<ClientHandler>> games;
 	private HandleCommand handle = HandleCommand.getInstance(this);
+	private int gameCounter = 0;
 
 	public Map<Integer, List<ClientHandler>> getQueues() {
 		return this.queues;
@@ -68,6 +72,10 @@ public class Server {
 	public List<ClientHandler> getAll() {
 		return this.all;
 	}
+	
+	public void removeFromAll(ClientHandler ch) {
+		all.remove(ch);
+	}
 
 	public void sendIdentifier() {
 		for (ClientHandler ch : start) {
@@ -96,21 +104,57 @@ public class Server {
 		}
 
 	}
+	
+	public void startGame(List<ClientHandler> list) {
+		List<Player> players = new ArrayList<>();
+		for(ClientHandler ch : list) {
+			players.add(ch.getPlayer());
+		}
+
+		Game game = new Game(players);
+		
+		for(ClientHandler ch : list) {
+			ch.sendMessage(protocol.getInstance().serverStartGame(players));
+			ch.setGame(game);
+		}
+		
+		game.start();
+		
+	}
+	
+	public void checkQueues() {
+		for(Entry entry: queues.entrySet()) {
+			List<ClientHandler> queue = (List<ClientHandler>)entry.getValue();
+			if((int)entry.getKey() == queue.size()) {
+				gameCounter++;
+				for(ClientHandler ch : queue) {
+					removeHandler(ch);
+				}
+				games.put(gameCounter, queue);
+				startGame(queue);
+				queues.get((int)entry.getKey()).clear();
+				return;
+			}
+		}
+	}
 
 	public void getCommand(String str, ClientHandler ch) {
 		String[] s = str.split(" ");
 		if (s[0] == null) {
-			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.COMMAND_NOT_FOUND.toString());
+			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.INVALID_COMMAND.toString());
 			return;
 		}
 
 		switch (s[0]) {
 
 		case IProtocol.CLIENT_IDENTIFY:
+			
 			handle.handleIdentifyName(s,ch);
 			handle.handleIdentifyFeatures(s,ch);
-			removeHandler(ch);
-			identified.add(ch);
+			if(handle.getWentWell()) {
+				removeHandler(ch);
+				identified.add(ch);	
+			}
 			break;
 
 		case IProtocol.CLIENT_QUIT:
@@ -118,6 +162,8 @@ public class Server {
 			break;
 
 		case IProtocol.CLIENT_MOVE_PUT:
+			handle.handleMovePut(s, ch);
+			break;
 
 		case IProtocol.CLIENT_MOVE_TRADE:
 			handle.handleMoveTrade(s, ch);
@@ -126,6 +172,7 @@ public class Server {
 		case IProtocol.CLIENT_QUEUE:
 			removeHandler(ch);
 			handle.handleQueue(s, ch);
+			checkQueues();
 			break;
 			/*
 			 * case IProtocol.CLIENT_CHAT: case IProtocol.CLIENT_CHALLENGE: case
@@ -134,7 +181,7 @@ public class Server {
 			 * IProtocol.CLIENT_LEADERBOARD: case IProtocol.CLIENT_LOBBY:
 			 */
 		default:
-			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.COMMAND_NOT_FOUND.toString());
+			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.INVALID_COMMAND.toString());
 			break;
 		}
 	}

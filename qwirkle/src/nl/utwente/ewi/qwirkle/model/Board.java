@@ -9,7 +9,7 @@ import nl.utwente.ewi.qwirkle.model.exceptions.PlaceOccupiedException;
 
 public class Board {
 
-	Map<Point, Tile> map;
+	private Map<Point, Tile> map;
 
 	public Board() {
 		map = new HashMap<>();
