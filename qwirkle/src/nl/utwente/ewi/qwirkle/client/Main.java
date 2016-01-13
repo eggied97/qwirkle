@@ -10,7 +10,10 @@ import java.util.List;
 import nl.utwente.ewi.qwirkle.util;
 import nl.utwente.ewi.qwirkle.client.connect.Client;
 import nl.utwente.ewi.qwirkle.client.connect.resultCallback;
+import nl.utwente.ewi.qwirkle.model.exceptions.tooFewPlayersException;
+import nl.utwente.ewi.qwirkle.model.exceptions.tooManyPlayersException;
 import nl.utwente.ewi.qwirkle.model.player.Player;
+import nl.utwente.ewi.qwirkle.model.player.SocketPlayer;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
@@ -18,11 +21,14 @@ import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
 public class Main implements resultCallback {
 
+	//TODO maybe change some statics
 	private static final String USAGE_SERVER = "Requires 2 arguments: <host> <port>";
 	private static Client client;
 
 	private static UserInterface UI;
 	private static protocol prot;
+	
+	private static Player me;
 
 	private static IProtocol.Feature[] implementedFeatures = new IProtocol.Feature[] {};
 	private static List<IProtocol.Feature> usingFeatures;
@@ -38,8 +44,8 @@ public class Main implements resultCallback {
 	}
 
 	private static void authenticateUser() {
-		Player p = UI.login();
-		sendMessageToServer(prot.clientGetConnectString(p.getName(), implementedFeatures));
+		me = UI.login();
+		sendMessageToServer(prot.clientGetConnectString(me.getName(), implementedFeatures));
 	}
 
 	private void enterQueue() {
@@ -99,9 +105,13 @@ public class Main implements resultCallback {
 		case IProtocol.SERVER_IDENITFY:
 			handleServerIdentify(args);
 			break;
-		
+
 		case IProtocol.SERVER_GAMESTART:
-			handleGameStart(args);
+			try {
+				handleGameStart(args);
+			} catch (tooManyPlayersException | tooFewPlayersException e) {
+				e.printStackTrace();
+			}
 			break;
 
 		case IProtocol.SERVER_ERROR:
@@ -111,8 +121,23 @@ public class Main implements resultCallback {
 			break;
 		}
 	}
-	
-	private void handleGameStart(String[] args){
+
+	private void handleGameStart(String[] args) throws tooManyPlayersException, tooFewPlayersException {
+		if (args.length > 3) {
+			throw new tooManyPlayersException(args.length + 1);
+		} else if (args.length == 0) {
+			throw new tooFewPlayersException(args.length + 1);
+		}
+		
+		List<Player> playersInGame = new ArrayList<>();
+		
+		playersInGame.add(me);
+		
+		for(String name : args){
+			Player p = new SocketPlayer(name);
+			playersInGame.add(p);
+		}
+		
 		
 	}
 
