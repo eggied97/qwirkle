@@ -14,6 +14,10 @@ public class Board {
 	public Board() {
 		map = new HashMap<>();
 	}
+	
+	public void main(String[] args){
+		Board b = new Board();
+	}
 
 	/**
 	 * @return <code> Tile </code> at given <code> x, y </code>

@@ -38,7 +38,10 @@ public class Main implements resultCallback {
 		UI = new TUIView();
 
 		prot = protocol.getInstance();
-		// setupConnectionToServer(args);
+		setupConnectionToServer(args);
+		
+
+
 
 		authenticateUser();
 	}
@@ -85,13 +88,15 @@ public class Main implements resultCallback {
 		if (client != null && client.isAlive()) {
 			client.sendMessage(message);
 		} else {
-			System.err.println("Wanted to send message via a client that has not been started");
+			UI.showError("Wanted to send message via a client that has not been started");
 			System.exit(0);
 		}
 	}
 
 	@Override
 	public void resultFromServer(String result) {
+		System.out.println();
+		
 		String[] results = result.split(" ");
 
 		if (results.length == 0) {
@@ -140,10 +145,13 @@ public class Main implements resultCallback {
 		}
 		
 		
+		Game g = new Game(UI, playersInGame, client, usingFeatures);
+		
+		
 	}
 
 	private void handleServerIdentify(String[] args) {
-		if (args.length > 1) {
+		if (args.length >= 1) {
 			for (String r : args) {
 				if (util.FeatureArrayContains(implementedFeatures, IProtocol.Feature.valueOf(r))) {
 					usingFeatures.add(IProtocol.Feature.valueOf(r));

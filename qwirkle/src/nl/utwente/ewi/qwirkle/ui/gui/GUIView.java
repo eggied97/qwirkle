@@ -38,4 +38,10 @@ public class GUIView implements UserInterface {
 		
 	}
 
+	@Override
+	public void printMessage(String message) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

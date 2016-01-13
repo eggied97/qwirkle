@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.enums.Color;
 import nl.utwente.ewi.qwirkle.model.enums.Shape;
@@ -19,6 +20,11 @@ public class Bag {
 	public Bag() {
 		tiles = new ArrayList<>();
 		initBag();
+	}
+	
+	public static void main(String[] args){
+		Bag b = new Bag();
+		System.out.println(b.getBag().size());
 	}
 
 	/**

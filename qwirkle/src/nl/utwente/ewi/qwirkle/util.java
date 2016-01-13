@@ -1,5 +1,8 @@
 package nl.utwente.ewi.qwirkle;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
@@ -31,27 +34,22 @@ public class util {
 	}
 
 	/**
-	 * Writes a prompt to standard out and tries to read an int value from
-	 * standard in. This is repeated until an int value is entered.
 	 * 
 	 * @param prompt
 	 *            the question to prompt the user
 	 * @return the first int value which is entered by the user
 	 */
-	public static String readString(String prompt) {
-		String value = "";
-		boolean StringRead = false;
-		do {
-			System.out.print(prompt);
-			try (Scanner line = new Scanner(System.in);) {
-				if (line.hasNextLine()) {
-					StringRead = true;
-					value = line.nextLine();
-				}
-			}
-		} while (!StringRead);
+	public static String readString(String tekst) {
+		System.out.print(tekst);
+		String antw = null;
+		try {
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					System.in));
+			antw = in.readLine();
+		} catch (IOException e) {
+		}
 
-		return value;
+		return (antw == null) ? "" : antw;
 	}
 
 	public static boolean FeatureArrayContains(IProtocol.Feature[] s, IProtocol.Feature a) {

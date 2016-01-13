@@ -57,4 +57,9 @@ public class TUIView implements UserInterface {
 	public void showError(String message) {
 		System.err.println(message);
 	}
+
+	@Override
+	public void printMessage(String message) {
+		System.out.println(message);
+	}
 }

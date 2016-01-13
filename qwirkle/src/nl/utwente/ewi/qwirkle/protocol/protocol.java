@@ -21,7 +21,7 @@ public class protocol implements IProtocol {
 	 */
 	public void printDebug(String result) {
 		if (DEBUG) {
-			System.out.println(result);
+			System.out.println("Protocol > "+result);
 		}
 	}
 	

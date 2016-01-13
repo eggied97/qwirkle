@@ -8,6 +8,7 @@ public interface UserInterface {
 	public int[] queueWithHowManyPlayers();
 	public void changeTurn(Player p);
 	public void playerTraded(Player p, int noOfTilesTraded);
+	public void printMessage(String message);
 	//Error handling
 	public void showError(String message);
 }
