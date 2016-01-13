@@ -115,6 +115,7 @@ public class Main implements resultCallback {
 			break;
 
 		case IProtocol.SERVER_ERROR:
+			//TODO error handling
 			break;
 
 		default:

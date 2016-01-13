@@ -135,7 +135,7 @@ public class protocol implements IProtocol {
 	 * Server
 	 */
 
-	public String serverConnectOk(String[] features) {
+	public String serverConnectOk(IProtocol.Feature[] features) {
 		String result = "";
 
 		result += this.CLIENT_IDENTIFY;
@@ -143,12 +143,12 @@ public class protocol implements IProtocol {
 
 		int count = 0;
 
-		for (String f : features) {
+		for (Feature f : features) {
 			if (count >= 1) {
 				result += ",";
 			}
 
-			result += f;
+			result += f.toString();
 
 			count += 1;
 		}
