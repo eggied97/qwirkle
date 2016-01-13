@@ -18,6 +18,11 @@ public class ValidMove {
 		return false;
 	}
 	
+	public boolean validMoveSet(List<Move> moves) {
+		return false;
+		//TODO seems obvious
+	}
+	
 	
 
 }

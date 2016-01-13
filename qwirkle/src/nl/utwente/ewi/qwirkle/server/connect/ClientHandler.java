@@ -89,6 +89,7 @@ public class ClientHandler extends Thread {
 
 	public void shutDown() {
 		server.removeHandler(this);
+		server.removeFromAll(this);
 		try {
 			in.close();
 			out.close();

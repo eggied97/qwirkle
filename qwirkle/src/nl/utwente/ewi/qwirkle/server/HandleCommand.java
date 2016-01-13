@@ -1,9 +1,11 @@
 package nl.utwente.ewi.qwirkle.server;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
@@ -13,7 +15,9 @@ import nl.utwente.ewi.qwirkle.server.connect.Server;
 public class HandleCommand {
 	
 	private Server server;
-
+	private protocol protocol;
+	private ValidMove valid;
+	
 	public HandleCommand(Server server) {
 		this.server = server;
 	}
@@ -24,7 +28,7 @@ public class HandleCommand {
 
 	public void handleIdentifyName(String[] strAy, ClientHandler ch) {
 		String name = strAy[1];
-		if (name.matches("^[a-zA-Z0-9-_]$") || !name.equals(null)) {
+		if (name.matches("^[a-zA-Z0-9-_]{2,16}$") || !name.equals(null)) {
 			for(ClientHandler handler : server.getAll() ) {
 				if(handler.getClientName().equals(name)) {
 					ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.NAME_USED);
@@ -61,7 +65,7 @@ public class HandleCommand {
 			i++;
 		}
 		ch.setFeatures(features);
-		
+		ch.sendMessage(protocol.serverConnectOk((IProtocol.Feature[])features.toArray()));
 	}
 	
 	public void handleQueue(String[] strAy, ClientHandler ch) {
@@ -91,16 +95,20 @@ public class HandleCommand {
 	}
 
 	public void handleMoveTrade(String[] strAy, ClientHandler ch) {
-		List<Integer> tiles = new ArrayList<>();
+		List<Tile> tiles = new ArrayList<>();
 		for(int i = 1; i < strAy.length; i++) {
-			tiles.add(Integer.parseInt(strAy[i]));
+			tiles.add(new Tile(Integer.parseInt(strAy[i])));
+		}
+		List<Integer> tilesInt = new ArrayList<>();
+		for (Tile t : tiles) {
+			tilesInt.add(t.getIntOfTile());		
 		}
 		
 		if(ch.getGame().getBag().isEmpty() || ch.getGame().getBag().getAmountOfTiles() - tiles.size() < 0) {
 			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.DECK_EMPTY);
 		} else if(ch.getGame().getBoard().isEmpty()) {
 			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.TRADE_FIRST_TURN);
-		} else if(checkTiles(tiles)) {
+		} else if(!checkTiles(tiles, ch)) {
 			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_TILES_UNOWNED);
 		}
 		
@@ -109,17 +117,43 @@ public class HandleCommand {
 		for (Tile t : newTiles) {
 			newTilesInt.add(t.getIntOfTile());		
 		}
-		// TODO create string and replace tiles
+		ch.getGame().getBag().addTiles(tilesInt);
 		
-		ch.sendMessage(protocol.SERVER_DRAWTILE);
+		ch.sendMessage(protocol.serverDrawTile(newTiles));
 	}
 	
-	public boolean checkTiles(List<Integer> tiles) {
-		// TODO fix this
-		return false;
+	public boolean checkTiles(List<Tile> tiles, ClientHandler ch) {
+		List<Tile> playerTiles = ch.getPlayer().getHand();
+		for(Tile t : tiles) {
+			if(!playerTiles.contains(t)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void handleMovePut(String[] strAy, ClientHandler ch) {
-		
+		List<Move> moves = new ArrayList<>();
+		List<Tile> tiles = new ArrayList<>();
+		for(int i = 1; i < strAy.length; i++) {
+			String[] a = strAy[i].split("@");
+			int tileNo = Integer.parseInt(a[0]);
+			String[] b = a[1].split(",");
+			int x = Integer.parseInt(b[0]);
+			int y = Integer.parseInt(b[1]);
+			Tile t = new Tile(tileNo);
+			Move m = new Move(new Point(x,y), t);
+			tiles.add(t);
+			moves.add(m);
+		}
+		if(!checkTiles(tiles, ch)) {
+			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_TILES_UNOWNED);
+			return;
+		}
+		if(!valid.validMoveSet(moves)) {
+			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_INVALID);
+			return;
+		}
+		ch.getGame().getBoard().putTile(moves);
 	}
 }

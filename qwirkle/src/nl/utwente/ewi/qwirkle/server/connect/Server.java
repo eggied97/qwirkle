@@ -68,6 +68,10 @@ public class Server {
 	public List<ClientHandler> getAll() {
 		return this.all;
 	}
+	
+	public void removeFromAll(ClientHandler ch) {
+		all.remove(ch);
+	}
 
 	public void sendIdentifier() {
 		for (ClientHandler ch : start) {
@@ -100,7 +104,7 @@ public class Server {
 	public void getCommand(String str, ClientHandler ch) {
 		String[] s = str.split(" ");
 		if (s[0] == null) {
-			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.COMMAND_NOT_FOUND.toString());
+			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.INVALID_COMMAND.toString());
 			return;
 		}
 
@@ -118,6 +122,8 @@ public class Server {
 			break;
 
 		case IProtocol.CLIENT_MOVE_PUT:
+			handle.handleMovePut(s, ch);
+			break;
 
 		case IProtocol.CLIENT_MOVE_TRADE:
 			handle.handleMoveTrade(s, ch);
@@ -134,7 +140,7 @@ public class Server {
 			 * IProtocol.CLIENT_LEADERBOARD: case IProtocol.CLIENT_LOBBY:
 			 */
 		default:
-			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.COMMAND_NOT_FOUND.toString());
+			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.INVALID_COMMAND.toString());
 			break;
 		}
 	}
