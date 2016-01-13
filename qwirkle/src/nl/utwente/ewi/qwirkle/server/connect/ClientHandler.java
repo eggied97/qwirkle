@@ -70,6 +70,10 @@ public class ClientHandler extends Thread {
 	public void setFeatures(List<Feature> features) {
 		this.features = features;
 	}
+	
+	public void setGame(Game g) {
+		this.game = g;
+	}
 
 	/**
 	 * Sends a message to the client

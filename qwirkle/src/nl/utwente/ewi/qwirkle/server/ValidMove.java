@@ -13,12 +13,12 @@ public class ValidMove {
 	
 	private List<Move> moveSet;
 	
-	private boolean isValidMove(Move m) {
+	private boolean isValidMove(Move m, Board b) {
 		// TODO implement logic for validating move
 		return false;
 	}
 	
-	public boolean validMoveSet(List<Move> moves) {
+	public boolean validMoveSet(List<Move> moves, Board b) {
 		return false;
 		//TODO seems obvious
 	}

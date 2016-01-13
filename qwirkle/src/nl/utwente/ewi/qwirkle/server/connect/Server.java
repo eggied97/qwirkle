@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
+import nl.utwente.ewi.qwirkle.server.Game;
 import nl.utwente.ewi.qwirkle.server.HandleCommand;
 
 public class Server {
@@ -32,6 +34,7 @@ public class Server {
 	private Map<Integer, List<ClientHandler>> queues;
 	private Map<Integer, List<ClientHandler>> games;
 	private HandleCommand handle = HandleCommand.getInstance(this);
+	private int gameCounter = 0;
 
 	public Map<Integer, List<ClientHandler>> getQueues() {
 		return this.queues;
@@ -102,11 +105,35 @@ public class Server {
 
 	}
 	
+	public void startGame(List<ClientHandler> list) {
+		List<Player> players = new ArrayList<>();
+		for(ClientHandler ch : list) {
+			players.add(ch.getPlayer());
+		}
+
+		Game game = new Game(players);
+		
+		for(ClientHandler ch : list) {
+			ch.sendMessage(protocol.getInstance().serverStartGame(players));
+			ch.setGame(game);
+		}
+		
+		game.start();
+		
+	}
+	
 	public void checkQueues() {
 		for(Entry entry: queues.entrySet()) {
 			List<ClientHandler> queue = (List<ClientHandler>)entry.getValue();
 			if((int)entry.getKey() == queue.size()) {
-				// TODO fix this shit
+				gameCounter++;
+				for(ClientHandler ch : queue) {
+					removeHandler(ch);
+				}
+				games.put(gameCounter, queue);
+				startGame(queue);
+				queues.get((int)entry.getKey()).clear();
+				return;
 			}
 		}
 	}
@@ -121,10 +148,13 @@ public class Server {
 		switch (s[0]) {
 
 		case IProtocol.CLIENT_IDENTIFY:
+			
 			handle.handleIdentifyName(s,ch);
 			handle.handleIdentifyFeatures(s,ch);
-			removeHandler(ch);
-			identified.add(ch);
+			if(handle.getWentWell()) {
+				removeHandler(ch);
+				identified.add(ch);	
+			}
 			break;
 
 		case IProtocol.CLIENT_QUIT:

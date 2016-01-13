@@ -17,11 +17,16 @@ public class HandleCommand {
 	private Server server;
 	private protocol protocol;
 	private ValidMove valid;
+	private boolean wentWell = true;
 	
 	public HandleCommand(Server server) {
 		this.server = server;
 	}
-
+	
+	public boolean getWentWell() {
+		return wentWell;
+	}
+	
 	public static HandleCommand getInstance(Server server) {
 		return new HandleCommand(server);
 	}
@@ -32,12 +37,15 @@ public class HandleCommand {
 			for(ClientHandler handler : server.getAll() ) {
 				if(handler.getClientName().equals(name)) {
 					ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.NAME_USED);
+					wentWell = false;
 					return;
 				}
 			}
 			ch.setClientName(name);
 		} else {
 			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.NAME_INVALID);
+			wentWell = false;
+			return;
 		}
 
 	}
@@ -77,8 +85,6 @@ public class HandleCommand {
 			case 2:
 				map.get(2).add(ch);
 				break;
-				// TODO check if queue full
-				// TODO test
 			case 3:
 				map.get(3).add(ch);
 				break;
@@ -87,6 +93,7 @@ public class HandleCommand {
 				break;
 			default:
 				ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.QUEUE_INVALID);
+				wentWell = false;
 				break;
 			}
 		}
@@ -106,10 +113,16 @@ public class HandleCommand {
 		
 		if(ch.getGame().getBag().isEmpty() || ch.getGame().getBag().getAmountOfTiles() - tiles.size() < 0) {
 			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.DECK_EMPTY);
+			wentWell = false;
+			return;
 		} else if(ch.getGame().getBoard().isEmpty()) {
 			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.TRADE_FIRST_TURN);
+			wentWell = false;
+			return;
 		} else if(!checkTiles(tiles, ch)) {
 			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_TILES_UNOWNED);
+			wentWell = false;
+			return;
 		}
 		
 		List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
@@ -118,6 +131,8 @@ public class HandleCommand {
 			newTilesInt.add(t.getIntOfTile());		
 		}
 		ch.getGame().getBag().addTiles(tilesInt);
+		ch.getPlayer().bagToHand(newTiles);
+		//TODO broadcast
 		ch.sendMessage(protocol.serverMoveTrade(tilesInt.size()));
 		ch.sendMessage(protocol.serverDrawTile(newTiles));
 		
@@ -150,10 +165,12 @@ public class HandleCommand {
 		}
 		if(!checkTiles(tiles, ch)) {
 			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_TILES_UNOWNED);
+			wentWell = false;
 			return;
 		}
-		if(!valid.validMoveSet(moves)) {
+		if(!valid.validMoveSet(moves, ch.getGame().getBoard())) {
 			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_INVALID);
+			wentWell = false;
 			return;
 		}
 		ch.getGame().getBoard().putTile(moves);
