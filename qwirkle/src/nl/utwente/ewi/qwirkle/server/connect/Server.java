@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
@@ -100,6 +101,15 @@ public class Server {
 		}
 
 	}
+	
+	public void checkQueues() {
+		for(Entry entry: queues.entrySet()) {
+			List<ClientHandler> queue = (List<ClientHandler>)entry.getValue();
+			if((int)entry.getKey() == queue.size()) {
+				// TODO fix this shit
+			}
+		}
+	}
 
 	public void getCommand(String str, ClientHandler ch) {
 		String[] s = str.split(" ");
@@ -132,6 +142,7 @@ public class Server {
 		case IProtocol.CLIENT_QUEUE:
 			removeHandler(ch);
 			handle.handleQueue(s, ch);
+			checkQueues();
 			break;
 			/*
 			 * case IProtocol.CLIENT_CHAT: case IProtocol.CLIENT_CHALLENGE: case

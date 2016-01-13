@@ -118,8 +118,10 @@ public class HandleCommand {
 			newTilesInt.add(t.getIntOfTile());		
 		}
 		ch.getGame().getBag().addTiles(tilesInt);
-		
+		ch.sendMessage(protocol.serverMoveTrade(tilesInt.size()));
 		ch.sendMessage(protocol.serverDrawTile(newTiles));
+		
+		// TODO pass move to next player
 	}
 	
 	public boolean checkTiles(List<Tile> tiles, ClientHandler ch) {
@@ -155,5 +157,7 @@ public class HandleCommand {
 			return;
 		}
 		ch.getGame().getBoard().putTile(moves);
+		ch.sendMessage(protocol.serverMovePut(moves));
+		// TODO pass move to next player
 	}
 }
