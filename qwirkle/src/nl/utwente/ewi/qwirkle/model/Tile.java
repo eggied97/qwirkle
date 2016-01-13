@@ -38,7 +38,8 @@ public class Tile {
 		return getIntOfTile()+"";
 	}
 	
-	private int getIntOfTile(){
+	public int getIntOfTile(){
 		return getColor().getInt() * 6 + getShape().getInt();
 	}
+	
 }

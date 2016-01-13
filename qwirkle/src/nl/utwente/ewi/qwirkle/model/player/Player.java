@@ -10,7 +10,6 @@ public abstract class Player {
 	
 	private String name;
 	private List<Tile> hand;
-	
 	/**
 	 * 
 	 * @param name
