@@ -56,5 +56,9 @@ public abstract class Player {
 		// TODO FROM SERVER CALL THIS WITH A LIST OF TILES
 	}
 	
+	public List<Tile> getHand() {
+		return this.hand;
+	}
+	
 	
 }

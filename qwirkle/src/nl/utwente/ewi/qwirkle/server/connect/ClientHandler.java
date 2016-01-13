@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.List;
 
+import nl.utwente.ewi.qwirkle.model.player.Player;
+import nl.utwente.ewi.qwirkle.model.player.SocketPlayer;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 import nl.utwente.ewi.qwirkle.server.Game;
@@ -21,6 +23,7 @@ public class ClientHandler extends Thread {
 	private String clientName;
 	private List<Feature> features;
 	private Game game;
+	private Player player;
 	
 	public ClientHandler(Server server, Socket socket) throws IOException {
 		this.server = server;
@@ -43,12 +46,25 @@ public class ClientHandler extends Thread {
 		}
 	}
 	
+	public Player getPlayer() {
+		return this.player;
+	}
+	
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+	
 	public Game getGame() {
 		return this.game;
 	}
 
 	public void setClientName(String name) {
 		this.clientName = name;
+		setPlayer(new SocketPlayer(name));
+	}
+	
+	public String getClientName() {
+		return clientName;
 	}
 
 	public void setFeatures(List<Feature> features) {
