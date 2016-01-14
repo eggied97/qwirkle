@@ -34,13 +34,17 @@ public class Main implements resultCallback {
 	private static List<IProtocol.Feature> usingFeatures;
 
 	public static void main(String[] args) {
+		Main m = new Main(args);
+	}
+	
+	public Main(String[] args){
 		usingFeatures = new ArrayList<>();
 		UI = new TUIView();
 
 		prot = protocol.getInstance();
 		setupConnectionToServer(args);
 		
-
+		client.setCallback(this);
 
 
 		authenticateUser();
@@ -95,7 +99,8 @@ public class Main implements resultCallback {
 
 	@Override
 	public void resultFromServer(String result) {
-		System.out.println();
+		System.out.println("Back from server > "+result);
+		System.out.println("Back from server > "+result.trim());
 		
 		String[] results = result.split(" ");
 
@@ -106,7 +111,7 @@ public class Main implements resultCallback {
 		String command = results[0];
 		String[] args = Arrays.copyOfRange(results, 1, results.length);
 
-		switch (results[0]) {
+		switch (command) {
 		case IProtocol.SERVER_IDENITFY:
 			handleServerIdentify(args);
 			break;

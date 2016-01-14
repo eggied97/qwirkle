@@ -39,6 +39,7 @@ public class Client extends Thread {
 			while(true) {
 				if(rc != null){
 					rc.resultFromServer(in.readLine());
+					//System.out.println("BAck from the server > "+in.readLine());
 				}
 			}
 		} catch (IOException e) {
