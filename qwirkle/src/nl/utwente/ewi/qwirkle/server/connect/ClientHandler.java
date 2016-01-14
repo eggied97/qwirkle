@@ -94,6 +94,7 @@ public class ClientHandler extends Thread {
 	public void shutDown() {
 		server.removeHandler(this);
 		server.removeFromAll(this);
+		server.removeGameHandler(this);
 		try {
 			in.close();
 			out.close();

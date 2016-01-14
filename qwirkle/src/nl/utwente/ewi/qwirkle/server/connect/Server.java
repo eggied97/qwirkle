@@ -103,17 +103,21 @@ public class Server {
 			return;
 		}
 		// TODO add lists when created
-		for (List<ClientHandler> l : games.values()) {
-			if (l.contains(ch)) {
-				l.remove(ch);
-			}
-		}
+		
 		for (List<ClientHandler> l : queues.values()) {
 			if (l.contains(ch)) {
 				l.remove(ch);
 			}
 		}
 
+	}
+	
+	public void removeGameHandler(ClientHandler ch) {
+		for (List<ClientHandler> l : games.values()) {
+			if (l.contains(ch)) {
+				l.remove(ch);
+			}
+		}
 	}
 	
 	public void startGame(List<ClientHandler> list) {
@@ -136,12 +140,12 @@ public class Server {
 			List<ClientHandler> queue = (List<ClientHandler>)entry.getValue();
 			if((int)entry.getKey() == queue.size()) {
 				gameCounter++;
+				games.put(gameCounter, queues.get((int)entry.getKey()));
+				startGame(queues.get((int)entry.getKey()));
+				queues.get((int)entry.getKey()).clear();
 				for(ClientHandler ch : queue) {
 					removeHandler(ch);
 				}
-				games.put(gameCounter, queue);
-				startGame(queue);
-				queues.get((int)entry.getKey()).clear();
 				return;
 			}
 		}
