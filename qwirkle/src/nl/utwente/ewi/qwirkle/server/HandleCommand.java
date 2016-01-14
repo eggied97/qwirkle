@@ -175,16 +175,16 @@ public class HandleCommand {
 		}
 		if (!checkTiles(tiles, ch)) {
 			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_TILES_UNOWNED);
-			wentWell = false;
 			return;
 		}
 		if (!valid.validMoveSet(moves, ch.getGame().getBoard())) {
 			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_INVALID);
-			wentWell = false;
 			return;
 		}
 		ch.getGame().getBoard().putTile(moves);
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverMovePut(moves));
 		// TODO pass move to next player
 	}
+
+
 }
