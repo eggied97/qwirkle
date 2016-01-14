@@ -1,6 +1,6 @@
 package nl.utwente.ewi.qwirkle.model;
 
-import java.awt.Point;
+
 import java.util.List;
 
 import nl.utwente.ewi.qwirkle.model.enums.Color;
