@@ -3,6 +3,7 @@ package nl.utwente.ewi.qwirkle.client;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nl.utwente.ewi.qwirkle.client.connect.Client;
 import nl.utwente.ewi.qwirkle.client.connect.resultCallback;
@@ -23,9 +24,20 @@ public class Game implements resultCallback {
 	private UserInterface UI;
 	private Client c;
 	private List<IProtocol.Feature> usingFeatures;
-	
+
 	private Player turnPlayer;
 
+	/**
+	 * 
+	 * @param UI
+	 *            The userinterface it uses
+	 * @param players
+	 *            the list of players in the game
+	 * @param c
+	 *            the <code>Client</code> it uses for comms with the server
+	 * @param usingFeatures
+	 *            List of <code> Features </code> that are enabled
+	 */
 	public Game(UserInterface UI, List<Player> players, Client c, List<IProtocol.Feature> usingFeatures) {
 		this.board = new Board();
 
@@ -74,10 +86,18 @@ public class Game implements resultCallback {
 			if (args.length == 0) {
 				// TODO throw error
 			}
-			
+
 			handleDrawTile(args);
 			break;
-			
+
+		case IProtocol.SERVER_GAMEEND:
+			if (args.length != players.size()) {
+				// TODO throw error
+			}
+
+			handleGameEnd(args);
+			break;
+
 		case IProtocol.SERVER_PASS:
 			if (args.length != 1) {
 				// TODO throw error
@@ -87,18 +107,18 @@ public class Game implements resultCallback {
 			break;
 
 		case IProtocol.SERVER_ERROR:
-			
+
 			break;
 		}
 	}
 
 	private void handleTurnChange(String name) {
-		turnPlayer = getPlayerByName(name);		
-		
+		turnPlayer = getPlayerByName(name);
+
 		handleTurn();
 	}
-	
-	private void handleTurn(){
+
+	private void handleTurn() {
 		if (turnPlayer instanceof HumanPlayer) {
 			this.UI.printMessage("Turn changed, its your turn now");
 			handlePlayerMadeMove(((HumanPlayer) turnPlayer).determineMove(board));
@@ -124,11 +144,34 @@ public class Game implements resultCallback {
 	private void handlePlayerMadeMove(List<Move> moves) {
 		c.sendMessage(protocol.getInstance().clientPutMove(moves));
 	}
-	
-	private void handleDrawTile(String[] tiles){
-		if(turnPlayer instanceof HumanPlayer){
+
+	private void handleDrawTile(String[] tiles) {
+		if (turnPlayer instanceof HumanPlayer) {
 			turnPlayer.bagToHand(tiles);
 		}
+	}
+
+	private void handleGameEnd(String[] args) {
+		Map<Player, Integer> scoreMap = new HashMap<>();
+
+		for (String a : args) {
+			String[] scoreNaam = a.split(",");
+
+			if (scoreNaam.length != 2) {
+				// TODO throw error
+			}
+
+			Player p = getPlayerByName(scoreNaam[1]);
+
+			if (p != null) {
+				scoreMap.put(p, Integer.parseInt(scoreNaam[0]));
+			}else{
+				//TODO throw error
+			}
+		}
+		
+		this.UI.showScore(scoreMap);
+		
 	}
 
 	private Player getPlayerByName(String name) {

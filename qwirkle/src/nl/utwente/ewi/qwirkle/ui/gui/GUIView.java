@@ -1,5 +1,7 @@
 package nl.utwente.ewi.qwirkle.ui.gui;
 
+import java.util.Map;
+
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 
@@ -40,6 +42,12 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void printMessage(String message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showScore(Map<Player, Integer> scoreMap) {
 		// TODO Auto-generated method stub
 		
 	}

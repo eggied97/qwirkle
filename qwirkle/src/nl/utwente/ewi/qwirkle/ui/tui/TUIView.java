@@ -1,5 +1,8 @@
 package nl.utwente.ewi.qwirkle.ui.tui;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import nl.utwente.ewi.qwirkle.util;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
@@ -35,7 +38,7 @@ public class TUIView implements UserInterface {
 			int[] result = new int[queues.length];
 
 			for (int i = 0; i < result.length; i++) {
-				result[i] = Integer.parseInt(queues[i]);
+				result[i] = Integer.parseInt(queues[i].trim());
 			}
 			return result;
 		}
@@ -43,14 +46,12 @@ public class TUIView implements UserInterface {
 
 	@Override
 	public void changeTurn(Player p) {
-		// TODO Auto-generated method stub
-
+		printMessage("It is " + p.getName() + "'s turn");
 	}
 
 	@Override
 	public void playerTraded(Player p, int noOfTilesTraded) {
-		// TODO Auto-generated method stub
-
+		printMessage(p.getName() + " has traded " + noOfTilesTraded + " tiles");
 	}
 
 	@Override
@@ -61,5 +62,14 @@ public class TUIView implements UserInterface {
 	@Override
 	public void printMessage(String message) {
 		System.out.println(message);
+	}
+
+	@Override
+	public void showScore(Map<Player, Integer> scoreMap) {
+		printMessage("Game was ended, score:");
+
+		for (Entry e : scoreMap.entrySet()) {
+			printMessage(((Player) e.getKey()).getName() + " has reached the score of: " + e.getValue());
+		}
 	}
 }

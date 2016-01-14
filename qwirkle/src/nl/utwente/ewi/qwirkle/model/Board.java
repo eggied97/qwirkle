@@ -16,8 +16,15 @@ public class Board {
 		map = new HashMap<>();
 	}
 	
-	public void main(String[] args){
+	public static void main(String[] args){
 		Board b = new Board();
+		System.out.println(b.toString());
+		System.out.println("-------------------");
+		b.putTile(0,0,new Tile(13));
+		System.out.println(b.toString());
+		System.out.println("-------------------");
+		b.putTile(0,1,new Tile(12));
+		System.out.println(b.toString());
 	}
 
 	/**
@@ -73,11 +80,15 @@ public class Board {
 	}
 
 	public String toString() {
+		if(this.isEmpty()){
+			return "(0,0)";
+		}
+		
 		double[] bound = getBoundaries();
 		String result = "";
 
-		for (int y = (int) bound[1]; y < bound[3]; y++) {
-			for (int x = (int) bound[0]; x < bound[2]; x++) {
+		for (int y = (int) bound[1] - 1; y < bound[3] + 2; y++) {
+			for (int x = (int) bound[0] - 1; x < bound[2] + 2; x++) {
 				Tile t = getTile(x, y);
 				if (t != null) {
 					result += getTile(x, y).toString();

@@ -21,13 +21,13 @@ import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
 public class Main implements resultCallback {
 
-	//TODO maybe change some statics
+	// TODO maybe change some statics
 	private static final String USAGE_SERVER = "Requires 2 arguments: <host> <port>";
 	private static Client client;
 
 	private static UserInterface UI;
 	private static protocol prot;
-	
+
 	private static Player me;
 
 	private static IProtocol.Feature[] implementedFeatures = new IProtocol.Feature[] {};
@@ -36,16 +36,15 @@ public class Main implements resultCallback {
 	public static void main(String[] args) {
 		Main m = new Main(args);
 	}
-	
-	public Main(String[] args){
+
+	public Main(String[] args) {
 		usingFeatures = new ArrayList<>();
 		UI = new TUIView();
 
 		prot = protocol.getInstance();
 		setupConnectionToServer(args);
-		
-		client.setCallback(this);
 
+		client.setCallback(this);
 
 		authenticateUser();
 	}
@@ -99,10 +98,9 @@ public class Main implements resultCallback {
 
 	@Override
 	public void resultFromServer(String result) {
-		System.out.println("Back from server > "+result);
-		System.out.println("Back from server > "+result.trim());
-		
-		String[] results = result.split(" ");
+		System.out.println("Back from server > " + result.trim());
+
+		String[] results = result.trim().split(" ");
 
 		if (results.length == 0) {
 			// TODO throw error
@@ -125,7 +123,24 @@ public class Main implements resultCallback {
 			break;
 
 		case IProtocol.SERVER_ERROR:
-			//TODO error handling
+			if (args.length < 1) {
+				// TODO throw error
+			}
+
+			switch (IProtocol.Error.valueOf(args[0])) {
+			case NAME_USED:
+				UI.showError("Name is already in use, please use another one...");
+				authenticateUser();
+				break;
+
+			case QUEUE_INVALID:
+				UI.showError("The queue you wanted to enter is invalid, please choose another one...");
+				enterQueue();
+				break;
+
+			default:
+				break;
+			}
 			break;
 
 		default:
@@ -139,20 +154,18 @@ public class Main implements resultCallback {
 		} else if (args.length == 0) {
 			throw new tooFewPlayersException(args.length + 1);
 		}
-		
+
 		List<Player> playersInGame = new ArrayList<>();
-		
+
 		playersInGame.add(me);
-		
-		for(String name : args){
+
+		for (String name : args) {
 			Player p = new SocketPlayer(name);
 			playersInGame.add(p);
 		}
-		
-		
+
 		Game g = new Game(UI, playersInGame, client, usingFeatures);
-		
-		
+
 	}
 
 	private void handleServerIdentify(String[] args) {
