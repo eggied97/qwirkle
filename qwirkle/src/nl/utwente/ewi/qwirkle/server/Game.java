@@ -13,6 +13,7 @@ public class Game extends Thread {
 	private Board board;
 	private Bag bag;
 	private List<ClientHandler> players;
+	private int turn = 0;
 	
 	public Game(List<ClientHandler> players) {
 		this.bag = new Bag();
@@ -28,6 +29,32 @@ public class Game extends Thread {
 			e.printStackTrace();
 		}
 	}
+	
+	public Player getPlayerTurn() {
+		return players.get(turn).getPlayer();
+	}
+	
+	public void nextTurn() {
+		turn = (turn + 1) % players.size();
+	}
+	
+	public boolean hasTurn(ClientHandler ch) {
+		return players.indexOf(ch) == turn;
+	}
+	
+	public boolean gameEnd() {
+		if(!getBag().isEmpty()) {
+			return false;
+		}
+		for(ClientHandler ch : players) {
+			if(ch.getPlayer().getHand().isEmpty()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	
 	/**
 	 * 

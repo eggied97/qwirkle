@@ -114,6 +114,9 @@ public class HandleCommand {
 	}
 
 	public void handleMoveTrade(String[] strAy, ClientHandler ch) {
+		if(!ch.getGame().hasTurn(ch)) {
+			return;
+		}
 		List<Tile> tiles = new ArrayList<>();
 		for (int i = 1; i < strAy.length; i++) {
 			tiles.add(new Tile(Integer.parseInt(strAy[i])));
@@ -145,8 +148,8 @@ public class HandleCommand {
 
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverMoveTrade(tilesInt.size()));
 		ch.sendMessage(protocol.serverDrawTile(newTiles));
-
-		// TODO pass move to next player
+		
+		handleTurn(ch);
 	}
 
 	public boolean checkTiles(List<Tile> tiles, ClientHandler ch) {
@@ -160,6 +163,9 @@ public class HandleCommand {
 	}
 
 	public void handleMovePut(String[] strAy, ClientHandler ch) {
+		if(!ch.getGame().hasTurn(ch)) {
+			return;
+		}
 		List<Move> moves = new ArrayList<>();
 		List<Tile> tiles = new ArrayList<>();
 		for (int i = 1; i < strAy.length; i++) {
@@ -183,7 +189,13 @@ public class HandleCommand {
 		}
 		ch.getGame().getBoard().putTile(moves);
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverMovePut(moves));
-		// TODO pass move to next player
+		
+		handleTurn(ch);
+	}
+	
+	public void handleTurn(ClientHandler ch) {
+		ch.getGame().nextTurn();
+		server.broadcast(ch.getGame().getPlayers(), protocol.serverTurn(ch.getGame().getPlayerTurn()));
 	}
 
 

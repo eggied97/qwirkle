@@ -61,6 +61,10 @@ public class ValidMove {
 				i = pY + 5;
 			}
 		}
+		// Check whether it connects with tiles
+		if(tileSetX.isEmpty() && tileSetY.isEmpty()) {
+			return false;
+		}
 		
 		// Check whether the tile is a valid neighbour for the rows
 		for(Tile til : tileSetX) {
@@ -79,11 +83,33 @@ public class ValidMove {
 	
 	
 	public boolean validMoveSet(List<Move> moves, Board b) {
+		// TODO check that moves are in line
+		if(!(validPointsX(moves) || validPointsY(moves))) {
+			return false;
+		}
 		Board fake = b;
 		for(Move m : moves) {
 			if(isValidMove(m, fake)) {
 				fake.putTile((int)m.getPoint().getX(), (int)m.getPoint().getY(), m.getTile());
 			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean validPointsX(List<Move> moves) {
+		for(int i = 0; i < moves.size() - 1; i++) {
+			if(moves.get(i).getPoint().getX() != moves.get(i+1).getPoint().getX()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean validPointsY(List<Move> moves) {
+		for(int i = 0; i < moves.size() - 1; i++) {
+			if(moves.get(i).getPoint().getY() != moves.get(i+1).getPoint().getY()) {
 				return false;
 			}
 		}
