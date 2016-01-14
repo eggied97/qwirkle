@@ -1,6 +1,6 @@
 package nl.utwente.ewi.qwirkle.model;
 
-import java.awt.Point;
+
 
 public class Move {
 	

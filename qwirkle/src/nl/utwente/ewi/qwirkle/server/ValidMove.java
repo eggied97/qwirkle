@@ -1,14 +1,19 @@
 package nl.utwente.ewi.qwirkle.server;
 
-import java.awt.Point;
 import java.util.List;
 
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
+import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 
 import java.util.ArrayList;
 
+
+/*
+ * TODO maybe set thuis in the board.java? -Egbert
+ * 
+ * */
 public class ValidMove {
 	
 	private List<Move> moveSet;

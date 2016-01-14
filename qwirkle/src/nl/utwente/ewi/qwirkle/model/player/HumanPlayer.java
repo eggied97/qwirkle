@@ -1,24 +1,85 @@
 package nl.utwente.ewi.qwirkle.model.player;
 
-import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import nl.utwente.ewi.qwirkle.client.Game;
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
+import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 
 public class HumanPlayer extends Player {
+
+	Game g;
 
 	public HumanPlayer(String name) {
 		super(name);
 	}
 
+	public void setGame(Game g) {
+		this.g = g;
+	}
+
 	@Override
 	public List<Move> determineMove(Board board) {
-		// TODO user input from GUI/TUI, add to a move List
-		
+		if (this.g == null) {
+			// TODO throw error
+		}
+
+		String pORe = this.g.getUI().askForPlayOrExchange();
+
+		switch (pORe) {
+		case "p":
+			String awnser = this.g.getUI().askForMove();
+			
+			List<Move> list = parseMoveAwnser(awnser);
+			
+			if(list.equals(null)){
+				return determineMove(board);
+			}else{
+				return list;
+			}
+
+		case "e":
+			String awnserQ = this.g.getUI().askForTrade();
+			//TODO see how to return this
+			break;
+
+		default:
+			this.g.getUI().showError("Wrong argument.");
+			return determineMove(board);
+		}
+
 		return null;
+	}
+
+	private List<Move> parseMoveAwnser(String a) {
+		List<Move> result = new ArrayList<>();
+
+		for (String m : a.split(" ")) {
+			String[] parts = m.split("@");
+
+			if (parts.length != 2) {
+				this.g.getUI().showError("Invalid input.");
+				return null;
+			}
+
+			String[] coord = parts[1].split(",");
+
+			if (coord.length != 2) {
+				this.g.getUI().showError("Invalid input.");
+				return null;
+			}
+
+			Point pResult = new Point(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+			Move mResult = new Move(pResult, this.getHand().get(Integer.parseInt(parts[0])));
+
+			result.add(mResult);
+		}
+
+		return result;
 	}
 
 }

@@ -3,6 +3,7 @@ package nl.utwente.ewi.qwirkle.ui;
 import java.util.List;
 import java.util.Map;
 
+import nl.utwente.ewi.qwirkle.client.Game;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 
@@ -19,7 +20,14 @@ public interface UserInterface {
 	public void printMessage(String message);
 
 	public void showScore(Map<Player, Integer> scoreMap);
+
 	public void showHand(List<Tile> tiles);
+
+	public String askForPlayOrExchange();
+
+	public String askForMove();
+
+	public String askForTrade();
 
 	// Error handling
 	public void showError(String message);

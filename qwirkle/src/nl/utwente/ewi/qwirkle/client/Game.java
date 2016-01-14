@@ -50,6 +50,10 @@ public class Game implements resultCallback {
 
 		this.usingFeatures = usingFeatures;
 	}
+	
+	public UserInterface getUI(){
+		return this.UI;
+	}
 
 	private void checkFeatures() {
 		// TODO implement

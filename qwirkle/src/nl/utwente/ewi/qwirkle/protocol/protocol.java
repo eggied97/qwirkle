@@ -1,6 +1,5 @@
 package nl.utwente.ewi.qwirkle.protocol;
 
-import java.awt.Point;
 import java.util.List;
 
 import nl.utwente.ewi.qwirkle.model.*;

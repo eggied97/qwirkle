@@ -3,6 +3,7 @@ package nl.utwente.ewi.qwirkle.ui.gui;
 import java.util.List;
 import java.util.Map;
 
+import nl.utwente.ewi.qwirkle.client.Game;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
@@ -58,6 +59,24 @@ public class GUIView implements UserInterface {
 	public void showHand(List<Tile> tiles) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String askForPlayOrExchange() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String askForMove() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String askForTrade() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

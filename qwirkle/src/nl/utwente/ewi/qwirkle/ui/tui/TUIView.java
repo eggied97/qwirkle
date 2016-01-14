@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import nl.utwente.ewi.qwirkle.util;
+import nl.utwente.ewi.qwirkle.client.Game;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
@@ -14,7 +15,11 @@ public class TUIView implements UserInterface {
 
 	private static final String QUESTION_ASK_NAME = "What is your name? ";
 	private static final String QUESTION_QUEUE = "With how many players would you like to play (2-4)? ( format: 2,3 )";
+	private static final String QUESTION_PLAY_OR_EXHANGE = "Do you want to play a Tile, or exhange a Tile? (p/e)";
+	private static final String QUESTION_ASK_FOR_MOVE = "Which Tiles do you want to lay down? \n format: [no_tile@x,y] :";
+	private static final String QUESTION_ASK_FOR_TRADE = "Which Tiles do you want to trade? \n format: [no_tile] :";
 
+	
 	public TUIView() {
 
 	}
@@ -33,6 +38,7 @@ public class TUIView implements UserInterface {
 
 		String[] queues = queue.split(",");
 
+		//TODO check if this check is needed or not
 		if (queues.length == 0 || queues.length > 3) {
 			showError("Wrong input: " + QUESTION_QUEUE);
 			return queueWithHowManyPlayers();
@@ -86,5 +92,20 @@ public class TUIView implements UserInterface {
 				result += tiles.get(i).getHumanReadableString() + " (" + i+")";
 				result += "     ";
 		}
+	}
+
+	@Override
+	public String askForPlayOrExchange() {
+		return util.readString(QUESTION_PLAY_OR_EXHANGE);
+	}
+
+	@Override
+	public String askForMove() {
+		return util.readString(QUESTION_ASK_FOR_MOVE);
+	}
+
+	@Override
+	public String askForTrade() {
+		return util.readString(QUESTION_ASK_FOR_TRADE);
 	}
 }
