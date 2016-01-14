@@ -53,12 +53,23 @@ public abstract class Player {
 	 */
 	public void bagToHand(List<Tile> tiles) {
 		hand.addAll(tiles);
-		// TODO FROM SERVER CALL THIS WITH A LIST OF TILES
+	}
+	
+	public void bagToHand(String[] tiles){
+		List<Tile> lTiles = new ArrayList<>();
+		
+		for(String t : tiles){
+			Tile f = new Tile(Integer.parseInt(t));
+			lTiles.add(f);
+		}
+		
+		bagToHand(lTiles);
 	}
 	
 	public List<Tile> getHand() {
 		return this.hand;
 	}
+	
 	
 	
 }

@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import nl.utwente.ewi.qwirkle.model.exceptions.PlaceOccupiedException;
 
@@ -94,6 +95,17 @@ public class Board {
 	
 	public boolean isEmpty() {
 		return this.map.isEmpty();
+	}
+	
+
+	public Map<Point, Tile> deepCopy(){
+		Map<Point, Tile> m = new HashMap<>();
+		
+		for(Entry<Point, Tile> e : this.map.entrySet()){
+			m.put(e.getKey(), e.getValue());
+		}
+		
+		return m;
 	}
 
 }

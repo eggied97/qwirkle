@@ -70,6 +70,14 @@ public class Game implements resultCallback {
 			handleTurnChange(args[0]);
 			break;
 
+		case IProtocol.SERVER_DRAWTILE:
+			if (args.length == 0) {
+				// TODO throw error
+			}
+			
+			handleDrawTile(args);
+			break;
+			
 		case IProtocol.SERVER_PASS:
 			if (args.length != 1) {
 				// TODO throw error
@@ -115,6 +123,12 @@ public class Game implements resultCallback {
 
 	private void handlePlayerMadeMove(List<Move> moves) {
 		c.sendMessage(protocol.getInstance().clientPutMove(moves));
+	}
+	
+	private void handleDrawTile(String[] tiles){
+		if(turnPlayer instanceof HumanPlayer){
+			turnPlayer.bagToHand(tiles);
+		}
 	}
 
 	private Player getPlayerByName(String name) {
