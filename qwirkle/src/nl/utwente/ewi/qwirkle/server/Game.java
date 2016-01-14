@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.utwente.ewi.qwirkle.model.Board;
+import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
+import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.server.connect.ClientHandler;
 import nl.utwente.ewi.qwirkle.server.model.Bag;
 
@@ -23,10 +25,10 @@ public class Game extends Thread {
 	}
 	
 	public void run() {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		for(ClientHandler ch : players) {
+			List<Tile> newTiles = ch.getGame().getBag().getRandomTile(6);
+			ch.getPlayer().bagToHand(newTiles);
+			ch.sendMessage(protocol.getInstance().serverDrawTile(newTiles));
 		}
 	}
 	

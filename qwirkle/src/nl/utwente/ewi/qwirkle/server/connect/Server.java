@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
@@ -36,6 +37,13 @@ public class Server {
 	private Map<Integer, List<ClientHandler>> games;
 	private HandleCommand handle = HandleCommand.getInstance(this);
 	private int gameCounter = 0;
+	private IProtocol.Feature[] features;
+
+	// TODO FIX CHECKING MOVES WHEN BAG IS EMPTY
+	
+	public IProtocol.Feature[] getFeatures() {
+		return features;
+	}
 
 	public Map<Integer, List<ClientHandler>> getQueues() {
 		return this.queues;
@@ -55,8 +63,8 @@ public class Server {
 		all = new ArrayList<>();
 		start = new ArrayList<>();
 		identified = new ArrayList<>();
-		
-		
+		features = new IProtocol.Feature[0];
+		// TODO add features when implemented
 	}
 
 	public void run() {
@@ -132,7 +140,7 @@ public class Server {
 		}
 		
 		game.start();
-		
+		broadcast(list, protocol.getInstance().serverTurn(game.getPlayerTurn()));		
 	}
 	
 	public void checkQueues() {

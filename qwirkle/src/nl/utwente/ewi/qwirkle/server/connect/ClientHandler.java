@@ -95,6 +95,7 @@ public class ClientHandler extends Thread {
 		server.removeHandler(this);
 		server.removeFromAll(this);
 		server.removeGameHandler(this);
+		// TODO notify other game players
 		try {
 			in.close();
 			out.close();

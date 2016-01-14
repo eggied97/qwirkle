@@ -37,18 +37,18 @@ public class HandleCommand {
 
 	public void handleIdentifyName(String[] strAy, ClientHandler ch) {
 		String name = strAy[1];
-		if (name.matches("^[a-zA-Z0-9-_]{2,16}$") || !name.equals(null)) {
+		if (name.matches("^[a-zA-Z0-9-_]{2,16}$") && !name.equals(null)) {
 			for (ClientHandler handler : server.getAll()) {
 				if (handler.equals(ch)) {
 				} else if (handler.getClientName().equals(name)) {
-					ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.NAME_USED);
+					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.NAME_USED));
 					wentWell = false;
 					return;
 				}
 			}
 			ch.setClientName(name);
 		} else {
-			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.NAME_INVALID);
+			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.NAME_INVALID));
 			wentWell = false;
 			return;
 		}
@@ -85,9 +85,9 @@ public class HandleCommand {
 				i++;
 			}
 			// TODO fix with features from server
-			ch.sendMessage(protocol.serverConnectOk((featAr)));
+			ch.sendMessage(protocol.serverConnectOk((server.getFeatures())));
 		}
-		ch.sendMessage(protocol.serverConnectOk(new IProtocol.Feature[0]));
+		ch.sendMessage(protocol.serverConnectOk(server.getFeatures()));
 	}
 
 	public void handleQueue(String[] strAy, ClientHandler ch) {
@@ -106,7 +106,7 @@ public class HandleCommand {
 				map.get(4).add(ch);
 				break;
 			default:
-				ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.QUEUE_INVALID);
+				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.QUEUE_INVALID));
 				break;
 			}
 		}
@@ -127,13 +127,13 @@ public class HandleCommand {
 		}
 
 		if (ch.getGame().getBag().isEmpty() || ch.getGame().getBag().getAmountOfTiles() - tiles.size() < 0) {
-			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.DECK_EMPTY);
+			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.DECK_EMPTY));
 			return;
 		} else if (ch.getGame().getBoard().isEmpty()) {
-			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.TRADE_FIRST_TURN);
+			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.TRADE_FIRST_TURN));
 			return;
 		} else if (!checkTiles(tiles, ch)) {
-			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_TILES_UNOWNED);
+			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.MOVE_TILES_UNOWNED));
 			return;
 		}
 
@@ -180,16 +180,16 @@ public class HandleCommand {
 			moves.add(m);
 		}
 		if (!checkTiles(tiles, ch)) {
-			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_TILES_UNOWNED);
+			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.MOVE_TILES_UNOWNED));
 			return;
 		}
 		if (!valid.validMoveSet(moves, ch.getGame().getBoard())) {
-			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.MOVE_INVALID);
+			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.MOVE_INVALID));
 			return;
 		}
 		ch.getGame().getBoard().putTile(moves);
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverMovePut(moves));
-		
+		// TODO reput tiles in hand
 		handleTurn(ch);
 	}
 	
