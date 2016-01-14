@@ -74,7 +74,6 @@ public class Server {
 				handler.start();
 				all.add(handler);
 				start.add(handler);
-				sendIdentifier();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -93,12 +92,6 @@ public class Server {
 	
 	public void removeFromAll(ClientHandler ch) {
 		all.remove(ch);
-	}
-
-	public void sendIdentifier() {
-		for (ClientHandler ch : start) {
-			ch.sendMessage("Identify yourself: CONNECT <name> [<feature>]");
-		}
 	}
 
 	public void removeHandler(ClientHandler ch) {
