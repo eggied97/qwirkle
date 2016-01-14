@@ -21,7 +21,7 @@ public class Game extends Thread {
 		this.bag = new Bag();
 		this.board = new Board();
 		this.players = players;
-		// TODO PROTOCOL IMPLEMENTATION
+		// TODO PROTOCOL IMPLEMENTATION <- Still needed -Egbert
 	}
 	
 	public void run() {

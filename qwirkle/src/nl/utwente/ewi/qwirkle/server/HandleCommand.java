@@ -37,20 +37,22 @@ public class HandleCommand {
 
 	public void handleIdentifyName(String[] strAy, ClientHandler ch) {
 		String name = strAy[1];
-		if (name.matches("^[a-zA-Z0-9-_]{2,16}$") && !name.equals(null)) {
+		if (name.matches("^[a-zA-Z0-9-_]{2,16}$") && !name.equals(null)) { //TODO maybe set the regex in a final static var? -Egbert
 			for (ClientHandler handler : server.getAll()) {
 				if (handler.equals(ch)) {
+					//TODO what to do here? -Egbert
 				} else if (handler.getClientName().equals(name)) {
 					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.NAME_USED));
 					wentWell = false;
-					return;
+					return; //TODO what does this return here, maybe use a var in the for loop? -Egbert
 				}
 			}
+			
 			ch.setClientName(name);
 		} else {
 			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.NAME_INVALID));
 			wentWell = false;
-			return;
+			return;//TODO what does this return here? -Egbert
 		}
 
 	}
@@ -114,13 +116,16 @@ public class HandleCommand {
 	}
 
 	public void handleMoveTrade(String[] strAy, ClientHandler ch) {
+
 		if(!ch.getGame().hasTurn(ch)) {
 			return;
 		}
+		
 		List<Tile> tiles = new ArrayList<>();
 		for (int i = 1; i < strAy.length; i++) {
 			tiles.add(new Tile(Integer.parseInt(strAy[i])));
 		}
+		
 		List<Integer> tilesInt = new ArrayList<>();
 		for (Tile t : tiles) {
 			tilesInt.add(t.getIntOfTile());
@@ -139,7 +144,7 @@ public class HandleCommand {
 
 		List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
 		List<Integer> newTilesInt = new ArrayList<>();
-		;
+		
 		for (Tile t : newTiles) {
 			newTilesInt.add(t.getIntOfTile());
 		}
@@ -164,6 +169,7 @@ public class HandleCommand {
 
 	public void handleMovePut(String[] strAy, ClientHandler ch) {
 		if(!ch.getGame().hasTurn(ch)) {
+			//TODO may be error? -Egbert
 			return;
 		}
 		List<Move> moves = new ArrayList<>();

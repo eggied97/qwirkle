@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 
 /*
- * TODO maybe set thuis in the board.java? -Egbert
+ * TODO maybe set this in the board.java? -Egbert
  * 
  * */
 public class ValidMove {
@@ -33,6 +33,8 @@ public class ValidMove {
 		if(b.getTile(pX, pY) != null) {
 			return false;
 		}
+		
+		//TODO what if it has 2 left of it, and 4 on its right? (you put it in the middle? -Egbert
 		
 		// Horizontal line right of the point
 		for(int i = pX; i < pX + 6; i++) {
@@ -92,7 +94,7 @@ public class ValidMove {
 		if(!(validPointsX(moves) || validPointsY(moves))) {
 			return false;
 		}
-		Board fake = b;
+		Board fake = b; //TODO maybe use b.deepcopy()? -Egbert
 		for(Move m : moves) {
 			if(isValidMove(m, fake)) {
 				fake.putTile((int)m.getPoint().getX(), (int)m.getPoint().getY(), m.getTile());
@@ -120,9 +122,4 @@ public class ValidMove {
 		}
 		return true;
 	}
-	
-	
-	
-	
-
 }

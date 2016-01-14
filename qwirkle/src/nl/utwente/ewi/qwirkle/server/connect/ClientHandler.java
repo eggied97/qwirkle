@@ -41,7 +41,7 @@ public class ClientHandler extends Thread {
 				String input = in.readLine();
 				server.getCommand(input, this);
 			} catch (IOException e) {
-
+				//TODO What to do here? -Egbert
 			}
 		}
 	}
@@ -95,7 +95,7 @@ public class ClientHandler extends Thread {
 		server.removeHandler(this);
 		server.removeFromAll(this);
 		server.removeGameHandler(this);
-		// TODO notify other game players
+		// TODO notify other game players -> END the game-Egbert
 		try {
 			in.close();
 			out.close();

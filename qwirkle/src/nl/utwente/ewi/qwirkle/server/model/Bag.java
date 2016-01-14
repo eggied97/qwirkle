@@ -56,7 +56,7 @@ public class Bag {
 	 */
 	public Tile getRandomTile() {
 		Tile t = tiles.get((int) (Math.random() * tiles.size()));
-		tiles.remove(t); //TODO maybey removes 4 tiles
+		tiles.remove(t); //TODO maybey removes 4 tiles < need to check this out -Egbert
 		return t;
 	}
 
