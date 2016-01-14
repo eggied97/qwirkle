@@ -49,6 +49,10 @@ public class Tile {
 		return getIntOfTile()+"";
 	}
 	
+	public String getHumanReadableString(){
+		return this.getColor() + "_" + this.getShape();
+	}
+	
 	public int getIntOfTile(){
 		return getColor().getInt() * 6 + getShape().getInt();
 	}

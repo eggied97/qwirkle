@@ -1,9 +1,11 @@
 package nl.utwente.ewi.qwirkle.ui.tui;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import nl.utwente.ewi.qwirkle.util;
+import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
@@ -70,6 +72,19 @@ public class TUIView implements UserInterface {
 
 		for (Entry e : scoreMap.entrySet()) {
 			printMessage(((Player) e.getKey()).getName() + " has reached the score of: " + e.getValue());
+		}
+	}
+
+	@Override
+	public void showHand(List<Tile> tiles) {
+		
+		printMessage("Your hand :");
+		
+		String result = "";
+		
+		for (int i = 0; i < tiles.size(); i++) {
+				result += tiles.get(i).getHumanReadableString() + " (" + i+")";
+				result += "     ";
 		}
 	}
 }

@@ -72,6 +72,7 @@ public class Board {
 
 		double[] bound = getBoundaries();
 
+		//TODO has some false positifs
 		if (bound[2] - bound[0] == 6 && bound[3] - bound[1] == 6) {
 			return true;
 		} else {

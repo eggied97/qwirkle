@@ -107,7 +107,7 @@ public class Game implements resultCallback {
 			break;
 
 		case IProtocol.SERVER_ERROR:
-
+//TODO handling them errors
 			break;
 		}
 	}
@@ -146,7 +146,7 @@ public class Game implements resultCallback {
 	}
 
 	private void handleDrawTile(String[] tiles) {
-		if (turnPlayer instanceof HumanPlayer) {
+		if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
 			turnPlayer.bagToHand(tiles);
 		}
 	}
