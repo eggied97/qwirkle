@@ -22,7 +22,6 @@ import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
 public class Main implements resultCallback {
 
-	// TODO maybe change some statics
 	private static final String USAGE_SERVER = "Requires 2 arguments: <host> <port>";
 	private static Client client;
 

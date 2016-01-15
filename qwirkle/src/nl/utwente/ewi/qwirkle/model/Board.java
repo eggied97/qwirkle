@@ -34,10 +34,9 @@ public class Board {
 	public Tile getTile(int x, int y) {
 		return map.get(new Point(x, y));
 	}
-
+	
 	public void putTile(int x, int y, Tile t) {
 		map.put(new Point(x, y), t);
-		// TODO iets met een callback en update?
 	}
 
 	public void putTile(List<Move> moves) {
@@ -74,13 +73,15 @@ public class Board {
 		}
 
 		double[] bound = getBoundaries();
-
-		// TODO has some false positifs
-		if (bound[2] - bound[0] == 6 && bound[3] - bound[1] == 6) {
-			return true;
-		} else {
-			return false;
+		
+		for(int i = (int)bound[0]; i < (int)bound[0] + 6; i++) {
+			for(int j = (int)bound[3]; j < (int)bound[3] + 6; j++) {
+				if(map.get(new Point(i,j)) == null) {
+					return false;
+				}
+			}
 		}
+		return true;
 	}
 
 	public String toString() {

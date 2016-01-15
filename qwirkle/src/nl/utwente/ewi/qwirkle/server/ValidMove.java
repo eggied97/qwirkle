@@ -1,6 +1,7 @@
 package nl.utwente.ewi.qwirkle.server;
 
 import java.util.List;
+import java.util.Map;
 
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
@@ -8,6 +9,7 @@ import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /*
@@ -19,8 +21,10 @@ public class ValidMove {
 	private List<Move> moveSet;
 	
 	private boolean isValidMove(Move m, Board b) {
-		List<Tile> tileSetX = new ArrayList<>();
-		List<Tile> tileSetY = new ArrayList<>();
+		List<Tile> tileSetXR = new ArrayList<>();
+		List<Tile> tileSetXL = new ArrayList<>();
+		List<Tile> tileSetYR = new ArrayList<>();
+		List<Tile> tileSetYL = new ArrayList<>();
 		
 		Tile t = m.getTile();
 		
@@ -31,15 +35,15 @@ public class ValidMove {
 		
 		// Check whether the position is empty
 		if(b.getTile(pX, pY) != null) {
+			System.out.println("Non empty position");
 			return false;
 		}
 		
-		//TODO what if it has 2 left of it, and 4 on its right? (you put it in the middle? -Egbert
 		
 		// Horizontal line right of the point
 		for(int i = pX; i < pX + 6; i++) {
 			if(b.getTile(i, pY) != null) {
-				tileSetX.add(b.getTile(i, pY));
+				tileSetXR.add(b.getTile(i, pY));
 			} else {
 				i = pX + 5;
 			}
@@ -47,15 +51,24 @@ public class ValidMove {
 		// Horizontal line left of the point
 		for(int i = pX; i > pX - 6; i--) {
 			if(b.getTile(i, pY) != null) {
-				tileSetX.add(b.getTile(i, pY));
+				tileSetXL.add(b.getTile(i, pY));
 			} else {
 				i = pX - 5;
+			}
+		}
+		// Test if the two horizontal rows can be combined
+		for(Tile tile : tileSetXR) {
+			for(Tile tile1 : tileSetXL) {
+				if(!tile.isValidNeighbour(tile1)) {
+					System.out.println("No horizontal combination");
+					return false;
+				}
 			}
 		}
 		// Vertical line below the point
 		for(int i = pY; i > pY - 6; i--) {
 			if(b.getTile(pX, i) != null) {
-				tileSetY.add(b.getTile(pX, i));
+				tileSetYR.add(b.getTile(pX, i));
 			} else {
 				i = pY - 5;
 			}
@@ -63,41 +76,60 @@ public class ValidMove {
 		// Vertical line above of the point
 		for(int i = pY; i < pY + 6; i++) {
 			if(b.getTile(pY, i) != null) {
-				tileSetY.add(b.getTile(pX, i));
+				tileSetYL.add(b.getTile(pX, i));
 			} else {
 				i = pY + 5;
 			}
 		}
+		// Test if the two vertical columns can be combined
+		for(Tile tile : tileSetYR) {
+			for(Tile tile1 : tileSetYL) {
+				if(!tile.isValidNeighbour(tile1)) {
+					System.out.println("No vertical combination");
+					return false;
+				}
+			}
+		}
+		List<Tile> tileSetX = new ArrayList<>();
+		tileSetX.addAll(tileSetXL);
+		tileSetX.addAll(tileSetXR);
+		
+		List<Tile> tileSetY = new ArrayList<>();
+		tileSetX.addAll(tileSetYL);
+		tileSetX.addAll(tileSetYR);
+		
 		// Check whether it connects with tiles
 		if(tileSetX.isEmpty() && tileSetY.isEmpty()) {
-			return false;
+			if(!b.isEmpty()){
+				System.out.println("No connection with other tiles");
+				return false;
+			}
 		}
-		
 		// Check whether the tile is a valid neighbour for the rows
 		for(Tile til : tileSetX) {
 			if(!til.isValidNeighbour(t)) {
+				System.out.println("New tile cant fit in " + t.getIntOfTile() + " with " + til.getIntOfTile());
 				return false;
 			}
 		}
 		 for(Tile til : tileSetY) {
 			 if(!til.isValidNeighbour(t)) {
+				System.out.println("New tile cant fit in " + t.getIntOfTile() + " with " + til.getIntOfTile());
 				 return false;
 			 }
 		 }
-
 		return true;
 	}
 	
 	
 	public boolean validMoveSet(List<Move> moves, Board b) {
-		// TODO check that moves are in line
 		if(!(validPointsX(moves) || validPointsY(moves))) {
 			return false;
 		}
-		Board fake = b; //TODO maybe use b.deepcopy()? -Egbert
+		Board boardCopy = b.deepCopy();
 		for(Move m : moves) {
-			if(isValidMove(m, fake)) {
-				fake.putTile((int)m.getPoint().getX(), (int)m.getPoint().getY(), m.getTile());
+			if(isValidMove(m, boardCopy)) {
+				boardCopy.putTile((int)m.getPoint().getX(), (int)m.getPoint().getY(), m.getTile());
 			} else {
 				return false;
 			}

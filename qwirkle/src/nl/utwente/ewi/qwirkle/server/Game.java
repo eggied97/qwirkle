@@ -10,7 +10,7 @@ import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.server.connect.ClientHandler;
 import nl.utwente.ewi.qwirkle.server.model.Bag;
 
-public class Game extends Thread {
+public class Game {
 	
 	private Board board;
 	private Bag bag;
@@ -20,7 +20,8 @@ public class Game extends Thread {
 	public Game(List<ClientHandler> players) {
 		this.bag = new Bag();
 		this.board = new Board();
-		this.players = players;
+		this.players = new ArrayList<>();
+		this.players.addAll(players);
 		// TODO PROTOCOL IMPLEMENTATION <- Still needed -Egbert
 	}
 	
@@ -45,7 +46,7 @@ public class Game extends Thread {
 	}
 	
 	public boolean gameEnd() {
-		if(!getBag().isEmpty()) {
+		if(!getBag().isEmpty() || !board.isSquare()) {
 			return false;
 		}
 		for(ClientHandler ch : players) {

@@ -27,7 +27,6 @@ public class Game implements resultCallback {
 	private UserInterface UI;
 	private Client c;
 	private List<IProtocol.Feature> usingFeatures;
-
 	boolean nextDrawNeedToRemoveTiles = false;
 	private List<Tile> tilesThatNeedToBeRemoved;
 
