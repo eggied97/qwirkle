@@ -1,10 +1,10 @@
 package nl.utwente.ewi.qwirkle.model;
 
-
+import java.awt.Dimension;
 
 public class Move {
 	
-	private Point coordinate;
+	private Dimension coordinate;
 	private Tile tile;
 	
 	/**
@@ -12,14 +12,14 @@ public class Move {
 	 * @param p
 	 * @param t
 	 */
-	public Move(Point p, Tile t) {
-		this.coordinate = p;
+	public Move(Dimension d, Tile t) {
+		this.coordinate = d;
 		this.tile = t;
 	}
 	
 	/**
 	 * 
-	 * @return returns the <code> Move </code> corresponding to the tile and point
+	 * @return returns the <code> Move </code> corresponding to the tile and dimension
 	 */
 	public Move getMove() {
 		return this;
@@ -27,9 +27,9 @@ public class Move {
 	
 	/**
 	 * 
-	 * @return returns the <code> Point </code> belonging to this move
+	 * @return returns the <code> Dimension </code> belonging to this move
 	 */
-	public Point getPoint() {
+	public Dimension getDimension() {
 		return coordinate;
 	}
 	
@@ -42,7 +42,7 @@ public class Move {
 	}
 	
 	public String toString(){
-		return String.format("%i@%i,%i", this.tile.toString(), this.getPoint().getX(), this.getPoint().getY());
+		return String.format("%i@%i,%i", this.tile.toString(), this.getDimension().getWidth(), this.getDimension().getHeight());
 	}
 	
 	

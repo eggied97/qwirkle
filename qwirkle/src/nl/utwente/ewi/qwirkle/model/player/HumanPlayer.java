@@ -1,5 +1,6 @@
 package nl.utwente.ewi.qwirkle.model.player;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,7 +91,7 @@ public class HumanPlayer extends Player {
 				return null;
 			}
 
-			Point pResult = new Point(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+			Dimension pResult = new Dimension(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
 			Move mResult = new Move(pResult, this.getHand().get(Integer.parseInt(parts[0])));
 
 			result.add(mResult);

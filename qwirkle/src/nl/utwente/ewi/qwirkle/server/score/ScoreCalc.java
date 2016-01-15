@@ -14,6 +14,8 @@ public class ScoreCalc {
 
 	}
 
+	// TODO FIX THAT SHIT
+	
 	public static ScoreCalc getInstance() {
 		return new ScoreCalc();
 	}
@@ -26,14 +28,14 @@ public class ScoreCalc {
 
 		int direction = 0;
 		if (moves.size() > 1) {
-			if (moves.get(0).getPoint().getX() == moves.get(1).getPoint().getX()) {
+			if (moves.get(0).getDimension().getWidth() == moves.get(1).getDimension().getWidth()) {
 				direction = 1;
 			}
 		}
 
 		if (direction == 0) {
-			int py = moves.get(0).getPoint().getY();
-			int px = moves.get(0).getPoint().getX();
+			int py = (int)moves.get(0).getDimension().getHeight();
+			int px = (int)moves.get(0).getDimension().getWidth();
 			int incounter = 0;
 			
 			for (int i = px; i > px - 6; i--) {
@@ -60,8 +62,8 @@ public class ScoreCalc {
 			
 			for (Move m : moves) {
 				int counter = 0;
-				int y = m.getPoint().getY();
-				int x = m.getPoint().getX();
+				int y = (int)m.getDimension().getHeight();
+				int x = (int)m.getDimension().getWidth();
 
 				for (int i = y; i > y - 6; i--) {
 					if (b.getTile(x, i) != null) {
@@ -88,8 +90,8 @@ public class ScoreCalc {
 			}
 		} else {
 			
-			int py = moves.get(0).getPoint().getY();
-			int px = moves.get(0).getPoint().getX();
+			int py = (int)moves.get(0).getDimension().getHeight();
+			int px = (int)moves.get(0).getDimension().getWidth();
 			int incounter = 0;
 			
 			for (int i = py; i > py - 6; i--) {
@@ -118,8 +120,8 @@ public class ScoreCalc {
 			for (Move m : moves) {
 				int counter = 0;
 
-				int y = m.getPoint().getY();
-				int x = m.getPoint().getX();
+				int y = (int)m.getDimension().getHeight();
+				int x = (int)m.getDimension().getWidth();
 
 				for (int i = x; i > x - 6; i--) {
 					if (b.getTile(i, y) != null) {

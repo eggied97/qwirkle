@@ -1,5 +1,6 @@
 package nl.utwente.ewi.qwirkle.model;
 
+import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,21 +10,10 @@ import nl.utwente.ewi.qwirkle.model.exceptions.PlaceOccupiedException;
 
 public class Board {
 
-	private Map<Point, Tile> map;
+	private Map<Dimension, Tile> map;
 
 	public Board() {
 		map = new HashMap<>();
-	}
-
-	public static void main(String[] args) {
-		Board b = new Board();
-		System.out.println(b.toString());
-		System.out.println("-------------------");
-		b.putTile(0, 0, new Tile(13));
-		System.out.println(b.toString());
-		System.out.println("-------------------");
-		b.putTile(0, 1, new Tile(12));
-		System.out.println(b.toString());
 	}
 
 	/**
@@ -32,11 +22,13 @@ public class Board {
 	 * @param y
 	 */
 	public Tile getTile(int x, int y) {
-		return map.get(new Point(x, y));
+		Dimension d  = new Dimension(x,y);
+		return map.get(d);
 	}
 	
 	public void putTile(int x, int y, Tile t) {
-		map.put(new Point(x, y), t);
+		Dimension d  = new Dimension(x,y);
+		map.put(d, t);
 	}
 
 	public void putTile(List<Move> moves) {
@@ -46,9 +38,9 @@ public class Board {
 	}
 
 	public void putTile(Move m) {
-		Point p = m.getPoint();
+		Dimension d = m.getDimension();
 
-		putTile(p.getX(), p.getY(), m.getTile());
+		putTile((int)d.getWidth(), (int)d.getHeight(), m.getTile());
 	}
 
 	/**
@@ -57,11 +49,11 @@ public class Board {
 	private double[] getBoundaries() {
 		double[] result = new double[4];
 
-		for (Point p : map.keySet()) {
-			result[2] = Math.max(result[2], p.getX());
-			result[3] = Math.max(result[3], p.getY());
-			result[0] = Math.min(result[0], p.getX());
-			result[1] = Math.min(result[1], p.getY());
+		for (Dimension d : map.keySet()) {
+			result[2] = Math.max(result[2], d.getWidth());
+			result[3] = Math.max(result[3], d.getHeight());
+			result[0] = Math.min(result[0], d.getWidth());
+			result[1] = Math.min(result[1], d.getHeight());
 		}
 
 		return result;
@@ -113,15 +105,15 @@ public class Board {
 		return this.map.isEmpty();
 	}
 
-	public void setMap(Map<Point, Tile> m) {
+	public void setMap(Map<Dimension, Tile> m) {
 		this.map.clear();
 		this.map.putAll(m);
 	}
 
 	public Board deepCopy() {
-		Map<Point, Tile> m = new HashMap<>();
+		Map<Dimension, Tile> m = new HashMap<>();
 
-		for (Entry<Point, Tile> e : this.map.entrySet()) {
+		for (Entry<Dimension, Tile> e : this.map.entrySet()) {
 			m.put(e.getKey(), e.getValue());
 		}
 
@@ -129,6 +121,14 @@ public class Board {
 		b.setMap(m);
 
 		return b;
+	}
+	
+	public Map<Dimension, Tile> getMap() {
+		return map;
+	}
+	
+	public boolean equals(Object b) {
+		return (b instanceof Board) && ((Board)b).getMap() == this.getMap();
 	}
 
 }

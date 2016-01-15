@@ -1,5 +1,6 @@
 package nl.utwente.ewi.qwirkle.protocol;
 
+import java.awt.Dimension;
 import java.util.List;
 
 import nl.utwente.ewi.qwirkle.model.*;
@@ -92,8 +93,8 @@ public class protocol implements IProtocol {
 			result += m.getTile().toString();
 			result += "@";
 
-			Point p = m.getPoint();
-			result += p.getX() + "," + p.getY();
+			Dimension d = m.getDimension();
+			result += (int)d.getWidth() + "," + (int)d.getHeight();
 
 			count += 1;
 
@@ -258,8 +259,8 @@ public class protocol implements IProtocol {
 			result += m.getTile().toString();
 			result += "@";
 
-			Point p = m.getPoint();
-			result += p.getX() + "," + p.getY();
+			Dimension d = m.getDimension();
+			result += (int)d.getWidth() + "," + (int)d.getHeight();
 
 			count += 1;
 
@@ -276,7 +277,7 @@ public class protocol implements IProtocol {
 	public String serverMoveTrade(int noOfTilesTraded) {
 		String result = "";
 
-		result += this.SERVER_MOVE_PUT;
+		result += this.SERVER_MOVE_TRADE;
 		result += " ";
 		result += noOfTilesTraded;
 

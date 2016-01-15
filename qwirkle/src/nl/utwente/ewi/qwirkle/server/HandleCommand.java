@@ -1,5 +1,6 @@
 package nl.utwente.ewi.qwirkle.server;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +137,6 @@ public class HandleCommand {
 		if (ch.getGame().getBag().isEmpty() || ch.getGame().getBag().getAmountOfTiles() - tiles.size() < 0) {
 			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.DECK_EMPTY));
 			return;
-			// TODO fix trade first turn
 		} else if (ch.getGame().getBoard().isEmpty()) {
 			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.TRADE_FIRST_TURN));
 			return;
@@ -171,10 +171,10 @@ public class HandleCommand {
 	}
 
 	public void handleMovePut(String[] strAy, ClientHandler ch) {
-		/*if(!ch.getGame().hasTurn(ch)) {
+		if(!ch.getGame().hasTurn(ch)) {
 			//TODO may be error? -Egbert
 			return;
-		}*/
+		}
 		List<Move> moves = new ArrayList<>();
 		List<Tile> tiles = new ArrayList<>();
 		for (int i = 1; i < strAy.length; i++) {
@@ -184,7 +184,7 @@ public class HandleCommand {
 			int x = Integer.parseInt(b[0]);
 			int y = Integer.parseInt(b[1]);
 			Tile t = new Tile(tileNo);
-			Move m = new Move(new Point(x, y), t);
+			Move m = new Move(new Dimension(x, y), t);
 			tiles.add(t);
 			moves.add(m);
 		}
@@ -213,6 +213,14 @@ public class HandleCommand {
 		ch.getGame().nextTurn();
 		
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverTurn(ch.getGame().getPlayerTurn()));
+		
+		
+		List<Player> playersPlay = new ArrayList<>();
+		for(ClientHandler player : ch.getGame().getPlayers()) {
+			playersPlay.add(player.getPlayer());
+		}
+		
+		server.print(protocol.serverEndGame(playersPlay, handleScores(ch), 1));
 	}
 	
 	public void handleEndGame(ClientHandler ch) {
@@ -229,6 +237,19 @@ public class HandleCommand {
 		// TODO end the game
 		
 		
+	}
+	
+	public int[] handleScores(ClientHandler ch) {
+		List<ClientHandler> players = ch.getGame().getPlayers();
+		List<Player> playersPlay = new ArrayList<>();
+		int[] scores = new int[players.size()];
+		int i = 0;
+		for(ClientHandler player : players) {
+			playersPlay.add(player.getPlayer());
+			scores[i] = player.getPlayer().getScore();
+			i++;
+		}
+		return scores;
 	}
 
 
