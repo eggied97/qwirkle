@@ -25,6 +25,7 @@ public class Game {
 		// TODO PROTOCOL IMPLEMENTATION <- Still needed -Egbert
 	}
 	
+	
 	public void run() {
 		for(ClientHandler ch : players) {
 			List<Tile> newTiles = ch.getGame().getBag().getRandomTile(6);

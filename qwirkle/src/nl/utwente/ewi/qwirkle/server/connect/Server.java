@@ -106,6 +106,10 @@ public class Server {
 		}
 	}
 	
+	public void print(String message) {
+		System.out.println(message);
+	}
+	
 	/**
 	 * 
 	 * @return returns the <code> List </code> with all <code> ClientHandlers </code>

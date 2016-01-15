@@ -14,6 +14,8 @@ public class ScoreCalc {
 
 	}
 
+	// TODO FIX THAT SHIT
+	
 	public static ScoreCalc getInstance() {
 		return new ScoreCalc();
 	}

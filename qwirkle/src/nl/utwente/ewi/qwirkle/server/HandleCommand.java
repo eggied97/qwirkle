@@ -213,6 +213,14 @@ public class HandleCommand {
 		ch.getGame().nextTurn();
 		
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverTurn(ch.getGame().getPlayerTurn()));
+		
+		
+		List<Player> playersPlay = new ArrayList<>();
+		for(ClientHandler player : ch.getGame().getPlayers()) {
+			playersPlay.add(player.getPlayer());
+		}
+		
+		server.print(protocol.serverEndGame(playersPlay, handleScores(ch), 1));
 	}
 	
 	public void handleEndGame(ClientHandler ch) {
@@ -229,6 +237,19 @@ public class HandleCommand {
 		// TODO end the game
 		
 		
+	}
+	
+	public int[] handleScores(ClientHandler ch) {
+		List<ClientHandler> players = ch.getGame().getPlayers();
+		List<Player> playersPlay = new ArrayList<>();
+		int[] scores = new int[players.size()];
+		int i = 0;
+		for(ClientHandler player : players) {
+			playersPlay.add(player.getPlayer());
+			scores[i] = player.getPlayer().getScore();
+			i++;
+		}
+		return scores;
 	}
 
 
