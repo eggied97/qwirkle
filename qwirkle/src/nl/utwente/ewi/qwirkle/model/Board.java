@@ -44,7 +44,7 @@ public class Board {
 	}
 
 	/**
-	 * @return boundaries of the board in [left, top, right, bottom]
+	 * @return boundaries of the board in [left, bottom, right, top]
 	 */
 	private double[] getBoundaries() {
 		double[] result = new double[4];
@@ -67,8 +67,8 @@ public class Board {
 		double[] bound = getBoundaries();
 		
 		for(int i = (int)bound[0]; i < (int)bound[0] + 6; i++) {
-			for(int j = (int)bound[3]; j < (int)bound[3] + 6; j++) {
-				if(map.get(new Point(i,j)) == null) {
+			for(int j = (int)bound[1]; j < (int)bound[1] + 6; j++) {
+				if(map.get(new Dimension(i,j)) == null) {
 					return false;
 				}
 			}
@@ -83,17 +83,22 @@ public class Board {
 
 		double[] bound = getBoundaries();
 		String result = "";
-
+		String testFormat1 = "";
+		
 		for (int y = (int) bound[1] - 1; y < bound[3] + 2; y++) {
 			for (int x = (int) bound[0] - 1; x < bound[2] + 2; x++) {
 				Tile t = getTile(x, y);
 				if (t != null) {
-					result += getTile(x, y).toString();
+					testFormat1 = "  " + t.toString();
+					//result += getTile(x, y).toString();
 				} else {
-					result += "(" + x + "," + y + ")";
+					testFormat1 = "(" + x + "," + y + ")";
+					//result += "(" + x + "," + y + ")";
 				}
-				result += " | ";
+				result += String.format("%-10s%-5s", testFormat1, "|");
+				//result += " | ";
 			}
+			result = result.trim().substring(0, result.trim().length()-1);
 			result += "\n";
 		}
 
@@ -107,15 +112,12 @@ public class Board {
 
 	public void setMap(Map<Dimension, Tile> m) {
 		this.map.clear();
-		this.map.putAll(m);
+		this.map = m;
 	}
 
 	public Board deepCopy() {
 		Map<Dimension, Tile> m = new HashMap<>();
-
-		for (Entry<Dimension, Tile> e : this.map.entrySet()) {
-			m.put(e.getKey(), e.getValue());
-		}
+		m.putAll(map);
 
 		Board b = new Board();
 		b.setMap(m);
@@ -128,7 +130,9 @@ public class Board {
 	}
 	
 	public boolean equals(Object b) {
-		return (b instanceof Board) && ((Board)b).getMap() == this.getMap();
+		return ((b instanceof Board) && ((Board)b).getMap().equals(this.getMap()));
 	}
+	
+	
 
 }

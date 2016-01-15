@@ -38,7 +38,7 @@ public class ScoreCalc {
 			int px = (int)moves.get(0).getDimension().getWidth();
 			int incounter = 0;
 			
-			for (int i = px; i > px - 6; i--) {
+			for (int i = px - 1; i > px - 6; i--) {
 				if (b.getTile(i, py) != null) {
 					incounter++;
 				} else {
@@ -46,7 +46,7 @@ public class ScoreCalc {
 				}
 			}
 
-			for (int i = px; i < px + 6; i++) {
+			for (int i = px + 1; i < px + 6; i++) {
 				if (b.getTile(i, py) != null) {
 					incounter++;
 				} else {
@@ -58,14 +58,14 @@ public class ScoreCalc {
 				multiplier *= 2;
 			}
 			
-			score += incounter + 1;
+			score += incounter;
 			
 			for (Move m : moves) {
 				int counter = 0;
 				int y = (int)m.getDimension().getHeight();
 				int x = (int)m.getDimension().getWidth();
 
-				for (int i = y; i > y - 6; i--) {
+				for (int i = y - 1; i > y - 6; i--) {
 					if (b.getTile(x, i) != null) {
 						counter++;
 					} else {
@@ -73,7 +73,7 @@ public class ScoreCalc {
 					}
 				}
 
-				for (int i = y; i < y + 6; i++) {
+				for (int i = y + 1; i < y + 6; i++) {
 					if (b.getTile(x, i) != null) {
 						counter++;
 					} else {
@@ -94,7 +94,7 @@ public class ScoreCalc {
 			int px = (int)moves.get(0).getDimension().getWidth();
 			int incounter = 0;
 			
-			for (int i = py; i > py - 6; i--) {
+			for (int i = py - 1; i > py - 6; i--) {
 				if (b.getTile(px, i) != null) {
 					incounter++;
 				} else {
@@ -102,7 +102,7 @@ public class ScoreCalc {
 				}
 			}
 
-			for (int i = py; i < py + 6; i++) {
+			for (int i = py + 1; i < py + 6; i++) {
 				if (b.getTile(px, i) != null) {
 					incounter++;
 				} else {
@@ -114,7 +114,7 @@ public class ScoreCalc {
 				multiplier *= 2;
 			}
 			
-			score += incounter + 1;
+			score += incounter;
 
 			
 			for (Move m : moves) {
@@ -123,7 +123,7 @@ public class ScoreCalc {
 				int y = (int)m.getDimension().getHeight();
 				int x = (int)m.getDimension().getWidth();
 
-				for (int i = x; i > x - 6; i--) {
+				for (int i = x - 1; i > x - 6; i--) {
 					if (b.getTile(i, y) != null) {
 						counter++;
 					} else {
@@ -131,7 +131,7 @@ public class ScoreCalc {
 					}
 				}
 
-				for (int i = x; i < x + 6; i++) {
+				for (int i = x + 1; i < x + 6; i++) {
 					if (b.getTile(i, y) != null) {
 						counter++;
 					} else {
