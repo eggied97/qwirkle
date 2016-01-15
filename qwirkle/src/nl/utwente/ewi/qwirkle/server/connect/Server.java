@@ -41,19 +41,34 @@ public class Server {
 
 	// TODO FIX CHECKING MOVES WHEN BAG IS EMPTY
 	
+	/**
+	 * 
+	 * @return returns the features of the <code> Server </code>
+	 */
 	public IProtocol.Feature[] getFeatures() {
 		return features;
 	}
-
+	
+	/**
+	 * 
+	 * @return returns the queues of the <code> Server </code>
+	 */
 	public Map<Integer, List<ClientHandler>> getQueues() {
 		return this.queues;
 	}
 
+	/**
+	 * Create a new instance of <code> Server </code>
+	 * @param port
+	 */
 	public Server(int port) {
 		this.port = port;
 		init();
 	}
 	
+	/**
+	 * Initialize the <code> Server </code>
+	 */
 	public void init() {
 		queues = new HashMap<>();
 		queues.put(2, new ArrayList<ClientHandler>());
@@ -67,6 +82,9 @@ public class Server {
 		// TODO add features when implemented
 	}
 
+	/**
+	 * Starts looking for <code> Clients </code> that want to connect to the <code> Server </code>
+	 */
 	public void run() {
 		try {
 			serverSock = new ServerSocket(port);
@@ -88,20 +106,37 @@ public class Server {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return returns the <code> List </code> with all <code> ClientHandlers </code>
+	 */
 	public List<ClientHandler> getAll() {
 		return this.all;
 	}
 	
+	/**
+	 * Sends a message to all <code> ClientHandlers </code> of the <code> List </code>
+	 * @param list
+	 * @param msg
+	 */
 	public void broadcast(List<ClientHandler> list, String msg) {
 		for(ClientHandler ch : list) {
 			ch.sendMessage(msg);
 		}
 	}
 	
+	/**
+	 * Removes the <code> CliendHandler </code> from the all <code> List </code>
+	 * @param ch
+	 */
 	public void removeFromAll(ClientHandler ch) {
 		all.remove(ch);
 	}
 
+	/**
+	 * Removes the <code> ClientHandler </code> from his current state
+	 * @param ch
+	 */
 	public void removeHandler(ClientHandler ch) {
 		if (start.contains(ch)) {
 			start.remove(ch);
@@ -120,6 +155,10 @@ public class Server {
 
 	}
 	
+	/**
+	 * If the <code> ClientHandler </code> is in a game, remove him from it
+	 * @param ch
+	 */
 	public void removeGameHandler(ClientHandler ch) {
 		for (List<ClientHandler> l : games.values()) {
 			if (l.contains(ch)) {
@@ -128,6 +167,10 @@ public class Server {
 		}
 	}
 	
+	/**
+	 * Starts a game with the given <code> List </code> of <code> ClientHandlers </code>
+	 * @param list
+	 */
 	public void startGame(List<ClientHandler> list) {
 		List<Player> players = new ArrayList<>();
 		for(ClientHandler ch : list) {
@@ -143,6 +186,9 @@ public class Server {
 		broadcast(list, protocol.getInstance().serverTurn(game.getPlayerTurn()));		
 	}
 	
+	/**
+	 * Checks whether one of the queues has the set amount of players required to start a <code> Game </code>
+	 */
 	public void checkQueues() {
 		for(Entry entry: queues.entrySet()) {
 			List<ClientHandler> queue = (List<ClientHandler>)entry.getValue();
@@ -164,6 +210,11 @@ public class Server {
 		}
 	}
 
+	/**
+	 * Analyze the input from the <code> Client </code> and act accordingly
+	 * @param input
+	 * @param ch
+	 */
 	public void getCommand(String input, ClientHandler ch) {
 		String[] inputArr = input.split(" ");
 		if (inputArr[0] == null) {

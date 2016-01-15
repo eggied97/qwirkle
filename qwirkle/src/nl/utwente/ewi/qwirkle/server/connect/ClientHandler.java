@@ -27,6 +27,12 @@ public class ClientHandler extends Thread {
 	private Game game = null;
 	private Player player;
 	
+	/**
+	 * Constructor of the ClientHandler which initialises the reader and writer
+	 * @param server
+	 * @param socket
+	 * @throws IOException
+	 */
 	public ClientHandler(Server server, Socket socket) throws IOException {
 		this.server = server;
 		this.sock = socket;
@@ -38,38 +44,64 @@ public class ClientHandler extends Thread {
 	 * Reads input from client and passes it to the server
 	 */
 	public void run() {
-		while (true) {
+		boolean isActive = true;
+		while (isActive) {
 			try {
 				String input = in.readLine();
-				System.out.println("From client to server: " + input);
+				System.out.println("From " + getClientName() + " to server: " + input);
 				server.getCommand(input, this);
 			} catch (IOException e) {
 				shutDown();
+				isActive = false;
 			}
 		}
 	}
 	
+	/**
+	 * 
+	 * @return returns the <code> Player </code> connected to this <code>ClientHandler</code>
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}
 	
+	/**
+	 * Sets the <code> Player </code> connected to this <code> ClientHandler </code>
+	 * @param player
+	 */
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
 	
+	/**
+	 * 
+	 * @return returns the <code> Game </code> this <code> ClientHandler </code> is in, if he is in any
+	 */
 	public Game getGame() {
 		return this.game;
 	}
 
+	/**
+	 * Sets the clientName value and creates a new <code> SocketPlayer </code> with that name
+	 * @param name
+	 */
 	public void setClientName(String name) {
 		this.clientName = name;
 		setPlayer(new SocketPlayer(name));
 	}
 	
+	/**
+	 * 
+	 * @return returns the name of the <code> Player </code>
+	 */
 	public String getClientName() {
 		return clientName;
 	}
 
+	/**
+	 * Sets the features 
+	 * @param features
+	 */
 	public void setFeatures(List<Feature> features) {
 		this.features = features;
 	}
@@ -80,7 +112,7 @@ public class ClientHandler extends Thread {
 
 	/**
 	 * Sends a message to the client
-	 * 
+	 * Shuts down if the connection is lost
 	 * @param msg
 	 */
 	public void sendMessage(String msg) {
@@ -93,7 +125,10 @@ public class ClientHandler extends Thread {
 			shutDown();
 		}
 	}
-
+	
+	/**
+	 * Removes the <code> ClientHandler </code> from all <code> Server </code> connections and ends the <code> Game </code> if he was in any
+	 */
 	public void shutDown() {
 		server.removeHandler(this);
 		server.removeFromAll(this);

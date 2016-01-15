@@ -8,6 +8,7 @@ import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -28,32 +29,32 @@ public class ValidMove {
 		
 		Tile t = m.getTile();
 		
-		Point p = m.getPoint();
+		Dimension d = m.getDimension();
 		
-		int pX = (int)p.getX();
-		int pY = (int)p.getY();
+		int dX = (int)d.getWidth();
+		int dY = (int)d.getHeight();
 		
 		// Check whether the position is empty
-		if(b.getTile(pX, pY) != null) {
+		if(b.getTile(dX, dY) != null) {
 			System.out.println("Non empty position");
 			return false;
 		}
 		
 		
 		// Horizontal line right of the point
-		for(int i = pX; i < pX + 6; i++) {
-			if(b.getTile(i, pY) != null) {
-				tileSetXR.add(b.getTile(i, pY));
+		for(int i = dX + 1; i < dX + 6; i++) {
+			if(b.getTile(i, dY) != null) {
+				tileSetXR.add(b.getTile(i, dY));
 			} else {
-				i = pX + 5;
+				i = dX + 5;
 			}
 		}
 		// Horizontal line left of the point
-		for(int i = pX; i > pX - 6; i--) {
-			if(b.getTile(i, pY) != null) {
-				tileSetXL.add(b.getTile(i, pY));
+		for(int i = dX - 1; i > dX - 6; i--) {
+			if(b.getTile(i, dY) != null) {
+				tileSetXL.add(b.getTile(i, dY));
 			} else {
-				i = pX - 5;
+				i = dX - 5;
 			}
 		}
 		// Test if the two horizontal rows can be combined
@@ -65,20 +66,22 @@ public class ValidMove {
 				}
 			}
 		}
-		// Vertical line below the point
-		for(int i = pY; i > pY - 6; i--) {
-			if(b.getTile(pX, i) != null) {
-				tileSetYR.add(b.getTile(pX, i));
+		// Vertical line above the point
+		for(int i = dY - 1; i > dY - 6; i--) {
+			System.out.println("hoi");
+			if(b.getTile(dX, i) != null) {
+				System.out.println("Haai");
+				tileSetYR.add(b.getTile(dX, i));
 			} else {
-				i = pY - 5;
+				i = dY - 5;
 			}
 		}
-		// Vertical line above of the point
-		for(int i = pY; i < pY + 6; i++) {
-			if(b.getTile(pY, i) != null) {
-				tileSetYL.add(b.getTile(pX, i));
+		// Vertical line below of the point
+		for(int i = dY + 1; i < dY + 6; i++) {
+			if(b.getTile(dX, i) != null) {
+				tileSetYL.add(b.getTile(dX, i));
 			} else {
-				i = pY + 5;
+				i = dY + 5;
 			}
 		}
 		// Test if the two vertical columns can be combined
@@ -95,8 +98,8 @@ public class ValidMove {
 		tileSetX.addAll(tileSetXR);
 		
 		List<Tile> tileSetY = new ArrayList<>();
-		tileSetX.addAll(tileSetYL);
-		tileSetX.addAll(tileSetYR);
+		tileSetY.addAll(tileSetYL);
+		tileSetY.addAll(tileSetYR);
 		
 		// Check whether it connects with tiles
 		if(tileSetX.isEmpty() && tileSetY.isEmpty()) {
@@ -129,7 +132,7 @@ public class ValidMove {
 		Board boardCopy = b.deepCopy();
 		for(Move m : moves) {
 			if(isValidMove(m, boardCopy)) {
-				boardCopy.putTile((int)m.getPoint().getX(), (int)m.getPoint().getY(), m.getTile());
+				boardCopy.putTile((int)m.getDimension().getWidth(), (int)m.getDimension().getHeight(), m.getTile());
 			} else {
 				return false;
 			}
@@ -139,7 +142,8 @@ public class ValidMove {
 	
 	public boolean validPointsX(List<Move> moves) {
 		for(int i = 0; i < moves.size() - 1; i++) {
-			if(moves.get(i).getPoint().getX() != moves.get(i+1).getPoint().getX()) {
+			if(moves.get(i).getDimension().getWidth() != moves.get(i+1).getDimension().getWidth()) {
+				System.out.println("Tiles don't fit together");
 				return false;
 			}
 		}
@@ -148,7 +152,8 @@ public class ValidMove {
 	
 	public boolean validPointsY(List<Move> moves) {
 		for(int i = 0; i < moves.size() - 1; i++) {
-			if(moves.get(i).getPoint().getY() != moves.get(i+1).getPoint().getY()) {
+			if(moves.get(i).getDimension().getHeight() != moves.get(i+1).getDimension().getHeight()) {
+				System.out.println("Tiles don't fit together");
 				return false;
 			}
 		}

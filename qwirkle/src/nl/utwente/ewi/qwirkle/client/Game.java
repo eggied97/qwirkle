@@ -1,5 +1,6 @@
 package nl.utwente.ewi.qwirkle.client;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -175,7 +176,7 @@ public class Game implements resultCallback {
 				this.UI.showError("Invalid input");
 			}
 
-			Point pResult = new Point(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+			Dimension pResult = new Dimension(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
 			Move mResult = new Move(pResult, new Tile(Integer.parseInt(parts[0])));
 
 			board.putTile(mResult);
