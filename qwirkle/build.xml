@@ -27,7 +27,7 @@
 	<target name="junit" depends="init">
 		<junit printsummary="yes" haltonfailure="false">
 			<classpath>
-				<path refid="classpath.tests" />
+				<path refid="qwirkle.classpath.tests" />
 				<pathelement location="${tests.build.dir}" />
 			</classpath>
 			<formatter type="brief" usefile="false" />
