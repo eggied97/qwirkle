@@ -14,15 +14,15 @@ public class Board {
 	public Board() {
 		map = new HashMap<>();
 	}
-	
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		Board b = new Board();
 		System.out.println(b.toString());
 		System.out.println("-------------------");
-		b.putTile(0,0,new Tile(13));
+		b.putTile(0, 0, new Tile(13));
 		System.out.println(b.toString());
 		System.out.println("-------------------");
-		b.putTile(0,1,new Tile(12));
+		b.putTile(0, 1, new Tile(12));
 		System.out.println(b.toString());
 	}
 
@@ -71,7 +71,7 @@ public class Board {
 
 		double[] bound = getBoundaries();
 
-		//TODO has some false positifs
+		// TODO has some false positifs
 		if (bound[2] - bound[0] == 6 && bound[3] - bound[1] == 6) {
 			return true;
 		} else {
@@ -80,10 +80,10 @@ public class Board {
 	}
 
 	public String toString() {
-		if(this.isEmpty()){
+		if (this.isEmpty()) {
 			return "(0,0)";
 		}
-		
+
 		double[] bound = getBoundaries();
 		String result = "";
 
@@ -103,20 +103,27 @@ public class Board {
 		return result;
 
 	}
-	
+
 	public boolean isEmpty() {
 		return this.map.isEmpty();
 	}
-	
 
-	public Map<Point, Tile> deepCopy(){
+	public void setMap(Map<Point, Tile> m) {
+		this.map.clear();
+		this.map.putAll(m);
+	}
+
+	public Board deepCopy() {
 		Map<Point, Tile> m = new HashMap<>();
-		
-		for(Entry<Point, Tile> e : this.map.entrySet()){
+
+		for (Entry<Point, Tile> e : this.map.entrySet()) {
 			m.put(e.getKey(), e.getValue());
 		}
-		
-		return m;
+
+		Board b = new Board();
+		b.setMap(m);
+
+		return b;
 	}
 
 }
