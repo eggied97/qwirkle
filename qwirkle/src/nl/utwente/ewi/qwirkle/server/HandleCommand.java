@@ -11,6 +11,7 @@ import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.server.connect.ClientHandler;
 import nl.utwente.ewi.qwirkle.server.connect.Server;
+import nl.utwente.ewi.qwirkle.server.score.ScoreCalc;
 
 public class HandleCommand {
 
@@ -18,7 +19,8 @@ public class HandleCommand {
 	private protocol protocol = new protocol();
 	private ValidMove valid;
 	private boolean wentWell = true;
-
+	private final static String REGEX = "^[a-zA-Z0-9-_]{2,16}$";
+	
 	public HandleCommand(Server server) {
 		this.server = server;
 	}
@@ -37,14 +39,14 @@ public class HandleCommand {
 
 	public void handleIdentifyName(String[] strAy, ClientHandler ch) {
 		String name = strAy[1];
-		if (name.matches("^[a-zA-Z0-9-_]{2,16}$") && !name.equals(null)) { //TODO maybe set the regex in a final static var? -Egbert
+		if (name.matches(REGEX) && !name.equals(null)) { 
 			for (ClientHandler handler : server.getAll()) {
+				// Check if youre not trying to get the name of the object whose name you want to set
 				if (handler.equals(ch)) {
-					//TODO what to do here? -Egbert
 				} else if (handler.getClientName().equals(name)) {
 					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.NAME_USED));
 					wentWell = false;
-					return; //TODO what does this return here, maybe use a var in the for loop? -Egbert
+					return;
 				}
 			}
 			
@@ -52,7 +54,7 @@ public class HandleCommand {
 		} else {
 			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.NAME_INVALID));
 			wentWell = false;
-			return;//TODO what does this return here? -Egbert
+			return;
 		}
 
 	}
@@ -86,8 +88,6 @@ public class HandleCommand {
 				featAr[i] = feat;
 				i++;
 			}
-			// TODO fix with features from server
-			ch.sendMessage(protocol.serverConnectOk((server.getFeatures())));
 		}
 		ch.sendMessage(protocol.serverConnectOk(server.getFeatures()));
 	}
@@ -194,8 +194,10 @@ public class HandleCommand {
 			return;
 		}
 		ch.getGame().getBoard().putTile(moves);
+		ch.getPlayer().addScore(ScoreCalc.getInstance().calculate(ch.getGame().getBoard(), moves));
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverMovePut(moves));
-		// TODO reput tiles in hand
+		List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
+		ch.getPlayer().bagToHand(newTiles);
 		handleTurn(ch);
 	}
 	

@@ -10,6 +10,7 @@ public abstract class Player {
 	
 	private String name;
 	private List<Tile> hand;
+	private int score = 0;
 	/**
 	 * 
 	 * @param name
@@ -68,6 +69,14 @@ public abstract class Player {
 	
 	public List<Tile> getHand() {
 		return this.hand;
+	}
+	
+	public void addScore(int score) {
+		this.score += score;
+	}
+	
+	public int getScore() {
+		return score;
 	}
 	
 	

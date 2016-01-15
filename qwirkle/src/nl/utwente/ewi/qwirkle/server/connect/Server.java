@@ -20,14 +20,14 @@ public class Server {
 
 	public static void main(String[] args) {
 		if (args.length != 1) {
-			System.out.println("Give only the port as input"); //TODO Maybe use a final static var here? -Egbert
+			System.out.println(USAGE); 
 			System.exit(0);
 		}
 
 		Server server = new Server(Integer.parseInt(args[0]));
 		server.run();
 	}
-
+	private final static String USAGE = "Give only the port as input";
 	private int port;
 	private ServerSocket serverSock;
 	private List<ClientHandler> all;
@@ -52,14 +52,13 @@ public class Server {
 	public Server(int port) {
 		this.port = port;
 		init();
-		//TODO put the following 3 calls in the init()? -Egbert
-		queues.put(2, new ArrayList<ClientHandler>());
-		queues.put(3, new ArrayList<ClientHandler>());
-		queues.put(4, new ArrayList<ClientHandler>());
 	}
 	
 	public void init() {
 		queues = new HashMap<>();
+		queues.put(2, new ArrayList<ClientHandler>());
+		queues.put(3, new ArrayList<ClientHandler>());
+		queues.put(4, new ArrayList<ClientHandler>());
 		games = new HashMap<>();
 		all = new ArrayList<>();
 		start = new ArrayList<>();
@@ -165,23 +164,23 @@ public class Server {
 		}
 	}
 
-	public void getCommand(String str, ClientHandler ch) {
-		String[] s = str.split(" "); //TODO maybe use a better, self explaining name? -Egbert
-		if (s[0] == null) {
-			ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.INVALID_COMMAND.toString());//TODO use the protocol.java -Egbert
+	public void getCommand(String input, ClientHandler ch) {
+		String[] inputArr = input.split(" "); 
+		if (inputArr[0] == null) {
+			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
 			return;
 		}
 
-		switch (s[0]) {
+		switch (inputArr[0]) {
 
 			case IProtocol.CLIENT_IDENTIFY:
 				if(ch.getGame() != null) {
-					ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.INVALID_COMMAND.toString());//TODO use the protocol.java -Egbert
+					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
 					break;
 				}
 				
-				handle.handleIdentifyName(s,ch);
-				handle.handleIdentifyFeatures(s,ch);
+				handle.handleIdentifyName(inputArr,ch);
+				handle.handleIdentifyFeatures(inputArr,ch);
 				
 				if(handle.getWentWell()) {
 					removeHandler(ch);
@@ -189,7 +188,6 @@ public class Server {
 				}
 				
 				handle.setWentWell(true);
-				
 				break;
 	
 			case IProtocol.CLIENT_QUIT:
@@ -197,16 +195,16 @@ public class Server {
 				break;
 	
 			case IProtocol.CLIENT_MOVE_PUT:
-				handle.handleMovePut(s, ch);
+				handle.handleMovePut(inputArr, ch);
 				break;
 	
 			case IProtocol.CLIENT_MOVE_TRADE:
-				handle.handleMoveTrade(s, ch);
+				handle.handleMoveTrade(inputArr, ch);
 				break;
 	
 			case IProtocol.CLIENT_QUEUE:
 				removeHandler(ch);
-				handle.handleQueue(s, ch);
+				handle.handleQueue(inputArr, ch);
 				checkQueues();
 				break;
 				/*
@@ -216,7 +214,7 @@ public class Server {
 				 * IProtocol.CLIENT_LEADERBOARD: case IProtocol.CLIENT_LOBBY:
 				 */
 			default:
-				ch.sendMessage(protocol.SERVER_ERROR + IProtocol.Error.INVALID_COMMAND.toString());//TODO use the protocol.java -Egbert
+				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
 				break;
 		}
 	}
