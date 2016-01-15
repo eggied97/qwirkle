@@ -35,13 +35,13 @@
   <!-- Test and build all files  -->
   <!-- To run this: use "ant" (default) or "ant run" -->
   <target name="run" depends="build" >
-    <junit printsummary="on" haltonfailure="yes" fork="off">
+    <junit printsummary="on" haltonfailure="yes" fork="off" showoutput="yes">
         <classpath>
           <path refid="classpath.test" />
           <pathelement location="${test.build.dir}"/>
         </classpath>
        <formatter type="brief" usefile="false" />
-        <batchtest>
+        <batchtest fork="yes">
             <fileset dir="${test.build.dir}" includes="**/*Test*.java" />
         </batchtest>
     </junit>
