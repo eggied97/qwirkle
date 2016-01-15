@@ -30,7 +30,7 @@ public class moveTest {
 	
 	@Test
 	public void getPointTest(){
-		assertTrue(m.getDimension().equals(new Point(0,0)));
+		assertTrue(m.getDimension().equals(new Dimension(0,0)));
 	}
 	
 	@Test
