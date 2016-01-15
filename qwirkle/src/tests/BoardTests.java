@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import nl.utwente.ewi.qwirkle.model.Board;
-import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 
 public class BoardTests {
