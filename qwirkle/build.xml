@@ -3,7 +3,7 @@
   <property name="main.build.dir" value="build/main" />  
   <property name="main.src.dir" value="src/nl/utwente/ewi/qwirkle" />
   <property name="test.build.dir" value="build/tests" />
-  <property name="test.src.dir" value="tests" />
+  <property name="test.src.dir" value="src/nl/utwente/ewi/qwirkle/tests" />
 
   <path id="classpath.base" />
 
