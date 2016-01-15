@@ -24,7 +24,8 @@ public class Game implements resultCallback {
 	private UserInterface UI;
 	private Client c;
 	private List<IProtocol.Feature> usingFeatures;
-
+	
+	
 	private Player turnPlayer;
 
 	/**

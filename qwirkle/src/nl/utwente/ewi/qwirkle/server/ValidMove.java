@@ -35,6 +35,7 @@ public class ValidMove {
 		
 		// Check whether the position is empty
 		if(b.getTile(pX, pY) != null) {
+			System.out.println("Non empty position");
 			return false;
 		}
 		
@@ -59,11 +60,11 @@ public class ValidMove {
 		for(Tile tile : tileSetXR) {
 			for(Tile tile1 : tileSetXL) {
 				if(!tile.isValidNeighbour(tile1)) {
+					System.out.println("No horizontal combination");
 					return false;
 				}
 			}
 		}
-		
 		// Vertical line below the point
 		for(int i = pY; i > pY - 6; i--) {
 			if(b.getTile(pX, i) != null) {
@@ -84,11 +85,11 @@ public class ValidMove {
 		for(Tile tile : tileSetYR) {
 			for(Tile tile1 : tileSetYL) {
 				if(!tile.isValidNeighbour(tile1)) {
+					System.out.println("No vertical combination");
 					return false;
 				}
 			}
 		}
-		
 		List<Tile> tileSetX = new ArrayList<>();
 		tileSetX.addAll(tileSetXL);
 		tileSetX.addAll(tileSetXR);
@@ -99,21 +100,24 @@ public class ValidMove {
 		
 		// Check whether it connects with tiles
 		if(tileSetX.isEmpty() && tileSetY.isEmpty()) {
-			return false;
+			if(!b.isEmpty()){
+				System.out.println("No connection with other tiles");
+				return false;
+			}
 		}
-		
 		// Check whether the tile is a valid neighbour for the rows
 		for(Tile til : tileSetX) {
 			if(!til.isValidNeighbour(t)) {
+				System.out.println("New tile cant fit in " + t.getIntOfTile() + " with " + til.getIntOfTile());
 				return false;
 			}
 		}
 		 for(Tile til : tileSetY) {
 			 if(!til.isValidNeighbour(t)) {
+				System.out.println("New tile cant fit in " + t.getIntOfTile() + " with " + til.getIntOfTile());
 				 return false;
 			 }
 		 }
-
 		return true;
 	}
 	

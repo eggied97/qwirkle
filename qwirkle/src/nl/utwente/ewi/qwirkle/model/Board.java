@@ -34,7 +34,7 @@ public class Board {
 	public Tile getTile(int x, int y) {
 		return map.get(new Point(x, y));
 	}
-
+	
 	public void putTile(int x, int y, Tile t) {
 		map.put(new Point(x, y), t);
 	}

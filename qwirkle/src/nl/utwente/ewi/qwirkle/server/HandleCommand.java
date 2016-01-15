@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import nl.utwente.ewi.qwirkle.client.connect.Client;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.server.connect.ClientHandler;
@@ -17,7 +19,7 @@ public class HandleCommand {
 
 	private Server server;
 	private protocol protocol = new protocol();
-	private ValidMove valid;
+	private ValidMove valid = new ValidMove();
 	private boolean wentWell = true;
 	private final static String REGEX = "^[a-zA-Z0-9-_]{2,16}$";
 	
@@ -134,6 +136,7 @@ public class HandleCommand {
 		if (ch.getGame().getBag().isEmpty() || ch.getGame().getBag().getAmountOfTiles() - tiles.size() < 0) {
 			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.DECK_EMPTY));
 			return;
+			// TODO fix trade first turn
 		} else if (ch.getGame().getBoard().isEmpty()) {
 			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.TRADE_FIRST_TURN));
 			return;
@@ -168,10 +171,10 @@ public class HandleCommand {
 	}
 
 	public void handleMovePut(String[] strAy, ClientHandler ch) {
-		if(!ch.getGame().hasTurn(ch)) {
+		/*if(!ch.getGame().hasTurn(ch)) {
 			//TODO may be error? -Egbert
 			return;
-		}
+		}*/
 		List<Move> moves = new ArrayList<>();
 		List<Tile> tiles = new ArrayList<>();
 		for (int i = 1; i < strAy.length; i++) {
@@ -190,20 +193,42 @@ public class HandleCommand {
 			return;
 		}
 		if (!valid.validMoveSet(moves, ch.getGame().getBoard())) {
-			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.MOVE_INVALID));
+			ch.sendMessage(nl.utwente.ewi.qwirkle.protocol.protocol.getInstance().serverError(IProtocol.Error.MOVE_INVALID));
 			return;
 		}
 		ch.getGame().getBoard().putTile(moves);
 		ch.getPlayer().addScore(ScoreCalc.getInstance().calculate(ch.getGame().getBoard(), moves));
-		server.broadcast(ch.getGame().getPlayers(), protocol.serverMovePut(moves));
+		server.broadcast(ch.getGame().getPlayers(), protocol.getInstance().serverMovePut(moves));
 		List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
 		ch.getPlayer().bagToHand(newTiles);
 		handleTurn(ch);
 	}
 	
 	public void handleTurn(ClientHandler ch) {
+		if(ch.getGame().gameEnd()) {
+			handleEndGame(ch);
+		} else if(ch.getGame().getBag().isEmpty()) {
+			// TODO check for possible moves for next player
+		}
 		ch.getGame().nextTurn();
+		
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverTurn(ch.getGame().getPlayerTurn()));
+	}
+	
+	public void handleEndGame(ClientHandler ch) {
+		List<ClientHandler> players = ch.getGame().getPlayers();
+		List<Player> playersPlay = new ArrayList<>();
+		int[] scores = new int[players.size()];
+		int i = 0;
+		for(ClientHandler player : players) {
+			playersPlay.add(player.getPlayer());
+			scores[i] = player.getPlayer().getScore();
+			i++;
+		}
+		server.broadcast(players, protocol.serverEndGame(playersPlay, scores, 1));
+		// TODO end the game
+		
+		
 	}
 
 

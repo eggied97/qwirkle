@@ -6,11 +6,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.model.player.SocketPlayer;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
+import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 import nl.utwente.ewi.qwirkle.server.Game;
 
@@ -39,9 +41,10 @@ public class ClientHandler extends Thread {
 		while (true) {
 			try {
 				String input = in.readLine();
+				System.out.println("From client to server: " + input);
 				server.getCommand(input, this);
 			} catch (IOException e) {
-				//TODO What to do here? -Egbert
+				shutDown();
 			}
 		}
 	}
@@ -94,8 +97,21 @@ public class ClientHandler extends Thread {
 	public void shutDown() {
 		server.removeHandler(this);
 		server.removeFromAll(this);
-		server.removeGameHandler(this);
-		// TODO notify other game players -> END the game-Egbert
+		if(getGame() != null) {
+			server.removeGameHandler(this);
+			int[] scores = new int[this.getGame().getPlayers().size()];
+			int i = 0;
+			List<Player> players = new ArrayList<>();
+			for(ClientHandler ch : this.getGame().getPlayers()) {
+				scores [i] = ch.getPlayer().getScore();
+				players.add(ch.getPlayer());
+				i++;
+			}
+			List<ClientHandler> list = this.getGame().getPlayers();
+			list.remove(this);
+			server.broadcast(list, protocol.getInstance().serverEndGame(players, scores, 0));
+			return;
+		}
 		try {
 			in.close();
 			out.close();

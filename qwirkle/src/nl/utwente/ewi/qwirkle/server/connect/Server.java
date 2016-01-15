@@ -139,7 +139,7 @@ public class Server {
 			ch.setGame(game);
 		}
 		
-		game.start();
+		game.run();
 		broadcast(list, protocol.getInstance().serverTurn(game.getPlayerTurn()));		
 	}
 	
@@ -165,7 +165,7 @@ public class Server {
 	}
 
 	public void getCommand(String input, ClientHandler ch) {
-		String[] inputArr = input.split(" "); 
+		String[] inputArr = input.split(" ");
 		if (inputArr[0] == null) {
 			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
 			return;
@@ -180,7 +180,11 @@ public class Server {
 				}
 				
 				handle.handleIdentifyName(inputArr,ch);
-				handle.handleIdentifyFeatures(inputArr,ch);
+				if(handle.getWentWell()) {
+					handle.handleIdentifyFeatures(inputArr,ch);
+				}
+				
+				handle.setWentWell(true);
 				
 				if(handle.getWentWell()) {
 					removeHandler(ch);
