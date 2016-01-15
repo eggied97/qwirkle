@@ -4,3 +4,5 @@
    - openjdk7
  before_script:
    - cd qwirkle
+   
+script: ant run
