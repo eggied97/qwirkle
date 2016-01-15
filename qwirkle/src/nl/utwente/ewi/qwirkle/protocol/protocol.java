@@ -184,7 +184,6 @@ public class protocol implements IProtocol {
 	 * @param wonByWin
 	 *            - 1 if won by win, 0 if won by error
 	 */
-	// TODO maybe score model aanmaken?
 	public String serverEndGame(List<Player> players, int[] scores, int wonByWin) {
 		String result = "";
 

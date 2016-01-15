@@ -12,6 +12,7 @@ import nl.utwente.ewi.qwirkle.client.connect.Client;
 import nl.utwente.ewi.qwirkle.client.connect.resultCallback;
 import nl.utwente.ewi.qwirkle.model.exceptions.tooFewPlayersException;
 import nl.utwente.ewi.qwirkle.model.exceptions.tooManyPlayersException;
+import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.model.player.SocketPlayer;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
@@ -98,7 +99,7 @@ public class Main implements resultCallback {
 
 	@Override
 	public void resultFromServer(String result) {
-		System.out.println("Back from server > " + result.trim());
+		System.out.println("Back from server (main)> " + result.trim());
 
 		String[] results = result.trim().split(" ");
 
@@ -165,7 +166,11 @@ public class Main implements resultCallback {
 		}
 
 		Game g = new Game(UI, playersInGame, client, usingFeatures);
-
+		client.setCallback(g);
+		
+		if(me instanceof HumanPlayer){
+			((HumanPlayer) me).setGame(g);
+		}
 	}
 
 	private void handleServerIdentify(String[] args) {

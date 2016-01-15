@@ -42,10 +42,14 @@ public class Board {
 
 	public void putTile(List<Move> moves) {
 		for (Move m : moves) {
-			Point p = m.getPoint();
-
-			putTile((int) p.getX(), (int) p.getY(), m.getTile());
+			putTile(m);
 		}
+	}
+
+	public void putTile(Move m) {
+		Point p = m.getPoint();
+
+		putTile(p.getX(), p.getY(), m.getTile());
 	}
 
 	/**

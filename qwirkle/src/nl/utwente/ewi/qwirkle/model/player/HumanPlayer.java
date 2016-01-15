@@ -23,7 +23,7 @@ public class HumanPlayer extends Player {
 	}
 
 	@Override
-	public List<Move> determineMove(Board board) {
+	public Object determineMove(Board board) {
 		if (this.g == null) {
 			// TODO throw error
 		}
@@ -33,26 +33,43 @@ public class HumanPlayer extends Player {
 		switch (pORe) {
 		case "p":
 			String awnser = this.g.getUI().askForMove();
-			
+
 			List<Move> list = parseMoveAwnser(awnser);
-			
-			if(list.equals(null)){
+
+			if (list.equals(null) || list.size() == 0) {
 				return determineMove(board);
-			}else{
+			} else {
 				return list;
 			}
 
 		case "e":
 			String awnserQ = this.g.getUI().askForTrade();
-			//TODO see how to return this
-			break;
+
+			List<Tile> rList = parseTradeAwnser(awnserQ);
+			
+			if(rList.size() == 0){
+				this.g.getUI().showError("Invalid input.");
+				return determineMove(board);
+			}else{
+				return rList;
+			}
 
 		default:
 			this.g.getUI().showError("Wrong argument.");
 			return determineMove(board);
 		}
+	}
 
-		return null;
+	private List<Tile> parseTradeAwnser(String trades){
+		List<Tile> result = new ArrayList<>();
+		
+		String[] mulTrades = trades.split(" ");
+		
+		for(String trade : mulTrades){
+			result.add(this.getHand().get(Integer.parseInt(trade)));
+		}
+		
+		return result;
 	}
 
 	private List<Move> parseMoveAwnser(String a) {
@@ -79,6 +96,22 @@ public class HumanPlayer extends Player {
 			result.add(mResult);
 		}
 
+		return result;
+	}
+	
+	public String printHand(){
+		String result = "";
+		
+		List<Tile> hand = this.getHand();
+		
+		result += "Current hand ("+hand.size()+") : \n";
+		
+		for(int i = 0; i < hand.size(); i++){
+			result += hand.get(i).toString()+"("+i+") \t";
+		}
+		
+		result += "\n";
+		
 		return result;
 	}
 
