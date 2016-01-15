@@ -42,5 +42,10 @@ public class Point {
 	public void setY(int y) {
 		this.y = y;
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		return (o instanceof Point) && ((Point) o).getX() == this.getX() && ((Point)o).getY() == this.getY();
+	}
 
 }
