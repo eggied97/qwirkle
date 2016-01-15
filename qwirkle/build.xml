@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="java-junit-template-project" default="test" basedir=".">
   <property name="main.build.dir" value="build/main" />  
-  <property name="main.src.dir" value="src/nl/utwente/ewi/qwirkle" />
+  <property name="main.src.dir" value="src/nl/utwente/ewi/qwirkle/" />
   <property name="test.build.dir" value="build/tests" />
-  <property name="test.src.dir" value="src/nl/utwente/ewi/qwirkle/tests" />
+  <property name="test.src.dir" value="tests" />
 
   <path id="classpath.base" />
 

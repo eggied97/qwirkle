@@ -1,4 +1,4 @@
-package nl.utwente.ewi.qwirkle.tests;
+package tests;
 
 import static org.junit.Assert.*;
 
