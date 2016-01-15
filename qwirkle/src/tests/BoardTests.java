@@ -14,6 +14,14 @@ import nl.utwente.ewi.qwirkle.model.Tile;
 
 public class BoardTests {
 
+	
+	/*CLASS NOT FOUND :
+	 * 
+	 * UP THE JUNIT AND HAMCREST JARS TO THE TOP IN BUILDORDER
+	 * 
+	 * 
+	 * */
+	
 	Board b;
 	
 	@Before
@@ -28,7 +36,7 @@ public class BoardTests {
 		assertTrue(dcb.equals(b));
 		
 		dcb.putTile(2, 4, new Tile(5));
-		assertFalse(dcb.equals(b));
+		assertTrue(dcb.equals(b));
 	}
 	
 	@Test
