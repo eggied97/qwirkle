@@ -2,6 +2,7 @@ package nl.utwente.ewi.qwirkle.tests;
 
 import static org.junit.Assert.*;
 
+import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,13 +34,13 @@ public class BoardTests {
 	
 	@Test
 	public void setMapTest(){
-		Map<Point, Tile> m = new HashMap<>();
-		m.put(new Point(12, 34), new Tile(12));
-		m.put(new Point(67, 89), new Tile(23));
+		Map<Dimension, Tile> m = new HashMap<>();
+		m.put(new Dimension(12, 34), new Tile(12));
+		m.put(new Dimension(67, 89), new Tile(23));
 		
 		b.setMap(m);
 		
-		///assertTrue(b.getMap.equals(m));		
+		assertTrue(b.getMap().equals(m));		
 	}
 	
 	@Test

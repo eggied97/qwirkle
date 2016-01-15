@@ -23,14 +23,21 @@
 	<target name="clean">
 		<delete dir="bin" />
 	</target>
-	
-	<!--<target name="junit" depends="compile">
+
+	<target name="junit" depends="init">
 		<junit printsummary="yes" haltonfailure="false">
-			
+			<classpath>
+				<path refid="classpath.tests" />
+				<pathelement location="${tests.build.dir}" />
+			</classpath>
+			<formatter type="brief" usefile="false" />
+			<batchtest>
+				<fileset dir="${test.src.dir}" includes="**/*Test*.java" />
+			</batchtest>
 		</junit>
-		
-	</target>-->
-	
+
+	</target>
+
 	<target depends="clean" name="cleanall" />
 	<target depends="build-subprojects,build-project" name="build" />
 	<target name="build-subprojects" />
@@ -55,5 +62,6 @@
 		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
 		<antcall target="build" />
 	</target>
-	<target name="test"></target>
+	<target name="test">
+	</target>
 </project>

@@ -257,7 +257,7 @@ public class Game implements resultCallback {
 				// TODO throw error
 			}
 
-			Player p = getPlayerByName(scoreNaam[1]);
+			Player p = getPlayerByName(scoreNaam[1]); 
 
 			if (p != null) {
 				scoreMap.put(p, Integer.parseInt(scoreNaam[0]));
