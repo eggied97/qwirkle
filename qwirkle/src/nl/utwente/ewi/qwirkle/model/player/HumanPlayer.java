@@ -1,6 +1,5 @@
 package nl.utwente.ewi.qwirkle.model.player;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,14 +22,15 @@ public class HumanPlayer extends Player {
 		this.g = g;
 	}
 
-	//TODO maybe move this logic to Game.java, so it gets a proper return statement - Egbert
+	// TODO maybe move this logic to Game.java, so it gets a proper return
+	// statement - Egbert
 	@Override
 	public Object determineMove(Board board) {
 		if (this.g == null) {
 			// TODO throw error
 		}
 
-		//TODO check if server supports it...
+		// TODO check if server supports it...
 		String pOReORc = this.g.getUI().askForPlayOrExchange();
 
 		switch (pOReORc) {
@@ -49,21 +49,21 @@ public class HumanPlayer extends Player {
 			String awnserQ = this.g.getUI().askForTrade();
 
 			List<Tile> rList = parseTradeAwnser(awnserQ);
-			
-			if(rList.size() == 0){
+
+			if (rList.size() == 0) {
 				this.g.getUI().showError("Invalid input.");
 				return determineMove(board);
-			}else{
+			} else {
 				return rList;
 			}
-			
+
 		case "c":
 			String messageToBeSent = this.g.getUI().askForChatMessage();
-			
-			if(messageToBeSent.split(" ").length >= 2){
-				//right format
+
+			if (messageToBeSent.split(" ").length >= 2) {
+				// right format
 				return messageToBeSent;
-			}else{			
+			} else {
 				return determineMove(board);
 			}
 
@@ -73,15 +73,15 @@ public class HumanPlayer extends Player {
 		}
 	}
 
-	private List<Tile> parseTradeAwnser(String trades){
+	private List<Tile> parseTradeAwnser(String trades) {
 		List<Tile> result = new ArrayList<>();
-		
+
 		String[] mulTrades = trades.split(" ");
-		
-		for(String trade : mulTrades){
+
+		for (String trade : mulTrades) {
 			result.add(this.getHand().get(Integer.parseInt(trade)));
 		}
-		
+
 		return result;
 	}
 
@@ -103,7 +103,7 @@ public class HumanPlayer extends Player {
 				return null;
 			}
 
-			Dimension pResult = new Dimension(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+			Point pResult = new Point(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
 			Move mResult = new Move(pResult, this.getHand().get(Integer.parseInt(parts[0])));
 
 			result.add(mResult);
@@ -111,20 +111,20 @@ public class HumanPlayer extends Player {
 
 		return result;
 	}
-	
-	public String printHand(){
+
+	public String printHand() {
 		String result = "";
-		
+
 		List<Tile> hand = this.getHand();
-		
-		result += "Current hand ("+hand.size()+") : \n";
-		
-		for(int i = 0; i < hand.size(); i++){
-			result += hand.get(i).toString()+"("+i+") \t";
+
+		result += "Current hand (" + hand.size() + ") : \n";
+
+		for (int i = 0; i < hand.size(); i++) {
+			result += hand.get(i).toString() + "(" + i + ") \t";
 		}
-		
+
 		result += "\n";
-		
+
 		return result;
 	}
 

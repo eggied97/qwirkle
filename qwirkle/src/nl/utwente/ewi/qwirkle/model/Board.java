@@ -10,7 +10,7 @@ import nl.utwente.ewi.qwirkle.model.exceptions.PlaceOccupiedException;
 
 public class Board {
 
-	private Map<Dimension, Tile> map;
+	private Map<Point, Tile> map;
 
 	public Board() {
 		map = new HashMap<>();
@@ -22,12 +22,12 @@ public class Board {
 	 * @param y
 	 */
 	public Tile getTile(int x, int y) {
-		Dimension d  = new Dimension(x,y);
+		Point d  = new Point(x,y);
 		return map.get(d);
 	}
 	
 	public void putTile(int x, int y, Tile t) {
-		Dimension d  = new Dimension(x,y);
+		Point d  = new Point(x,y);
 		map.put(d, t);
 	}
 
@@ -38,9 +38,9 @@ public class Board {
 	}
 
 	public void putTile(Move m) {
-		Dimension d = m.getDimension();
+		Point p = m.getPoint();
 
-		putTile((int)d.getWidth(), (int)d.getHeight(), m.getTile());
+		putTile(p.getX(), p.getY(), m.getTile());
 	}
 
 	/**
@@ -49,11 +49,11 @@ public class Board {
 	private double[] getBoundaries() {
 		double[] result = new double[4];
 
-		for (Dimension d : map.keySet()) {
-			result[2] = Math.max(result[2], d.getWidth());
-			result[3] = Math.max(result[3], d.getHeight());
-			result[0] = Math.min(result[0], d.getWidth());
-			result[1] = Math.min(result[1], d.getHeight());
+		for (Point d : map.keySet()) {
+			result[2] = Math.max(result[2], d.getX());
+			result[3] = Math.max(result[3], d.getY());
+			result[0] = Math.min(result[0], d.getX());
+			result[1] = Math.min(result[1], d.getY());
 		}
 
 		return result;
@@ -110,13 +110,13 @@ public class Board {
 		return this.map.isEmpty();
 	}
 
-	public void setMap(Map<Dimension, Tile> m) {
+	public void setMap(Map<Point, Tile> m) {
 		this.map.clear();
 		this.map = m;
 	}
 
 	public Board deepCopy() {
-		Map<Dimension, Tile> m = new HashMap<>();
+		Map<Point, Tile> m = new HashMap<>();
 		m.putAll(map);
 
 		Board b = new Board();
@@ -125,7 +125,7 @@ public class Board {
 		return b;
 	}
 	
-	public Map<Dimension, Tile> getMap() {
+	public Map<Point, Tile> getMap() {
 		return map;
 	}
 	

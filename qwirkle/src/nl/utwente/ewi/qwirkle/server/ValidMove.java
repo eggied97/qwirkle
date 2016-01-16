@@ -8,7 +8,6 @@ import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,10 +28,10 @@ public class ValidMove {
 		
 		Tile t = m.getTile();
 		
-		Dimension d = m.getDimension();
+		Point p = m.getPoint();
 		
-		int dX = (int)d.getWidth();
-		int dY = (int)d.getHeight();
+		int dX = p.getX();
+		int dY = p.getY();
 		
 		// Check whether the position is empty
 		if(b.getTile(dX, dY) != null) {
@@ -132,7 +131,7 @@ public class ValidMove {
 		Board boardCopy = b.deepCopy();
 		for(Move m : moves) {
 			if(isValidMove(m, boardCopy)) {
-				boardCopy.putTile((int)m.getDimension().getWidth(), (int)m.getDimension().getHeight(), m.getTile());
+				boardCopy.putTile(m.getPoint().getX(), m.getPoint().getY(), m.getTile());
 			} else {
 				return false;
 			}
@@ -142,7 +141,7 @@ public class ValidMove {
 	
 	public boolean validPointsX(List<Move> moves) {
 		for(int i = 0; i < moves.size() - 1; i++) {
-			if(moves.get(i).getDimension().getWidth() != moves.get(i+1).getDimension().getWidth()) {
+			if(moves.get(i).getPoint().getX() != moves.get(i+1).getPoint().getX()) {
 				System.out.println("Tiles don't fit together");
 				return false;
 			}
@@ -152,7 +151,7 @@ public class ValidMove {
 	
 	public boolean validPointsY(List<Move> moves) {
 		for(int i = 0; i < moves.size() - 1; i++) {
-			if(moves.get(i).getDimension().getHeight() != moves.get(i+1).getDimension().getHeight()) {
+			if(moves.get(i).getPoint().getY() != moves.get(i+1).getPoint().getY()) {
 				System.out.println("Tiles don't fit together");
 				return false;
 			}

@@ -28,14 +28,14 @@ public class ScoreCalc {
 
 		int direction = 0;
 		if (moves.size() > 1) {
-			if (moves.get(0).getDimension().getWidth() == moves.get(1).getDimension().getWidth()) {
+			if (moves.get(0).getPoint().getX() == moves.get(1).getPoint().getX()) {
 				direction = 1;
 			}
 		}
 
 		if (direction == 0) {
-			int py = (int)moves.get(0).getDimension().getHeight();
-			int px = (int)moves.get(0).getDimension().getWidth();
+			int py = moves.get(0).getPoint().getY();
+			int px = moves.get(0).getPoint().getX();
 			int incounter = 0;
 			
 			for (int i = px - 1; i > px - 6; i--) {
@@ -62,8 +62,8 @@ public class ScoreCalc {
 			
 			for (Move m : moves) {
 				int counter = 0;
-				int y = (int)m.getDimension().getHeight();
-				int x = (int)m.getDimension().getWidth();
+				int y = m.getPoint().getY();
+				int x = m.getPoint().getX();
 
 				for (int i = y - 1; i > y - 6; i--) {
 					if (b.getTile(x, i) != null) {
@@ -90,8 +90,8 @@ public class ScoreCalc {
 			}
 		} else {
 			
-			int py = (int)moves.get(0).getDimension().getHeight();
-			int px = (int)moves.get(0).getDimension().getWidth();
+			int py = moves.get(0).getPoint().getY();
+			int px = moves.get(0).getPoint().getX();
 			int incounter = 0;
 			
 			for (int i = py - 1; i > py - 6; i--) {
@@ -120,8 +120,8 @@ public class ScoreCalc {
 			for (Move m : moves) {
 				int counter = 0;
 
-				int y = (int)m.getDimension().getHeight();
-				int x = (int)m.getDimension().getWidth();
+				int y = m.getPoint().getY();
+				int x = m.getPoint().getX();
 
 				for (int i = x - 1; i > x - 6; i--) {
 					if (b.getTile(i, y) != null) {

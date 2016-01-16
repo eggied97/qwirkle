@@ -1,6 +1,5 @@
 package nl.utwente.ewi.qwirkle.server;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -184,7 +183,7 @@ public class HandleCommand {
 			int x = Integer.parseInt(b[0]);
 			int y = Integer.parseInt(b[1]);
 			Tile t = new Tile(tileNo);
-			Move m = new Move(new Dimension(x, y), t);
+			Move m = new Move(new Point(x, y), t);
 			tiles.add(t);
 			moves.add(m);
 		}

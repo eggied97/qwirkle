@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import nl.utwente.ewi.qwirkle.model.Board;
+import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 
 public class BoardTests {
@@ -41,9 +42,9 @@ public class BoardTests {
 	
 	@Test
 	public void setMapTest(){
-		Map<Dimension, Tile> m = new HashMap<>();
-		m.put(new Dimension(12, 34), new Tile(12));
-		m.put(new Dimension(67, 89), new Tile(23));
+		Map<Point, Tile> m = new HashMap<>();
+		m.put(new Point(12, 34), new Tile(12));
+		m.put(new Point(67, 89), new Tile(23));
 		
 		b.setMap(m);
 		
