@@ -23,6 +23,7 @@ public class HumanPlayer extends Player {
 		this.g = g;
 	}
 
+	//TODO maybe move this logic to Game.java, so it gets a proper return statement - Egbert
 	@Override
 	public Object determineMove(Board board) {
 		if (this.g == null) {
