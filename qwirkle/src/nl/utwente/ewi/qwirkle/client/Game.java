@@ -13,6 +13,7 @@ import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.model.exceptions.tooFewArgumentsException;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
@@ -32,7 +33,7 @@ public class Game implements resultCallback {
 	private List<Tile> tilesThatNeedToBeRemoved;
 
 	private Player turnPlayer;
-	
+
 	boolean isFirstRound = true;
 	int turnCount = 0;
 
@@ -77,85 +78,114 @@ public class Game implements resultCallback {
 
 	@Override
 	public void resultFromServer(String result) {
-		System.out.println("Back from server (game)> " + result.trim());
-		
-		String[] results = result.trim().split(" ");
-
-		if (results.length == 0) {
-			// TODO throw error
-		}
-
-		String command = results[0];
-		String[] args = Arrays.copyOfRange(results, 1, results.length);
-
-		switch (results[0]) {
-		case IProtocol.SERVER_TURN:
-			if (args.length != 1) {
-				// TODO throw error
-			}
-
-			handleTurnChange(args[0]);
-			break;
-
-		case IProtocol.SERVER_DRAWTILE:
-			if (args.length == 0) {
-				// TODO throw error
+		try{
+			if(protocol.DEBUG){
+				System.out.println("Back from server (game)> " + result.trim());
 			}
 			
-			if(nextDrawNeedToRemoveTiles){
-				if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
-					turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
-				}else{
-					//TODO is socket player -> throw error
+			String[] results = result.trim().split(" ");
+	
+			if (results.length == 0) {
+				// TODO throw error
+			}
+	
+			String command = results[0];
+			String[] args = Arrays.copyOfRange(results, 1, results.length);
+	
+			switch (results[0]) {
+			case IProtocol.SERVER_TURN:
+				if (args.length != 1) {
+					throw new tooFewArgumentsException(args.length);
 				}
+	
+				handleTurnChange(args[0]);
+				break;
+	
+			case IProtocol.SERVER_DRAWTILE:
+				if (args.length == 0) {
+					throw new tooFewArgumentsException(args.length);
+				}
+	
+				if (nextDrawNeedToRemoveTiles) {
+					if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
+						turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
+					} else {
+						// TODO is socket player -> throw error
+					}
+				}
+	
+				handleDrawTile(args);
+				break;
+	
+			case IProtocol.SERVER_GAMEEND:
+				if (args.length != players.size()) {
+					throw new tooFewArgumentsException(args.length);
+				}
+	
+				handleGameEnd(args);
+				break;
+	
+			case IProtocol.SERVER_PASS:
+				if (args.length != 1) {
+					throw new tooFewArgumentsException(args.length);
+				}
+	
+				handlePass(args[0]);
+				break;
+	
+			case IProtocol.SERVER_MOVE_PUT:
+				if (args.length < 1) {
+					throw new tooFewArgumentsException(args.length);
+				}
+	
+				handleMovePut(args);
+				break;
+	
+			case IProtocol.SERVER_MOVE_TRADE:
+				if (args.length < 1) {
+					throw new tooFewArgumentsException(args.length);
+				}
+	
+				handleMoveTrade(args);
+	
+				break;
+	
+			case IProtocol.SERVER_ERROR:
+				if (args.length < 1) {
+					throw new tooFewArgumentsException(args.length);
+				}
+	
+				switch (IProtocol.Error.valueOf(args[0])) {
+				case MOVE_INVALID:
+					this.UI.showError("The move you made was invalid.");
+					handleTurn(true);
+					break;
+	
+				case MOVE_TILES_UNOWNED:
+					this.UI.showError("The move you made was using tiles that you did not own.");
+					handleTurn(true);
+					break;
+	
+				case TRADE_FIRST_TURN:
+					this.UI.showError("You wanted to trade on your first turn, you cant do this.");
+					handleTurn(true);
+					break;
+	
+				default:
+					break;
+				}
+	
+				break;
 			}
-
-			handleDrawTile(args);
-			break;
-
-		case IProtocol.SERVER_GAMEEND:
-			if (args.length != players.size()) {
-				// TODO throw error
-			}
-
-			handleGameEnd(args);
-			break;
-
-		case IProtocol.SERVER_PASS:
-			if (args.length != 1) {
-				// TODO throw error
-			}
-
-			handlePass(args[0]);
-			break;
-
-		case IProtocol.SERVER_MOVE_PUT:
-			if (args.length < 1) {
-				// TODO throw error
-			}
-
-			handleMovePut(args);
-			break;
-
-		case IProtocol.SERVER_MOVE_TRADE:
-			if (args.length < 1) {
-				// TODO throw error
-			}
-
-			handleMoveTrade(args);
-
-			break;
-
-		case IProtocol.SERVER_ERROR:
-			// TODO handling them errors
-			break;
+		}catch(tooFewArgumentsException e){
+			this.UI.showError("Something went bad with the protocol message : " + e.getMessage());
 		}
 	}
 
 	private void handleTurnChange(String name) {
 		turnPlayer = getPlayerByName(name);
 
-		handleTurn();
+		handleTurn(false);
 	}
 
 	private void handleMoveTrade(String[] trades) {
@@ -183,15 +213,22 @@ public class Game implements resultCallback {
 		}
 	}
 
-	private void handleTurn() {
+	/**
+	 * @param fromError
+	 *            true if turn was replayed because of an error (Not count
+	 *            towards the total turns...
+	 */
+	private void handleTurn(boolean fromError) {
 		update();
-		
-		turnCount += 1;
-		
-		if(isFirstRound && turnCount == players.size()){
+
+		if (!fromError) {
+			turnCount += 1;
+		}
+
+		if (isFirstRound && turnCount == players.size()) {
 			isFirstRound = false;
 		}
-		
+
 		if (turnPlayer instanceof HumanPlayer) {
 			this.UI.printMessage("Turn changed, its your turn now");
 			this.UI.printMessage(((HumanPlayer) turnPlayer).printHand());
@@ -220,18 +257,18 @@ public class Game implements resultCallback {
 		if (input instanceof List<?>) {
 			if (((List<?>) input).get(0) instanceof Move) {
 				tilesThatNeedToBeRemoved = new ArrayList<>();
-				
-				for(Move m : (List<Move>) input){
+
+				for (Move m : (List<Move>) input) {
 					tilesThatNeedToBeRemoved.add(m.getTile());
 				}
-				
+
 				nextDrawNeedToRemoveTiles = true;
-				
+
 				c.sendMessage(protocol.getInstance().clientPutMove((List<Move>) input));
 			} else if (((List<?>) input).get(0) instanceof Tile) {
 				tilesThatNeedToBeRemoved = new ArrayList<>();
 				tilesThatNeedToBeRemoved.addAll((List<Tile>) input);
-				
+
 				nextDrawNeedToRemoveTiles = true;
 
 				c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
@@ -240,11 +277,11 @@ public class Game implements resultCallback {
 	}
 
 	private void handleDrawTile(String[] tiles) {
-		for(Player p : players){
+		for (Player p : players) {
 			if (p instanceof HumanPlayer || p instanceof ComputerPlayer) {
 				p.bagToHand(tiles);
 			}
-		}		
+		}
 	}
 
 	private void handleGameEnd(String[] args) {
@@ -257,7 +294,7 @@ public class Game implements resultCallback {
 				// TODO throw error
 			}
 
-			Player p = getPlayerByName(scoreNaam[1]); 
+			Player p = getPlayerByName(scoreNaam[1]);
 
 			if (p != null) {
 				scoreMap.put(p, Integer.parseInt(scoreNaam[0]));

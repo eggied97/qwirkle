@@ -7,7 +7,7 @@ import nl.utwente.ewi.qwirkle.model.*;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 
 public class protocol implements IProtocol {
-	private final static boolean DEBUG = true;
+	public final static boolean DEBUG = true;
 	
 	public protocol() {
 	}
