@@ -84,8 +84,7 @@ public class Game implements resultCallback {
 
 			String[] results = result.trim().split(" ");
 
-			if (results.length == 0) {
-				// TODO throw error
+			if (results.length == 0) {// TODO throw error
 			}
 
 			String command = results[0];
@@ -219,8 +218,7 @@ public class Game implements resultCallback {
 	}
 
 	private void handleMoveTrade(String[] trades) {
-		// TODO implement?
-
+		this.UI.printMessage(turnPlayer.getName() + " just traded " + trades[0] + " tiles.");
 	}
 
 	private void handleMovePut(String[] moves) {
