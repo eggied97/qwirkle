@@ -29,9 +29,10 @@ public class HumanPlayer extends Player {
 			// TODO throw error
 		}
 
-		String pORe = this.g.getUI().askForPlayOrExchange();
+		//TODO check if server supports it...
+		String pOReORc = this.g.getUI().askForPlayOrExchange();
 
-		switch (pORe) {
+		switch (pOReORc) {
 		case "p":
 			String awnser = this.g.getUI().askForMove();
 
@@ -53,6 +54,16 @@ public class HumanPlayer extends Player {
 				return determineMove(board);
 			}else{
 				return rList;
+			}
+			
+		case "c":
+			String messageToBeSent = this.g.getUI().askForChatMessage();
+			
+			if(messageToBeSent.split(" ").length >= 2){
+				//right format
+				return messageToBeSent;
+			}else{			
+				return determineMove(board);
 			}
 
 		default:

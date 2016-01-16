@@ -28,6 +28,8 @@ public interface UserInterface {
 	public String askForMove();
 
 	public String askForTrade();
+	
+	public String askForChatMessage();
 
 	// Error handling
 	public void showError(String message);

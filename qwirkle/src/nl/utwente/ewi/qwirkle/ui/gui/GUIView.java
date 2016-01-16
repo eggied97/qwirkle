@@ -79,4 +79,10 @@ public class GUIView implements UserInterface {
 		return null;
 	}
 
+	@Override
+	public String askForChatMessage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

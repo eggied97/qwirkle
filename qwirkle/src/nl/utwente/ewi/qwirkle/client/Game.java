@@ -1,6 +1,7 @@
 package nl.utwente.ewi.qwirkle.client;
 
 import java.awt.Dimension;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -78,34 +79,34 @@ public class Game implements resultCallback {
 
 	@Override
 	public void resultFromServer(String result) {
-		try{
-			if(protocol.DEBUG){
+		try {
+			if (protocol.DEBUG) {
 				System.out.println("Back from server (game)> " + result.trim());
 			}
-			
+
 			String[] results = result.trim().split(" ");
-	
+
 			if (results.length == 0) {
 				// TODO throw error
 			}
-	
+
 			String command = results[0];
 			String[] args = Arrays.copyOfRange(results, 1, results.length);
-	
+
 			switch (results[0]) {
 			case IProtocol.SERVER_TURN:
 				if (args.length != 1) {
 					throw new tooFewArgumentsException(args.length);
 				}
-	
+
 				handleTurnChange(args[0]);
 				break;
-	
+
 			case IProtocol.SERVER_DRAWTILE:
 				if (args.length == 0) {
 					throw new tooFewArgumentsException(args.length);
 				}
-	
+
 				if (nextDrawNeedToRemoveTiles) {
 					if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
 						turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
@@ -113,73 +114,104 @@ public class Game implements resultCallback {
 						// TODO is socket player -> throw error
 					}
 				}
-	
+
 				handleDrawTile(args);
 				break;
-	
+
 			case IProtocol.SERVER_GAMEEND:
 				if (args.length != players.size()) {
 					throw new tooFewArgumentsException(args.length);
 				}
-	
+
 				handleGameEnd(args);
 				break;
-	
+
 			case IProtocol.SERVER_PASS:
 				if (args.length != 1) {
 					throw new tooFewArgumentsException(args.length);
 				}
-	
+
 				handlePass(args[0]);
 				break;
-	
+
 			case IProtocol.SERVER_MOVE_PUT:
 				if (args.length < 1) {
 					throw new tooFewArgumentsException(args.length);
 				}
-	
+
 				handleMovePut(args);
 				break;
-	
+
 			case IProtocol.SERVER_MOVE_TRADE:
 				if (args.length < 1) {
 					throw new tooFewArgumentsException(args.length);
 				}
-	
+
 				handleMoveTrade(args);
-	
+
 				break;
-	
+
+			case IProtocol.SERVER_CHAT:
+				if (args.length < 3) {
+					throw new tooFewArgumentsException(args.length);
+				}
+
+				handleIncommingChatMessage(args);
+				break;
+
 			case IProtocol.SERVER_ERROR:
 				if (args.length < 1) {
 					throw new tooFewArgumentsException(args.length);
 				}
-	
+
 				switch (IProtocol.Error.valueOf(args[0])) {
 				case MOVE_INVALID:
 					this.UI.showError("The move you made was invalid.");
 					handleTurn(true);
 					break;
-	
+
 				case MOVE_TILES_UNOWNED:
 					this.UI.showError("The move you made was using tiles that you did not own.");
 					handleTurn(true);
 					break;
-	
+
 				case TRADE_FIRST_TURN:
 					this.UI.showError("You wanted to trade on your first turn, you cant do this.");
 					handleTurn(true);
 					break;
-	
+
+				case INVALID_CHANNEL:
+					this.UI.showError(
+							"You wanted to send a message to a unknow channel. \n Usernames are uppercase specific , or use `global`.");
+					handleTurn(true);
+					break;
+
 				default:
 					break;
 				}
-	
+
 				break;
 			}
-		}catch(tooFewArgumentsException e){
+		} catch (tooFewArgumentsException e) {
 			this.UI.showError("Something went bad with the protocol message : " + e.getMessage());
 		}
+	}
+
+	private void handleIncommingChatMessage(String[] args) {
+
+		Boolean isGlobal = args[0].equals("global");
+		String sender = args[1];
+
+		String message = Arrays.copyOfRange(args, 2, args.length).toString();
+
+		// For change of color between private/global we use showError and
+		// print message
+		if (isGlobal) {
+			this.UI.printMessage(sender + " > " + message);
+		} else {
+			this.UI.showError(sender + " > " + message);
+		}
+
 	}
 
 	private void handleTurnChange(String name) {
@@ -189,6 +221,7 @@ public class Game implements resultCallback {
 	}
 
 	private void handleMoveTrade(String[] trades) {
+		// TODO implement?
 
 	}
 
@@ -273,6 +306,14 @@ public class Game implements resultCallback {
 
 				c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
 			}
+		} else if (input instanceof String) {
+			// chat message
+			String msg = (String) input;
+
+			String[] msgs = msg.split(" ");
+			String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
+
+			c.sendMessage(protocol.getInstance().clientChat(msgs[0], message.toString()));
 		}
 	}
 

@@ -17,6 +17,7 @@ import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.model.player.SocketPlayer;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
+import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
@@ -30,7 +31,7 @@ public class Main implements resultCallback {
 
 	private static Player me;
 
-	private static IProtocol.Feature[] implementedFeatures = new IProtocol.Feature[] {};
+	private static IProtocol.Feature[] implementedFeatures = {Feature.CHAT};
 	private static List<IProtocol.Feature> usingFeatures;
 
 	public static void main(String[] args) {
