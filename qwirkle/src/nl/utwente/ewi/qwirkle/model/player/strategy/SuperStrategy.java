@@ -7,7 +7,7 @@ import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Tile;
 
-public class SuperStrategy implements Strategy{
+public class SuperStrategy implements Strategy {
 
 	@Override
 	public String getName() {
@@ -16,10 +16,16 @@ public class SuperStrategy implements Strategy{
 
 	@Override
 	public List<Move> determineMove(Board b, List<Tile> hand) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
-	
+
+	@Override
+	public List<Tile> determineTrade(List<Tile> hand) {
+		//dont trade valid neighbours
+		return null;
+	}
+
 	public List<Move> getBestPossibleMove(Board b, List<Tile> hand) {
 		List<Move> bestMoves = new ArrayList<>();
 
@@ -33,9 +39,9 @@ public class SuperStrategy implements Strategy{
 
 	public List<List<Tile>> getAllPossibleTilePairs(Board b, List<Tile> hand) {
 		List<List<Tile>> result = new ArrayList<>();
-		
-		for(Tile t : hand){
-			
+
+		for (Tile t : hand) {
+
 		}
 
 		return result;
@@ -46,6 +52,5 @@ public class SuperStrategy implements Strategy{
 
 		return result;
 	}
-
 
 }

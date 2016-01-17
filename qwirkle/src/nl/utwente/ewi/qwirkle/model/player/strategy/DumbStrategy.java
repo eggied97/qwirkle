@@ -45,4 +45,26 @@ public class DumbStrategy implements Strategy {
 		return result;
 	}
 
+	@Override
+	public List<Tile> determineTrade(List<Tile> hand) {
+		List<Tile> result = new ArrayList<>();
+		List<Tile> handCopy = new ArrayList<>(hand);
+		
+		int numOfTilesNeededToTrade = 0;
+		
+		while(numOfTilesNeededToTrade < 1){
+			numOfTilesNeededToTrade = (int)(Math.random() * handCopy.size());
+		}
+		
+		for(int i = 0; i < numOfTilesNeededToTrade; i++){
+			int index = (int)(Math.random() * (handCopy.size() - 1));
+
+			result.add(hand.get(index));
+			handCopy.remove(index);
+		}
+			
+		
+		return result;
+	}
+
 }

@@ -32,7 +32,7 @@ public class TUIView implements UserInterface {
 		String name = util.readString(QUESTION_ASK_NAME);
 
 		if(name.equals("COMPUTERMAN")){
-			return new ComputerPlayer("pcman1");
+			return new ComputerPlayer("pcman" + (int)(Math.random() * 4));
 		}
 		
 		return new HumanPlayer(name);

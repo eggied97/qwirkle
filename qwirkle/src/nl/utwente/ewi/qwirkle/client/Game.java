@@ -60,6 +60,10 @@ public class Game implements resultCallback {
 		this.usingFeatures = usingFeatures;
 	}
 
+	/**
+	 * 
+	 * @return the UserInterface instance that is used
+	 */
 	public UserInterface getUI() {
 		return this.UI;
 	}
@@ -68,6 +72,9 @@ public class Game implements resultCallback {
 		// TODO implement
 	}
 
+	/**
+	 * Prints the current state of the board on the UI instance
+	 */
 	private void update() {
 		if (UI instanceof TUIView) {
 			this.UI.printMessage("Current board situation : ");
@@ -194,6 +201,11 @@ public class Game implements resultCallback {
 		}
 	}
 
+	/**
+	 * handles an incomming chat message
+	 * 
+	 * @param args
+	 */
 	private void handleIncommingChatMessage(String[] args) {
 
 		Boolean isGlobal = args[0].equals("global");
@@ -211,16 +223,35 @@ public class Game implements resultCallback {
 
 	}
 
+	/**
+	 * handles an turn change
+	 * 
+	 * @param name
+	 *            - name of this turn's player
+	 */
 	private void handleTurnChange(String name) {
 		turnPlayer = getPlayerByName(name);
 
 		handleTurn(false);
 	}
 
+	/**
+	 * handles an trade that a player made
+	 * 
+	 * @param trades
+	 *            - number of tiles traded
+	 */
 	private void handleMoveTrade(String[] trades) {
 		this.UI.printMessage(turnPlayer.getName() + " just traded " + trades[0] + " tiles.");
 	}
 
+	/**
+	 * handles an move a player made (and put it in the
+	 * {@link nl.utwente.ewi.qwirkle.model.Board})
+	 * 
+	 * @param moves
+	 *            - String representation of the move set
+	 */
 	private void handleMovePut(String[] moves) {
 		for (String m : moves) {
 			String[] parts = m.split("@");
@@ -269,6 +300,12 @@ public class Game implements resultCallback {
 		}
 	}
 
+	/**
+	 * handles an pass because the player could not do anything
+	 * 
+	 * @param name
+	 *            - name of the player that has passed
+	 */
 	private void handlePass(String name) {
 		Player p = getPlayerByName(name);
 
@@ -281,6 +318,11 @@ public class Game implements resultCallback {
 		}
 	}
 
+	/**
+	 * handles the input from the user, needs to change tho :/
+	 * 
+	 * @param input
+	 */
 	private void handlePlayerInput(Object input) {
 
 		if (input instanceof List<?>) {
@@ -313,6 +355,12 @@ public class Game implements resultCallback {
 		}
 	}
 
+	/**
+	 * handles when the user gets new tiles
+	 * 
+	 * @param tiles
+	 *            - the tiles recieved
+	 */
 	private void handleDrawTile(String[] tiles) {
 		System.err.println("drawTile ");
 		for (Player p : players) {
@@ -322,6 +370,12 @@ public class Game implements resultCallback {
 		}
 	}
 
+	/**
+	 * handles the situation that a game has ended
+	 * 
+	 * @param args
+	 *            - name of players with the score
+	 */
 	private void handleGameEnd(String[] args) {
 		Map<Player, Integer> scoreMap = new HashMap<>();
 
@@ -345,6 +399,13 @@ public class Game implements resultCallback {
 
 	}
 
+	/**
+	 * 
+	 * @param name
+	 *            - name of player we need to find
+	 * @return {@link nl.utwente.ewi.qwirkle.model.player} instance which
+	 *         corresponds with the name
+	 */
 	private Player getPlayerByName(String name) {
 		for (Player p : players) {
 			if (p.getName().equals(name)) {

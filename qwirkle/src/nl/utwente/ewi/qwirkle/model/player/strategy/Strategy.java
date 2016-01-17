@@ -23,6 +23,8 @@ public interface Strategy {
 	 * @return the best move set, null if we need to trade
 	 */
 	public List<Move> determineMove(Board b, List<Tile> hand);
+	
+	public List<Tile> determineTrade(List<Tile> hand);
 
 //TODO function for trading
 

@@ -47,8 +47,8 @@ public class Game {
 	}
 	
 	public boolean gameEnd() {
-		if(!getBag().isEmpty() || !board.isSquare()) {
-			return false;
+		if(getBag().isEmpty() || board.isSquare()) {
+			return true;
 		}
 		for(ClientHandler ch : players) {
 			if(ch.getPlayer().getHand().isEmpty()) {

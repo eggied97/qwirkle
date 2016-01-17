@@ -15,25 +15,25 @@ import nl.utwente.ewi.qwirkle.server.ValidMove;
 public class ComputerPlayer extends Player {
 
 	private Strategy strat;
-	
+
 	public ComputerPlayer(String name) {
 		this(name, new DumbStrategy());
 	}
-	
-	public ComputerPlayer(String name, Strategy strat){
+
+	public ComputerPlayer(String name, Strategy strat) {
 		super(name);
 		this.strat = strat;
 	}
 
 	@Override
-	public List<Move> determineMove(Board board) {
+	public Object determineMove(Board board) {
 
 		List<Move> bestMove = this.strat.determineMove(board, getHand());
-		
-		if(bestMove.size() != 0){
+
+		if (bestMove.size() != 0) {
 			return bestMove;
+		} else {
+			return strat.determineTrade(getHand());
 		}
-		
-		return null;
 	}
 }
