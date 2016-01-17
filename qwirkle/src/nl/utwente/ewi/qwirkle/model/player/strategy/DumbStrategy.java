@@ -29,6 +29,7 @@ public class DumbStrategy implements Strategy{
 			
 			Tile t =hand.get(i);
 			
+//TODO remove this whilelus
 			while(!moveIsValid){				
 				//check every empty spot
 				for(Point p : emptySpots){
