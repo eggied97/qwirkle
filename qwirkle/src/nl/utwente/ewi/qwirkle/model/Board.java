@@ -84,19 +84,20 @@ public class Board {
 
 		double[] bound = getBoundaries();
 		String result = "";
-		String testFormat1 = "";
+		String cellText = "";
 		
 		for (int y = (int) bound[1] - 1; y < bound[3] + 2; y++) {
 			for (int x = (int) bound[0] - 1; x < bound[2] + 2; x++) {
 				Tile t = getTile(x, y);
+				
 				if (t != null) {
-					testFormat1 = "  " + t.toString();
+					cellText = "  " + t.toString();
 					//result += getTile(x, y).toString();
 				} else {
-					testFormat1 = "(" + x + "," + y + ")";
+					cellText = "(" + x + "," + y + ")";
 					//result += "(" + x + "," + y + ")";
 				}
-				result += String.format("%-10s%-5s", testFormat1, "|");
+				result += String.format("%-10s%-5s", cellText, "|");
 				//result += " | ";
 			}
 			result = result.trim().substring(0, result.trim().length()-1);

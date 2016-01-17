@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import nl.utwente.ewi.qwirkle.client.connect.Client;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
@@ -196,10 +195,17 @@ public class HandleCommand {
 			return;
 		}
 		ch.getGame().getBoard().putTile(moves);
+		
 		ch.getPlayer().addScore(ScoreCalc.getInstance().calculate(ch.getGame().getBoard(), moves));
+		
 		server.broadcast(ch.getGame().getPlayers(), protocol.getInstance().serverMovePut(moves));
+		
 		List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
 		ch.getPlayer().bagToHand(newTiles);
+		
+		ch.sendMessage(protocol.getInstance().serverDrawTile(newTiles));
+		
+		
 		handleTurn(ch);
 	}
 	

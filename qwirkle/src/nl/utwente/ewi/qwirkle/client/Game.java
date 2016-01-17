@@ -314,6 +314,7 @@ public class Game implements resultCallback {
 	}
 
 	private void handleDrawTile(String[] tiles) {
+		System.err.println("drawTile ");
 		for (Player p : players) {
 			if (p instanceof HumanPlayer || p instanceof ComputerPlayer) {
 				p.bagToHand(tiles);

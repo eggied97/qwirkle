@@ -1,12 +1,9 @@
 package nl.utwente.ewi.qwirkle.server.score;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
-import nl.utwente.ewi.qwirkle.model.Point;
-import nl.utwente.ewi.qwirkle.model.Tile;
 
 public class ScoreCalc {
 
