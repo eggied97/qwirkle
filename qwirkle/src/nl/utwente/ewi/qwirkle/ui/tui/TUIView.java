@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import nl.utwente.ewi.qwirkle.util;
 import nl.utwente.ewi.qwirkle.client.Game;
 import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
@@ -30,6 +31,10 @@ public class TUIView implements UserInterface {
 		// First ask name, then create a player instance, then return
 		String name = util.readString(QUESTION_ASK_NAME);
 
+		if(name.equals("COMPUTERMAN")){
+			return new ComputerPlayer("pcman1");
+		}
+		
 		return new HumanPlayer(name);
 	}
 

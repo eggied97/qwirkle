@@ -28,7 +28,7 @@ public class protocol implements IProtocol {
 		String result = "";
 
 		result += this.CLIENT_IDENTIFY;
-		result += " " + name;
+		result += " " + name + " ";
 
 		int count = 0;
 
