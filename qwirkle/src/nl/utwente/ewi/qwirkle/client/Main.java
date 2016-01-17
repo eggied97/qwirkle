@@ -23,8 +23,8 @@ import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
 public class Main implements resultCallback {
 
-	private static final String USAGE_SERVER = "Requires 2 arguments: <host> <port>";
-	private static Client client;
+	private static final String USAGE_server = "Requires 2 arguments: <host> <port>";
+	private static Client server;
 
 	private static UserInterface UI;
 	private static protocol prot;
@@ -45,7 +45,7 @@ public class Main implements resultCallback {
 		prot = protocol.getInstance();
 		setupConnectionToServer(args);
 
-		client.setCallback(this);
+		server.setCallback(this);
 
 		authenticateUser();
 	}
@@ -62,7 +62,7 @@ public class Main implements resultCallback {
 
 	private static void setupConnectionToServer(String[] args) {
 		if (args.length != 2) {
-			System.out.println(USAGE_SERVER);
+			System.out.println(USAGE_server);
 			System.exit(0);
 		}
 
@@ -84,15 +84,15 @@ public class Main implements resultCallback {
 
 		}
 
-		client = new Client(host, port);
-		client.start();
+		server = new Client(host, port);
+		server.start();
 	}
 
 	private static void sendMessageToServer(String message) {
-		if (client != null && client.isAlive()) {
-			client.sendMessage(message);
+		if (server != null && server.isAlive()) {
+			server.sendMessage(message);
 		} else {
-			UI.showError("Wanted to send message via a client that has not been started");
+			UI.showError("Wanted to send message via a server that has not been started");
 			System.exit(0);
 		}
 	}
@@ -165,8 +165,8 @@ public class Main implements resultCallback {
 			playersInGame.add(p);
 		}
 
-		Game g = new Game(UI, playersInGame, client, usingFeatures);
-		client.setCallback(g);
+		Game g = new Game(UI, playersInGame, server, usingFeatures);
+		server.setCallback(g);
 		
 		if(me instanceof HumanPlayer){
 			((HumanPlayer) me).setGame(g);

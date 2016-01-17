@@ -11,6 +11,7 @@ public abstract class Player {
 	private String name;
 	private List<Tile> hand;
 	private int score = 0;
+
 	/**
 	 * 
 	 * @param name
@@ -72,21 +73,39 @@ public abstract class Player {
 
 		bagToHand(lTiles);
 	}
-	
-	public void removeTilesFromHand(List<Tile> tiles){
-		for(Tile t : tiles){
+
+	/**
+	 * removes the list of tiles from the players hand (after a trade / move)
+	 * 
+	 * @param tiles
+	 *            that need to be removed
+	 */
+	public void removeTilesFromHand(List<Tile> tiles) {
+		for (Tile t : tiles) {
 			this.hand.remove(t);
 		}
 	}
 
+	/**
+	 * @return the hand of the player
+	 */
 	public List<Tile> getHand() {
 		return this.hand;
 	}
 
+	/**
+	 * adds the score of the move to the total score
+	 * 
+	 * @param score
+	 *            of the move
+	 */
 	public void addScore(int score) {
 		this.score += score;
 	}
-	
+
+	/** 
+	 * @return the score of the player
+	 */
 	public int getScore() {
 		return score;
 	}

@@ -58,9 +58,15 @@ public class Tile {
 		return this.getShape() == t.getShape() ^ this.getColor() == t.getColor();
 	}
 
+	@Override
 	public boolean equals(Object t) {
 		return (t instanceof Tile) && ((Tile) t).getShape() == this.getShape()
 				&& ((Tile) t).getColor() == this.getColor();
+	}
+
+	@Override
+	public int hashCode() {
+		return getIntOfTile();
 	}
 
 }
