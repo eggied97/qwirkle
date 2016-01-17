@@ -24,4 +24,6 @@ public interface Strategy {
 	 */
 	public List<Move> determineMove(Board b, List<Tile> hand);
 
+//TODO function for trading
+
 }
