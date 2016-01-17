@@ -20,7 +20,7 @@ public class ValidMove {
 	
 	private List<Move> moveSet;
 	
-	private boolean isValidMove(Move m, Board b) {
+	public boolean isValidMove(Move m, Board b) {
 		List<Tile> tileSetXR = new ArrayList<>();
 		List<Tile> tileSetXL = new ArrayList<>();
 		List<Tile> tileSetYR = new ArrayList<>();

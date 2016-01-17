@@ -1,6 +1,7 @@
 package nl.utwente.ewi.qwirkle.model;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +106,29 @@ public class Board {
 		return result;
 
 	}
+	
+	public List<Point> getEmptySpots(){
+		List<Point> result = new ArrayList<>();
+		
+		if (this.isEmpty()) {
+			result.add(new Point(0, 0));
+		}else{
+	
+			double[] bound = getBoundaries();
+			
+			
+			for (int y = (int) bound[1] - 1; y < bound[3] + 2; y++) {
+				for (int x = (int) bound[0] - 1; x < bound[2] + 2; x++) {
+					Tile t = getTile(x, y);
+					if (t == null) {
+						result.add(new Point(x, y));
+					}
+				}				
+			}
+		}
+		
+		return result;
+	}
 
 	public boolean isEmpty() {
 		return this.map.isEmpty();
@@ -129,10 +153,10 @@ public class Board {
 		return map;
 	}
 	
+	@Override
 	public boolean equals(Object b) {
 		return ((b instanceof Board) && ((Board)b).getMap().equals(this.getMap()));
 	}
-	
 	
 
 }
