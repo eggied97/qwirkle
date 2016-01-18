@@ -76,7 +76,7 @@ public class HumanPlayer extends Player {
 	private List<Tile> parseTradeAwnser(String trades) {
 		List<Tile> result = new ArrayList<>();
 
-		String[] mulTrades = trades.split(" ");
+		String[] mulTrades = trades.trim().split(" ");
 
 		for (String trade : mulTrades) {
 			result.add(this.getHand().get(Integer.parseInt(trade)));
