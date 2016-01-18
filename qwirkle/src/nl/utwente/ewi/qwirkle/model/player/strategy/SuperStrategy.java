@@ -66,7 +66,6 @@ public class SuperStrategy implements Strategy {
 
 					done = true;
 				} else {
-
 					for (Entry<Tile, Integer> e : possibleTrade.entrySet()) {
 						if (e.getValue() == i && !done) {
 							result.add(e.getKey());

@@ -91,7 +91,7 @@ public class Board {
 				Tile t = getTile(x, y);
 				
 				if (t != null) {
-					cellText = "  " + t.toString();
+					cellText = "  " + t.getHumanReadableString();
 					//result += getTile(x, y).toString();
 				} else {
 					cellText = "(" + x + "," + y + ")";

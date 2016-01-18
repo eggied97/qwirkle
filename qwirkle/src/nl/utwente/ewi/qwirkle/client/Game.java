@@ -291,7 +291,7 @@ public class Game implements resultCallback {
 
 		if (turnPlayer instanceof HumanPlayer) {
 			this.UI.printMessage("Turn changed, its your turn now");
-			this.UI.printMessage(((HumanPlayer) turnPlayer).printHand());
+			this.UI.showHand(turnPlayer.getHand());
 			handlePlayerInput(((HumanPlayer) turnPlayer).determineMove(board));
 		} else if (turnPlayer instanceof ComputerPlayer) {
 			handlePlayerInput(((ComputerPlayer) turnPlayer).determineMove(board));
@@ -379,6 +379,8 @@ public class Game implements resultCallback {
 	private void handleGameEnd(String[] args) {
 		Map<Player, Integer> scoreMap = new HashMap<>();
 
+		
+		
 		for (String a : args) {
 			String[] scoreNaam = a.split(",");
 

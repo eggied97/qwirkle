@@ -47,7 +47,7 @@ public class Tile {
 	}
 
 	public String getHumanReadableString() {
-		return this.getColor() + "_" + this.getShape();
+		return this.getColor().toString() + "_" + this.getShape().toString();
 	}
 
 	public int getIntOfTile() {
