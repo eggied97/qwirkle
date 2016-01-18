@@ -33,7 +33,7 @@ public class ScoreCalc {
 		if (direction == 0) {
 			int py = moves.get(0).getPoint().getY();
 			int px = moves.get(0).getPoint().getX();
-			int incounter = 0;
+			int incounter = 1;
 			
 			for (int i = px - 1; i > px - 6; i--) {
 				if (b.getTile(i, py) != null) {
@@ -51,7 +51,7 @@ public class ScoreCalc {
 				}
 			}
 			
-			if(incounter == 5) {
+			if(incounter == 6) {
 				multiplier *= 2;
 			}
 			
@@ -82,14 +82,14 @@ public class ScoreCalc {
 					multiplier *= 2;
 				}
 
-				score += counter + 1;
+				score += counter;
 
 			}
 		} else {
 			
 			int py = moves.get(0).getPoint().getY();
 			int px = moves.get(0).getPoint().getX();
-			int incounter = 0;
+			int incounter = 1;
 			
 			for (int i = py - 1; i > py - 6; i--) {
 				if (b.getTile(px, i) != null) {
@@ -107,7 +107,7 @@ public class ScoreCalc {
 				}
 			}
 			
-			if(incounter == 5) {
+			if(incounter == 6) {
 				multiplier *= 2;
 			}
 			
@@ -140,7 +140,7 @@ public class ScoreCalc {
 					multiplier *= 2;
 				}
 
-				score += counter + 1;
+				score += counter;
 
 			}
 		}

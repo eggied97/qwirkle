@@ -67,9 +67,7 @@ public class ValidMove {
 		}
 		// Vertical line above the point
 		for(int i = dY - 1; i > dY - 6; i--) {
-			System.out.println("hoi");
 			if(b.getTile(dX, i) != null) {
-				System.out.println("Haai");
 				tileSetYR.add(b.getTile(dX, i));
 			} else {
 				i = dY - 5;

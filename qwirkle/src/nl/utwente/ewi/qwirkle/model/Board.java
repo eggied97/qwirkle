@@ -97,7 +97,7 @@ public class Board {
 					cellText = "(" + x + "," + y + ")";
 					//result += "(" + x + "," + y + ")";
 				}
-				result += String.format("%-10s%-5s", cellText, "|");
+				result += String.format("%-8s%-5s", cellText, "|");
 				//result += " | ";
 			}
 			result = result.trim().substring(0, result.trim().length()-1);
