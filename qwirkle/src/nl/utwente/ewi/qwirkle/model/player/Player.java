@@ -39,6 +39,14 @@ public abstract class Player {
 	 */
 	public abstract Object determineMove(Board board);
 
+	public abstract String determineAction();
+
+	public abstract List<Tile> determineTradeMove();
+
+	public abstract List<Move> determinePutMove();
+
+	public abstract String sendChat();
+
 	/**
 	 * Make the move that has been determined
 	 * 
@@ -103,7 +111,7 @@ public abstract class Player {
 		this.score += score;
 	}
 
-	/** 
+	/**
 	 * @return the score of the player
 	 */
 	public int getScore() {

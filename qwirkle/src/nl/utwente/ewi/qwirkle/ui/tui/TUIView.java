@@ -3,6 +3,7 @@ package nl.utwente.ewi.qwirkle.ui.tui;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import nl.utwente.ewi.qwirkle.util;
 import nl.utwente.ewi.qwirkle.client.Game;
@@ -23,7 +24,11 @@ public class TUIView implements UserInterface {
 
 	
 	public TUIView() {
-
+		Scanner s = new Scanner(System.in);
+		
+		while(s.hasNextLine()){
+			System.out.println(s.nextLine());
+		}
 	}
 
 	@Override

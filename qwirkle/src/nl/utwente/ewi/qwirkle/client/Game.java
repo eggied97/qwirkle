@@ -379,9 +379,11 @@ public class Game implements resultCallback {
 	private void handleGameEnd(String[] args) {
 		Map<Player, Integer> scoreMap = new HashMap<>();
 
+		String errorOrWin = args[0];
 		
+		String[] newArgs = Arrays.copyOfRange(args, 1 , args.length);
 		
-		for (String a : args) {
+		for (String a : newArgs) {
 			String[] scoreNaam = a.split(",");
 
 			if (scoreNaam.length != 2) {
@@ -397,6 +399,7 @@ public class Game implements resultCallback {
 			}
 		}
 
+		this.UI.printMessage("Win by " + (errorOrWin.equals("WIN") ? "win" : "error") + " :");
 		this.UI.showScore(scoreMap);
 
 	}

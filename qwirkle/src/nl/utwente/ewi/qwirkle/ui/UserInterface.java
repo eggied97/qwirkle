@@ -30,6 +30,8 @@ public interface UserInterface {
 	public String askForTrade();
 	
 	public String askForChatMessage();
+	
+	
 
 	// Error handling
 	public void showError(String message);

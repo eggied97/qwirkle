@@ -27,17 +27,31 @@ public class Board {
 		return map.get(d);
 	}
 	
+	/**
+	 * Creates a new <code> Point </code> and put the <code> Tile </code> at this position
+	 * @param x
+	 * @param y
+	 * @param t
+	 */
 	public void putTile(int x, int y, Tile t) {
 		Point d  = new Point(x,y);
 		map.put(d, t);
 	}
-
+	
+	/**
+	 * Put all specified moves on the <code> Board </code>
+	 * @param moves
+	 */
 	public void putTile(List<Move> moves) {
 		for (Move m : moves) {
 			putTile(m);
 		}
 	}
 
+	/**
+	 * Put the specified <code> Move </code> on the <code> Board </code>
+	 * @param m
+	 */
 	public void putTile(Move m) {
 		Point p = m.getPoint();
 
@@ -60,6 +74,10 @@ public class Board {
 		return result;
 	}
 
+	/**
+	 * Returns true if the tiles on the <code> Board </code> form a square
+	 * @return
+	 */
 	public boolean isSquare() {
 		if (map.keySet().size() != 36) {
 			return false;
@@ -69,7 +87,7 @@ public class Board {
 		
 		for(int i = (int)bound[0]; i < (int)bound[0] + 6; i++) {
 			for(int j = (int)bound[1]; j < (int)bound[1] + 6; j++) {
-				if(map.get(new Dimension(i,j)) == null) {
+				if(map.get(new Point(i,j)) == null) {
 					return false;
 				}
 			}
@@ -77,6 +95,9 @@ public class Board {
 		return true;
 	}
 
+	/**
+	 * Creates a String representing the <code> Board </code>
+	 */
 	public String toString() {
 		if (this.isEmpty()) {
 			return "(0,0)";
@@ -97,7 +118,7 @@ public class Board {
 					cellText = "(" + x + "," + y + ")";
 					//result += "(" + x + "," + y + ")";
 				}
-				result += String.format("%-10s%-5s", cellText, "|");
+				result += String.format("%-8s%-5s", cellText, "|");
 				//result += " | ";
 			}
 			result = result.trim().substring(0, result.trim().length()-1);
@@ -108,6 +129,10 @@ public class Board {
 
 	}
 	
+	/**
+	 * Returns a <code> List </code> of points where a <code> Tile </code> can be put
+	 * @return
+	 */
 	public List<Point> getEmptySpots(){
 		List<Point> result = new ArrayList<>();
 		
@@ -131,15 +156,27 @@ public class Board {
 		return result;
 	}
 
+	/**
+	 * Returns true if the <code> Board </code> is still empty
+	 * @return
+	 */
 	public boolean isEmpty() {
 		return this.map.isEmpty();
 	}
 
+	/**
+	 * Set the map 
+	 * @param m
+	 */
 	public void setMap(Map<Point, Tile> m) {
 		this.map.clear();
 		this.map = m;
 	}
 
+	/**
+	 * Returns a deep copy of the <code> Board </code>
+	 * @return
+	 */
 	public Board deepCopy() {
 		Map<Point, Tile> m = new HashMap<>();
 		m.putAll(map);
@@ -150,6 +187,10 @@ public class Board {
 		return b;
 	}
 	
+	/**
+	 * Returns the map
+	 * @return
+	 */
 	public Map<Point, Tile> getMap() {
 		return map;
 	}

@@ -35,27 +35,9 @@ public class HumanPlayer extends Player {
 
 		switch (pOReORc) {
 		case "p":
-			String awnser = this.g.getUI().askForMove();
-
-			List<Move> list = parseMoveAwnser(awnser);
-
-			if (list.equals(null) || list.size() == 0) {
-				return determineMove(board);
-			} else {
-				return list;
-			}
 
 		case "e":
-			String awnserQ = this.g.getUI().askForTrade();
-
-			List<Tile> rList = parseTradeAwnser(awnserQ);
-
-			if (rList.size() == 0) {
-				this.g.getUI().showError("Invalid input.");
-				return determineMove(board);
-			} else {
-				return rList;
-			}
+			
 
 		case "c":
 			String messageToBeSent = this.g.getUI().askForChatMessage();
@@ -72,6 +54,46 @@ public class HumanPlayer extends Player {
 			return determineMove(board);
 		}
 	}
+	
+	@Override
+	public String determineAction(){
+		return  this.g.getUI().askForPlayOrExchange();
+	}
+
+	@Override
+	public List<Tile> determineTradeMove(){
+		String awnserQ = this.g.getUI().askForTrade();
+
+		List<Tile> rList = parseTradeAwnser(awnserQ);
+
+		if (rList.size() == 0) {
+			this.g.getUI().showError("Invalid input.");
+			return determineTradeMove();
+		} else {
+			return rList;
+		}
+	}
+	
+	@Override
+	public List<Move> determinePutMove(){
+		String awnser = this.g.getUI().askForMove();
+
+		List<Move> list = parseMoveAwnser(awnser);
+
+		if (list.equals(null) || list.size() == 0) {
+			return determinePutMove();
+		} else {
+			return list;
+		}
+
+	}
+	
+	@Override
+	public String sendChat() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	private List<Tile> parseTradeAwnser(String trades) {
 		List<Tile> result = new ArrayList<>();
@@ -127,5 +149,7 @@ public class HumanPlayer extends Player {
 
 		return result;
 	}
+
+
 
 }
