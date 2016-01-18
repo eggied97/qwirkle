@@ -22,7 +22,7 @@ public class ClientHandler extends Thread {
 	private Socket sock;
 	private BufferedReader in;
 	private BufferedWriter out;
-	private String clientName;
+	private String clientName = "";
 	private List<Feature> features;
 	private Game game = null;
 	private Player player;

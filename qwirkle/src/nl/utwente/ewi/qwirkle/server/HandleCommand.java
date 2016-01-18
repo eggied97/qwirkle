@@ -1,6 +1,7 @@
 package nl.utwente.ewi.qwirkle.server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -258,5 +259,23 @@ public class HandleCommand {
 		return scores;
 	}
 
+	public void handleChat(String[] strAy, ClientHandler ch) {
+		String channel = strAy[1];
+		String message = Arrays.copyOfRange(strAy, 2, strAy.length).toString();
+		if(channel.equals("global")){
+			server.broadcast(ch.getGame().getPlayers(), message);
+			protocol.getInstance().serverChat(channel, ch.getClientName(), message);
+			return;
+		} else {
+			for(ClientHandler clienthand : ch.getGame().getPlayers()) {
+				if(clienthand.getClientName().equals(channel)) {
+					clienthand.sendMessage(message);
+					protocol.getInstance().serverChat(channel, ch.getClientName(), message);
+					return;
+				}
+			}
+		}
+		protocol.getInstance().serverError(IProtocol.Error.INVALID_CHANNEL);
+	}
 
 }
