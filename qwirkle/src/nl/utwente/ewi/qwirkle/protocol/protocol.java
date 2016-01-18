@@ -222,6 +222,18 @@ public class protocol implements IProtocol {
 
 		return result;
 	}
+	
+	public String serverPass(Player p) {
+		String result = "";
+		
+		result += this.SERVER_PASS;
+		result += " ";
+		result += p.getName();
+		
+		printDebug(result);
+		
+		return result;
+	}
 
 	public String serverDrawTile(List<Tile> tiles) {
 		String result = "";

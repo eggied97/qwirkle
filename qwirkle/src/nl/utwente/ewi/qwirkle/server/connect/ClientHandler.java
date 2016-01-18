@@ -22,7 +22,7 @@ public class ClientHandler extends Thread {
 	private Socket sock;
 	private BufferedReader in;
 	private BufferedWriter out;
-	private String clientName;
+	private String clientName = "";
 	private List<Feature> features;
 	private Game game = null;
 	private Player player;
@@ -105,7 +105,10 @@ public class ClientHandler extends Thread {
 	public void setFeatures(List<Feature> features) {
 		this.features = features;
 	}
-	
+	/**
+	 * Sets the game 
+	 * @param g
+	 */
 	public void setGame(Game g) {
 		this.game = g;
 	}

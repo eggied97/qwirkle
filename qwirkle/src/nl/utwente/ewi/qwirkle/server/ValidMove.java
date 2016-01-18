@@ -20,6 +20,12 @@ public class ValidMove {
 	
 	private List<Move> moveSet;
 	
+	/**
+	 * Tests whether a single <code> Move </code> is valid on the current state of the <code> Board </code>
+	 * @param m
+	 * @param b
+	 * @return
+	 */
 	public boolean isValidMove(Move m, Board b) {
 		List<Tile> tileSetXR = new ArrayList<>();
 		List<Tile> tileSetXL = new ArrayList<>();
@@ -67,9 +73,7 @@ public class ValidMove {
 		}
 		// Vertical line above the point
 		for(int i = dY - 1; i > dY - 6; i--) {
-			System.out.println("hoi");
 			if(b.getTile(dX, i) != null) {
-				System.out.println("Haai");
 				tileSetYR.add(b.getTile(dX, i));
 			} else {
 				i = dY - 5;
@@ -123,12 +127,19 @@ public class ValidMove {
 		return true;
 	}
 	
-	
+	/**
+	 * Tests the entire moveset on the board whether its valid
+	 * @param moves
+	 * @param b
+	 * @return
+	 */
 	public boolean validMoveSet(List<Move> moves, Board b) {
 		if(!(validPointsX(moves) || validPointsY(moves))) {
 			return false;
 		}
+		
 		Board boardCopy = b.deepCopy();
+		// Validate every move and put it on the board if it is valid
 		for(Move m : moves) {
 			if(isValidMove(m, boardCopy)) {
 				boardCopy.putTile(m.getPoint().getX(), m.getPoint().getY(), m.getTile());
@@ -139,6 +150,11 @@ public class ValidMove {
 		return true;
 	}
 	
+	/**
+	 * Validate the connection of the move
+	 * @param moves
+	 * @return
+	 */
 	public boolean validPointsX(List<Move> moves) {
 		for(int i = 0; i < moves.size() - 1; i++) {
 			if(moves.get(i).getPoint().getX() != moves.get(i+1).getPoint().getX()) {
@@ -149,6 +165,11 @@ public class ValidMove {
 		return true;
 	}
 	
+	/**
+	 * Validate the connection of the move
+	 * @param moves
+	 * @return
+	 */
 	public boolean validPointsY(List<Move> moves) {
 		for(int i = 0; i < moves.size() - 1; i++) {
 			if(moves.get(i).getPoint().getY() != moves.get(i+1).getPoint().getY()) {

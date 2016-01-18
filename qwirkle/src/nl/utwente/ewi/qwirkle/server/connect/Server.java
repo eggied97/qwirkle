@@ -79,6 +79,7 @@ public class Server {
 		start = new ArrayList<>();
 		identified = new ArrayList<>();
 		features = new IProtocol.Feature[0];
+		features[0] = IProtocol.Feature.CHAT;
 		// TODO add features when implemented
 	}
 
@@ -106,6 +107,10 @@ public class Server {
 		}
 	}
 	
+	/**
+	 * Prints the message to the standard output
+	 * @param message
+	 */
 	public void print(String message) {
 		System.out.println(message);
 	}
@@ -266,8 +271,10 @@ public class Server {
 				handle.handleQueue(inputArr, ch);
 				checkQueues();
 				break;
-				/*
-				 * case IProtocol.CLIENT_CHAT: case IProtocol.CLIENT_CHALLENGE: case
+			case IProtocol.CLIENT_CHAT:
+				handle.handleChat(inputArr, ch);
+				break;
+				/*case IProtocol.CLIENT_CHALLENGE: case
 				 * IProtocol.CLIENT_CHALLENGE_ACCEPT: case
 				 * IProtocol.CLIENT_CHALLENGE_DECLINE: case
 				 * IProtocol.CLIENT_LEADERBOARD: case IProtocol.CLIENT_LOBBY:

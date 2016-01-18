@@ -43,6 +43,10 @@ public class Bag {
 		Collections.shuffle(tiles);
 	}
 	
+	/**
+	 * Add the given <code> Tile </code> to the bag and shuffle it
+	 * @param t
+	 */
 	public void addTiles(List<Integer> t) {
 		for(Integer tile : t) {
 			this.tiles.add(new Tile(tile));
@@ -91,6 +95,10 @@ public class Bag {
 		return getBag().isEmpty();
 	}
 	
+	/**
+	 * Returns the amount of tiles currently in the bag
+	 * @return
+	 */
 	public int getAmountOfTiles() {
 		return this.tiles.size();
 	}
