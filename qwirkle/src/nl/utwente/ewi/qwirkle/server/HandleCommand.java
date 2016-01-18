@@ -224,8 +224,9 @@ public class HandleCommand {
 		for(ClientHandler player : ch.getGame().getPlayers()) {
 			playersPlay.add(player.getPlayer());
 		}
-		
-		server.print(protocol.serverEndGame(playersPlay, handleScores(ch), 1));
+		for(int i = 0; i < handleScores(ch).length; i++) {
+			server.print(ch.getGame().getPlayers().get(i).toString() + handleScores(ch)[i]);
+		}
 	}
 	
 	public void handleEndGame(ClientHandler ch) {
