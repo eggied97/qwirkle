@@ -107,6 +107,10 @@ public class Server {
 		}
 	}
 	
+	/**
+	 * Prints the message to the standard output
+	 * @param message
+	 */
 	public void print(String message) {
 		System.out.println(message);
 	}
