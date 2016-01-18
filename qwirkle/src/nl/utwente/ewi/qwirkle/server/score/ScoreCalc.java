@@ -13,15 +13,25 @@ public class ScoreCalc {
 
 	// TODO FIX THAT SHIT
 	
+	/**
+	 * Returns an instance of ScoreCalc
+	 * @return
+	 */
 	public static ScoreCalc getInstance() {
 		return new ScoreCalc();
 	}
 
+	/**
+	 * Calculates the score obtained by this move set
+	 * @param b
+	 * @param moves
+	 * @return
+	 */
 	public int calculate(Board b, List<Move> moves) {
 		int multiplier = 1;
 		int score = 0;
 
-		// direction 0 is horizontal, 1 is vertical
+		// direction of the moves 0 is horizontal, 1 is vertical, default is 0
 
 		int direction = 0;
 		if (moves.size() > 1) {
@@ -30,11 +40,15 @@ public class ScoreCalc {
 			}
 		}
 
+		
+		
 		if (direction == 0) {
+			// Obtain first move
 			int py = moves.get(0).getPoint().getY();
 			int px = moves.get(0).getPoint().getX();
 			int incounter = 1;
 			
+			// Count the tiles in the direction of the first move
 			for (int i = px - 1; i > px - 6; i--) {
 				if (b.getTile(i, py) != null) {
 					incounter++;
@@ -42,7 +56,7 @@ public class ScoreCalc {
 					i = px - 5;
 				}
 			}
-
+			// To the left as well as to the right
 			for (int i = px + 1; i < px + 6; i++) {
 				if (b.getTile(i, py) != null) {
 					incounter++;
@@ -51,17 +65,21 @@ public class ScoreCalc {
 				}
 			}
 			
+			// If complete row, multiply
 			if(incounter == 6) {
 				multiplier *= 2;
 			}
 			
+			// Add to score the amount of tiles in the direction of the move
 			score += incounter;
 			
+			// Calculate score in the direction other than the direction of the move
 			for (Move m : moves) {
 				int counter = 0;
 				int y = m.getPoint().getY();
 				int x = m.getPoint().getX();
 
+				// Look at tiles around the moved tile
 				for (int i = y - 1; i > y - 6; i--) {
 					if (b.getTile(x, i) != null) {
 						counter++;
@@ -77,7 +95,8 @@ public class ScoreCalc {
 						i = y + 5;
 					}
 				}
-
+				
+				// If there are 5 tiles in the direction around it, its a full row so multiply by 2
 				if (counter == 5) {
 					multiplier *= 2;
 				}
@@ -86,6 +105,7 @@ public class ScoreCalc {
 
 			}
 		} else {
+			// The same as above but for the other direction
 			
 			int py = moves.get(0).getPoint().getY();
 			int px = moves.get(0).getPoint().getX();

@@ -275,12 +275,7 @@ public class HandleCommand {
 		if (ch.getGame().gameEnd()) {
 			handleEndGame(ch);
 		} else if (ch.getGame().getBag().isEmpty()) {
-			
-			if (!handleMovesLeft(ch.getGame().getPlayerTurn(), ch.getGame().getBoard())) {
-				//server.broadcast(ch.getGame().getPlayers(), protocol.getInstance().);
-				// TODO Protocol fix for pass
-				handleEndGame(ch);
-			}
+			handlePass(ch);
 		}
 
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverTurn(ch.getGame().getPlayerTurn()));
@@ -381,4 +376,20 @@ public class HandleCommand {
 
 	}
 
+	/**
+	 * Tests whether a <code> Players </code> can do a valid <code> Move </code> otherwise pass
+	 * @param ch
+	 */
+	public void handlePass(ClientHandler ch) {
+		int counter = 0;
+		while(!handleMovesLeft(ch.getGame().getPlayerTurn(), ch.getGame().getBoard())) {
+			server.broadcast(ch.getGame().getPlayers(), protocol.serverPass(ch.getGame().getPlayerTurn()));
+			server.broadcast(ch.getGame().getPlayers(), protocol.serverTurn(ch.getGame().getPlayerTurn()));
+			ch.getGame().nextTurn();
+			counter++;
+			if(counter == ch.getGame().getPlayers().size()) {
+				handleEndGame(ch);
+			}
+		}
+	}
 }
