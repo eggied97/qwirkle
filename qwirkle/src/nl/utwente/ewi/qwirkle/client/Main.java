@@ -133,6 +133,11 @@ public class Main implements resultCallback {
 				UI.showError("Name is already in use, please use another one...");
 				authenticateUser();
 				break;
+				
+			case NAME_INVALID:
+				UI.showError("Name is invalid, please use another one...");
+				authenticateUser();
+				break;
 
 			case QUEUE_INVALID:
 				UI.showError("The queue you wanted to enter is invalid, please choose another one...");
