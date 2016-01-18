@@ -24,39 +24,13 @@ public class HumanPlayer extends Player {
 
 	// TODO maybe move this logic to Game.java, so it gets a proper return
 	// statement - Egbert
-	@Override
-	public Object determineMove(Board board) {
-		if (this.g == null) {
-			// TODO throw error
-		}
-
-		// TODO check if server supports it...
-		String pOReORc = this.g.getUI().askForPlayOrExchange();
-
-		switch (pOReORc) {
-		case "p":
-
-		case "e":
-			
-
-		case "c":
-			String messageToBeSent = this.g.getUI().askForChatMessage();
-
-			if (messageToBeSent.split(" ").length >= 2) {
-				// right format
-				return messageToBeSent;
-			} else {
-				return determineMove(board);
-			}
-
-		default:
-			this.g.getUI().showError("Wrong argument.");
-			return determineMove(board);
-		}
-	}
 	
 	@Override
 	public String determineAction(){
+		if (this.g == null) {
+			// TODO throw error
+		}
+		
 		return  this.g.getUI().askForPlayOrExchange();
 	}
 
@@ -75,13 +49,13 @@ public class HumanPlayer extends Player {
 	}
 	
 	@Override
-	public List<Move> determinePutMove(){
+	public List<Move> determinePutMove(Board board){
 		String awnser = this.g.getUI().askForMove();
 
 		List<Move> list = parseMoveAwnser(awnser);
 
 		if (list.equals(null) || list.size() == 0) {
-			return determinePutMove();
+			return determinePutMove(board);
 		} else {
 			return list;
 		}
@@ -90,8 +64,14 @@ public class HumanPlayer extends Player {
 	
 	@Override
 	public String sendChat() {
-		// TODO Auto-generated method stub
-		return null;
+		String messageToBeSent = this.g.getUI().askForChatMessage();
+		
+		if (messageToBeSent.split(" ").length >= 2) {
+			// right format
+			return messageToBeSent;
+		} else {
+			return sendChat();
+		}
 	}
 
 

@@ -2,6 +2,7 @@ package nl.utwente.ewi.qwirkle.model.player.strategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -110,17 +111,62 @@ public class SuperStrategy implements Strategy {
 
 		Board boardCopy = b.deepCopy();
 
-		List<List<Tile>> tilePairs = getAllPossibleTilePairs(boardCopy, hand);
+		List<List<Tile>> tilePairs = getAllPossibleTilePairs(hand);
 		List<Move> bestMoveSet = bestPossibleMoveSet(tilePairs);
 
 		return bestMoves;
 	}
 
-	private List<List<Tile>> getAllPossibleTilePairs(Board b, List<Tile> hand) {
+	public List<List<Tile>> getAllPossibleTilePairs(List<Tile> hand) {
 		List<List<Tile>> result = new ArrayList<>();
 
 		for (Tile t : hand) {
-
+			List<Tile> mR = new ArrayList<Tile>();
+			mR.add(t);
+			
+			result.add(mR);
+		}
+		
+		boolean done = false;
+		
+		//stop pas als er voor elke steen in de hand niks meer bijgelegt kan worden
+		while(!done){
+			
+			List<List<Tile>> tempStorage = new ArrayList<>();
+			
+			for(Tile t : hand){
+				
+				Iterator it = result.iterator();
+				
+				while(it.hasNext()){
+					List<Tile> tiles = (List<Tile>)it.next();
+					
+					if(tiles.get(tiles.size() - 1).isValidNeighbour(t)){
+						//past erachter
+						done = false;
+						List<Tile> middenResult = new ArrayList<Tile>();
+						middenResult.addAll(tiles);
+						middenResult.add(t);
+																	
+						tempStorage.add(middenResult);
+						
+					}else if(tiles.get(0).isValidNeighbour(t)){
+						//past ervoor, wordt als het goed is niet aangeroepen als tiles.size() == 1;
+						done = false;
+						List<Tile> middenResult = new ArrayList<Tile>();
+						middenResult.add(t);
+						middenResult.addAll(tiles);						
+						
+						tempStorage.add(middenResult);
+						
+					}else{
+						done = true;
+					}
+				}
+			}
+			
+			result.addAll(tempStorage);
+			tempStorage.clear();
 		}
 
 		return result;

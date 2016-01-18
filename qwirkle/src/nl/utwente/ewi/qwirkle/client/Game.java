@@ -292,11 +292,40 @@ public class Game implements resultCallback {
 		if (turnPlayer instanceof HumanPlayer) {
 			this.UI.printMessage("Turn changed, its your turn now");
 			this.UI.showHand(turnPlayer.getHand());
-			handlePlayerInput(((HumanPlayer) turnPlayer).determineMove(board));
+			
+			handlePlayerInput(((HumanPlayer) turnPlayer).determineAction());
+			
 		} else if (turnPlayer instanceof ComputerPlayer) {
-			handlePlayerInput(((ComputerPlayer) turnPlayer).determineMove(board));
+			handleTurnPcPlayer();
 		} else {
 			this.UI.printMessage("Turn changed, its " + turnPlayer.getName() + " turn now");
+		}
+	}
+	
+	private void handleTurnPcPlayer(){
+		//if the moves.size == 0 => do trade.
+		
+		List<Move> moves = turnPlayer.determinePutMove(board);
+		
+		if(moves.size() == 0){
+			List<Tile> tiles = turnPlayer.determineTradeMove();
+
+			tilesThatNeedToBeRemoved = new ArrayList<>();
+			tilesThatNeedToBeRemoved.addAll(tiles);
+
+			nextDrawNeedToRemoveTiles = true;
+
+			c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
+		}else{
+			tilesThatNeedToBeRemoved = new ArrayList<>();
+
+			for (Move m : moves) {
+				tilesThatNeedToBeRemoved.add(m.getTile());
+			}
+
+			nextDrawNeedToRemoveTiles = true;
+
+			c.sendMessage(protocol.getInstance().clientPutMove(moves));
 		}
 	}
 
@@ -323,35 +352,47 @@ public class Game implements resultCallback {
 	 * 
 	 * @param input
 	 */
-	private void handlePlayerInput(Object input) {
+	private void handlePlayerInput(String input) {
 
-		if (input instanceof List<?>) {
-			if (((List<?>) input).get(0) instanceof Move) {
-				tilesThatNeedToBeRemoved = new ArrayList<>();
+		// is p, e or c
+		switch (input) {
+		case "p":
+			List<Move> moves = ((HumanPlayer) turnPlayer).determinePutMove(board);
 
-				for (Move m : (List<Move>) input) {
-					tilesThatNeedToBeRemoved.add(m.getTile());
-				}
+			tilesThatNeedToBeRemoved = new ArrayList<>();
 
-				nextDrawNeedToRemoveTiles = true;
-
-				c.sendMessage(protocol.getInstance().clientPutMove((List<Move>) input));
-			} else if (((List<?>) input).get(0) instanceof Tile) {
-				tilesThatNeedToBeRemoved = new ArrayList<>();
-				tilesThatNeedToBeRemoved.addAll((List<Tile>) input);
-
-				nextDrawNeedToRemoveTiles = true;
-
-				c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
+			for (Move m : moves) {
+				tilesThatNeedToBeRemoved.add(m.getTile());
 			}
-		} else if (input instanceof String) {
-			// chat message
-			String msg = (String) input;
+
+			nextDrawNeedToRemoveTiles = true;
+
+			c.sendMessage(protocol.getInstance().clientPutMove(moves));
+
+			break;
+		case "e":
+			List<Tile> tiles = ((HumanPlayer) turnPlayer).determineTradeMove();
+
+			tilesThatNeedToBeRemoved = new ArrayList<>();
+			tilesThatNeedToBeRemoved.addAll(tiles);
+
+			nextDrawNeedToRemoveTiles = true;
+
+			c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
+
+			break;
+		case "c":
+			String msg = ((HumanPlayer) turnPlayer).sendChat();
 
 			String[] msgs = msg.split(" ");
 			String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
 
 			c.sendMessage(protocol.getInstance().clientChat(msgs[0], message.toString()));
+			break;
+		default:
+			this.UI.showError("Wrong argument.");
+			handleTurn(true);
+			break;
 		}
 	}
 
@@ -380,9 +421,9 @@ public class Game implements resultCallback {
 		Map<Player, Integer> scoreMap = new HashMap<>();
 
 		String errorOrWin = args[0];
-		
-		String[] newArgs = Arrays.copyOfRange(args, 1 , args.length);
-		
+
+		String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
+
 		for (String a : newArgs) {
 			String[] scoreNaam = a.split(",");
 

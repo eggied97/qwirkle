@@ -37,13 +37,11 @@ public abstract class Player {
 	 *         and <code> Tile </code> pairs if it is an move \n return
 	 *         <code> List</code> of tiles when it is a trade
 	 */
-	public abstract Object determineMove(Board board);
-
 	public abstract String determineAction();
 
 	public abstract List<Tile> determineTradeMove();
 
-	public abstract List<Move> determinePutMove();
+	public abstract List<Move> determinePutMove(Board board);
 
 	public abstract String sendChat();
 
@@ -52,7 +50,7 @@ public abstract class Player {
 	 * 
 	 * @param board
 	 */
-	public void makeMove(Board board) {
+	/*public void makeMove(Board board) {
 		Object moves = determineMove(board);
 
 		if (moves instanceof List<?>) {
@@ -60,7 +58,7 @@ public abstract class Player {
 				board.putTile((List<Move>) moves);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Adds a list of tiles obtained from the bag to the hand of the player

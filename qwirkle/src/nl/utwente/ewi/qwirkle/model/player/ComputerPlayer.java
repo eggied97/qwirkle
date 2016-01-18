@@ -26,14 +26,23 @@ public class ComputerPlayer extends Player {
 	}
 
 	@Override
-	public Object determineMove(Board board) {
+	public String determineAction() {
+		return null;
+	}
 
-		List<Move> bestMove = this.strat.determineMove(board, getHand());
+	@Override
+	public List<Tile> determineTradeMove() {
+		return strat.determineTrade(getHand());
+	}
 
-		if (bestMove.size() != 0) {
-			return bestMove;
-		} else {
-			return strat.determineTrade(getHand());
-		}
+	@Override
+	public List<Move> determinePutMove(Board board) {
+		return this.strat.determineMove(board, getHand());
+	}
+
+	@Override
+	public String sendChat() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

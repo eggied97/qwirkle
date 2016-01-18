@@ -16,7 +16,26 @@ public class SocketPlayer extends Player {
 	}
 
 	@Override
-	public List<Move> determineMove(Board board) {
+	public String determineAction() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Tile> determineTradeMove() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Move> determinePutMove(Board board) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String sendChat() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
