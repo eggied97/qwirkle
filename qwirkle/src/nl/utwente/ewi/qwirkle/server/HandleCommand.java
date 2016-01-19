@@ -136,7 +136,15 @@ public class HandleCommand {
 		String[] queueSpl = queue.split(",");
 		Map<Integer, List<ClientHandler>> map = server.getQueues();
 		for (int i = 0; i < queueSpl.length; i++) {
-			switch (Integer.parseInt(queueSpl[i])) {
+			int q = 0;
+			try {
+				q = Integer.parseInt(queueSpl[i]);
+			} catch (NumberFormatException e) {
+				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.QUEUE_INVALID));
+				setWentWell(false);
+				return;
+			}
+			switch (q) {
 			case 2:
 				map.get(2).add(ch);
 				break;
@@ -170,7 +178,12 @@ public class HandleCommand {
 
 		List<Tile> tiles = new ArrayList<>();
 		for (int i = 1; i < strAy.length; i++) {
-			tiles.add(new Tile(Integer.parseInt(strAy[i])));
+			try {
+				tiles.add(new Tile(Integer.parseInt(strAy[i])));
+			} catch (NumberFormatException e) {
+				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+				return;
+			}
 		}
 
 		List<Integer> tilesInt = new ArrayList<>();
@@ -235,15 +248,21 @@ public class HandleCommand {
 		List<Move> moves = new ArrayList<>();
 		List<Tile> tiles = new ArrayList<>();
 		for (int i = 1; i < strAy.length; i++) {
-			String[] a = strAy[i].split("@");
-			int tileNo = Integer.parseInt(a[0]);
-			String[] b = a[1].split(",");
-			int x = Integer.parseInt(b[0]);
-			int y = Integer.parseInt(b[1]);
-			Tile t = new Tile(tileNo);
-			Move m = new Move(new Point(x, y), t);
-			tiles.add(t);
-			moves.add(m);
+			try {
+				String[] a = strAy[i].split("@");
+				int tileNo = Integer.parseInt(a[0]);
+				String[] b = a[1].split(",");
+				int x = Integer.parseInt(b[0]);
+				int y = Integer.parseInt(b[1]);
+				Tile t = new Tile(tileNo);
+				Move m = new Move(new Point(x, y), t);
+				tiles.add(t);
+				moves.add(m);
+			} catch (NumberFormatException e) {
+				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+				return;
+			}
+			
 		}
 		if (!checkTiles(tiles, ch)) {
 			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.MOVE_TILES_UNOWNED));

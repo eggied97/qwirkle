@@ -273,10 +273,15 @@ public class Game implements resultCallback {
 				this.UI.showError("Invalid input");
 			}
 
-			Point pResult = new Point(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
-			Move mResult = new Move(pResult, new Tile(Integer.parseInt(parts[0])));
-
-			board.putTile(mResult);
+			try {
+				Point pResult = new Point(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+				Move mResult = new Move(pResult, new Tile(Integer.parseInt(parts[0])));
+				board.putTile(mResult);
+			} catch (NumberFormatException e) {
+				this.UI.showError("Enter a valid coordinates and/or tiles");
+				handleTurn(false);
+			}
+			
 		}
 	}
 

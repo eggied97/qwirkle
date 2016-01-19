@@ -57,7 +57,12 @@ public class TUIView implements UserInterface {
 			int[] result = new int[queues.length];
 
 			for (int i = 0; i < result.length; i++) {
-				result[i] = Integer.parseInt(queues[i].trim());
+				try {
+					result[i] = Integer.parseInt(queues[i].trim());
+				} catch (NumberFormatException e) {
+					showError("You have to enter an integer");
+					return queueWithHowManyPlayers();
+				}
 			}
 			return result;
 		}

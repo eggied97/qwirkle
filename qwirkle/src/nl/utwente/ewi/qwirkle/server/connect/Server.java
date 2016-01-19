@@ -234,23 +234,27 @@ public class Server {
 		switch (inputArr[0]) {
 
 			case IProtocol.CLIENT_IDENTIFY:
-				if(ch.getGame() != null) {
-					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
-					break;
-				}
-				
-				handle.handleIdentifyName(inputArr,ch);
-				if(handle.getWentWell()) {
+				if(inputArr.length < 2) {
+					if(ch.getGame() != null) {
+						ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
+						break;
+					}
+					
+					handle.handleIdentifyName(inputArr,ch);
+					if(handle.getWentWell()) {
+						handle.setWentWell(true);
+						handle.handleIdentifyFeatures(inputArr,ch);
+					}
+					
+					if(handle.getWentWell()) {
+						removeHandler(ch);
+						identified.add(ch);	
+					}
+					
 					handle.setWentWell(true);
-					handle.handleIdentifyFeatures(inputArr,ch);
+				} else {
+					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				}
-				
-				if(handle.getWentWell()) {
-					removeHandler(ch);
-					identified.add(ch);	
-				}
-				
-				handle.setWentWell(true);
 				break;
 	
 			case IProtocol.CLIENT_QUIT:
@@ -258,26 +262,46 @@ public class Server {
 				break;
 	
 			case IProtocol.CLIENT_MOVE_PUT:
-				handle.handleMovePut(inputArr, ch);
+				if(inputArr.length > 2) {
+					handle.handleMovePut(inputArr, ch);
+				} else {
+					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+				}
 				break;
 	
 			case IProtocol.CLIENT_MOVE_TRADE:
-				handle.handleMoveTrade(inputArr, ch);
+				if(inputArr.length > 2) {
+					handle.handleMoveTrade(inputArr, ch);
+				} else {
+					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+				}
 				break;
 	
 			case IProtocol.CLIENT_QUEUE:
-				removeHandler(ch);
-				handle.handleQueue(inputArr, ch);
-				if(handle.getWentWell()) {
-					checkQueues();
-				} else {
+				if(inputArr.length > 2) {
 					removeHandler(ch);
-					identified.add(ch);
+					handle.handleQueue(inputArr, ch);
+					if(handle.getWentWell()) {
+						checkQueues();
+					} else {
+						removeHandler(ch);
+						identified.add(ch);
+					}
+					handle.setWentWell(true);
+				} else {
+					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				}
-				handle.setWentWell(true);
+				
 				break;
 			case IProtocol.CLIENT_CHAT:
-				handle.handleChat(inputArr, ch);
+				if(inputArr.length < 2) {
+					if(ch.isEnabled(IProtocol.Feature.CHAT)) {
+						handle.handleChat(inputArr, ch);
+					}
+				} else {
+					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+				}
+				
 				break;
 				/*case IProtocol.CLIENT_CHALLENGE: case
 				 * IProtocol.CLIENT_CHALLENGE_ACCEPT: case
