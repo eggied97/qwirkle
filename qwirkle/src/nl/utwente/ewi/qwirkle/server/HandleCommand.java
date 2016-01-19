@@ -261,11 +261,14 @@ public class HandleCommand {
 		server.broadcast(ch.getGame().getPlayers(), protocol.getInstance().serverMovePut(moves));
 		
 		//TODO what to do when list.size() > bag.size() || bag.isEMpty()?
-		List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
-		ch.getPlayer().bagToHand(newTiles);
-
-		ch.sendMessage(protocol.getInstance().serverDrawTile(newTiles));
-
+		if(!ch.getGame().getBag().isEmpty()) {
+			List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
+			ch.getPlayer().bagToHand(newTiles);
+			ch.sendMessage(protocol.getInstance().serverDrawTile(newTiles));
+		} else {
+			ch.sendMessage(protocol.getInstance().serverDrawTile(null));
+		}
+		
 		handleTurn(ch);
 	}
 

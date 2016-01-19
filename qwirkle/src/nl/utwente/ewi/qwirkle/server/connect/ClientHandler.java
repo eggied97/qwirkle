@@ -68,6 +68,10 @@ public class ClientHandler extends Thread {
 		return this.player;
 	}
 	
+	public boolean isEnabled(Feature f) {
+		return featuresEnabled.get(f);
+	}
+	
 	/**
 	 * Sets the <code> Player </code> connected to this <code> ClientHandler </code>
 	 * @param player

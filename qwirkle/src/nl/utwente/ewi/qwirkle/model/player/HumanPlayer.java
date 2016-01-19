@@ -38,6 +38,10 @@ public class HumanPlayer extends Player {
 	public List<Tile> determineTradeMove(){
 		String awnserQ = this.g.getUI().askForTrade();
 
+		if(awnserQ.trim().equals("b")); {
+			determineAction();
+		}
+		
 		List<Tile> rList = parseTradeAwnser(awnserQ);
 
 		if (rList.size() == 0) {
@@ -51,7 +55,11 @@ public class HumanPlayer extends Player {
 	@Override
 	public List<Move> determinePutMove(Board board){
 		String awnser = this.g.getUI().askForMove();
-
+		
+		if(awnser.trim().equals("b")); {
+			determineAction();
+		}
+		
 		List<Move> list = parseMoveAwnser(awnser);
 
 		if (list.equals(null) || list.size() == 0) {
