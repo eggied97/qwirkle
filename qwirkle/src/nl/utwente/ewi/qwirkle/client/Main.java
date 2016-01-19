@@ -19,6 +19,7 @@ import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
+import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
 import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
 public class Main implements resultCallback {

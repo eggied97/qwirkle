@@ -371,6 +371,7 @@ public class HandleCommand {
 			return;
 		} else {
 			for (ClientHandler clienthand : ch.getGame().getPlayers()) {
+				System.out.println("@" + channel);
 				if (clienthand.getClientName().equals("@" + channel)) {
 					clienthand.sendMessage(messa);
 					protocol.getInstance().serverChat(channel, ch.getClientName(), messa);

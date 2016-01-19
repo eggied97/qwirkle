@@ -1,22 +1,49 @@
 package nl.utwente.ewi.qwirkle.ui.gui;
 
+import java.awt.EventQueue;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import nl.utwente.ewi.qwirkle.client.Game;
 import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
+import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
+import nl.utwente.ewi.qwirkle.ui.gui.panels.ConnectPanel;
+
+
 
 public class GUIView implements UserInterface {
+	ConnectPanel frame;
+	
 	public GUIView() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					frame = new ConnectPanel();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		
 	}
 
 	@Override
 	public Player login() {
-		// TODO Auto-generated method stub
-		return null;
+		boolean isActive = true;
+		while(isActive) {
+		}
+		String name = frame.getName();
+		System.out.println(name);
+		if(name.equals("COMPUTERMAN")){
+			return new ComputerPlayer("pcman" + (int)(Math.random() * 4));
+		}
+		
+		return new HumanPlayer(name);
 	}
 
 	@Override
