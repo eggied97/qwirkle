@@ -419,49 +419,70 @@ public class Game implements resultCallback {
 						break;
 					}
 				break;
+								
 			case FORMOVE:
-				List<Move> moves = hp.parseMoveAwnser(input);
-	
-				tilesThatNeedToBeRemoved = new ArrayList<>();
-	
-				for (Move m : moves) {
-					tilesThatNeedToBeRemoved.add(m.getTile());
+				if(input.equals("b")){
+					this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+					this.UIT.setInputState(inputState.IDLE);
+				}else{
+					
+					List<Move> moves = hp.parseMoveAwnser(input);
+		
+					if(moves == null){
+						this.UI.showError("Move set cannotbe empty!");
+						this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_MOVE);
+					}else{
+						
+						tilesThatNeedToBeRemoved = new ArrayList<>();
+			
+						for (Move m : moves) {
+							tilesThatNeedToBeRemoved.add(m.getTile());
+						}
+			
+						nextDrawNeedToRemoveTiles = true;
+			
+						this.UIT.setInputState(inputState.IDLE);
+			
+						c.sendMessage(protocol.getInstance().clientPutMove(moves));
+					}
 				}
-	
-				nextDrawNeedToRemoveTiles = true;
-	
-				this.UIT.setInputState(inputState.IDLE);
-	
-				c.sendMessage(protocol.getInstance().clientPutMove(moves));
-	
 				break;
 			case FORTRADE:
-				List<Tile> tiles = hp.parseTradeAwnser(input);
-	
-				tilesThatNeedToBeRemoved = new ArrayList<>();
-				tilesThatNeedToBeRemoved.addAll(tiles);
-	
-				nextDrawNeedToRemoveTiles = true;
-	
-				this.UIT.setInputState(inputState.IDLE);
-	
-				c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
-	
+				if(input.equals("b")){
+					this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+					this.UIT.setInputState(inputState.IDLE);
+				}else{
+					List<Tile> tiles = hp.parseTradeAwnser(input);
+		
+					tilesThatNeedToBeRemoved = new ArrayList<>();
+					tilesThatNeedToBeRemoved.addAll(tiles);
+		
+					nextDrawNeedToRemoveTiles = true;
+		
+					this.UIT.setInputState(inputState.IDLE);
+		
+					c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
+				}
 				break;
 			case FORCHAT:
-				String msg = input;
-	
-				String[] msgs = msg.split(" ");
-				String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
-				
-				StringBuilder builder = new StringBuilder();
-				for(String s : message) {
-				    builder.append(s + " ");
+				if(input.equals("b")){
+					this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+					this.UIT.setInputState(inputState.IDLE);
+				}else{
+					String msg = input;
+		
+					String[] msgs = msg.split(" ");
+					String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
+					
+					StringBuilder builder = new StringBuilder();
+					for(String s : message) {
+					    builder.append(s + " ");
+					}
+					
+					this.UIT.setInputState(inputState.IDLE);
+					
+					c.sendMessage(protocol.getInstance().clientChat(msgs[0], builder.toString()));
 				}
-				
-				this.UIT.setInputState(inputState.IDLE);
-				
-				c.sendMessage(protocol.getInstance().clientChat(msgs[0], builder.toString()));
 				break;
 		}
 	}
