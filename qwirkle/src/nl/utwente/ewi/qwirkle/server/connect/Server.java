@@ -39,7 +39,10 @@ public class Server {
 	private int gameCounter = 0;
 	private IProtocol.Feature[] features;
 
-	// TODO FIX CHECKING MOVES WHEN BAG IS EMPTY
+	
+	public void addIdentified(List<ClientHandler> list) {
+		identified.addAll(list);
+	}
 	
 	/**
 	 * 
@@ -187,9 +190,6 @@ public class Server {
 		}
 		Game game = new Game(list);
 		broadcast(list, protocol.getInstance().serverStartGame(players));
-		for(ClientHandler ch : list) {
-			ch.setGame(game);
-		}
 		
 		game.run();
 		broadcast(list, protocol.getInstance().serverTurn(game.getPlayerTurn()));		
@@ -241,10 +241,9 @@ public class Server {
 				
 				handle.handleIdentifyName(inputArr,ch);
 				if(handle.getWentWell()) {
+					handle.setWentWell(true);
 					handle.handleIdentifyFeatures(inputArr,ch);
 				}
-				
-				handle.setWentWell(true);
 				
 				if(handle.getWentWell()) {
 					removeHandler(ch);
@@ -269,7 +268,13 @@ public class Server {
 			case IProtocol.CLIENT_QUEUE:
 				removeHandler(ch);
 				handle.handleQueue(inputArr, ch);
-				checkQueues();
+				if(handle.getWentWell()) {
+					checkQueues();
+				} else {
+					removeHandler(ch);
+					identified.add(ch);
+				}
+				handle.setWentWell(true);
 				break;
 			case IProtocol.CLIENT_CHAT:
 				handle.handleChat(inputArr, ch);
