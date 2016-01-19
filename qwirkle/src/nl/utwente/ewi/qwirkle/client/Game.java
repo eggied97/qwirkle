@@ -286,11 +286,13 @@ public class Game implements resultCallback {
 	}
 
 	/**
+	 * Is public because we need to be able to call it from humanplayer (on b)
+	 * 
 	 * @param fromError
 	 *            true if turn was replayed because of an error (Not count
 	 *            towards the total turns...
 	 */
-	private void handleTurn(boolean fromError) {
+	public void handleTurn(boolean fromError) {
 		update();
 
 		if (!fromError) {
@@ -457,6 +459,17 @@ public class Game implements resultCallback {
 		
 		playing = false;
 
+	}
+	
+	private void determineActionFromUser(){
+		if (turnPlayer instanceof HumanPlayer) {
+		
+		}else{
+			//je bent niet aan zet -> doe nu alleen chat als dat kan
+			if(true){ //TODO if chat is enabled
+				
+			}
+		}
 	}
 
 	/**

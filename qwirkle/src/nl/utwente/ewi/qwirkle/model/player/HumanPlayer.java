@@ -39,7 +39,7 @@ public class HumanPlayer extends Player {
 		String awnserQ = this.g.getUI().askForTrade();
 
 		if(awnserQ.trim().equals("b")); {
-			determineAction();
+			this.g.handleTurn(true);
 		}
 		
 		List<Tile> rList = parseTradeAwnser(awnserQ);
@@ -57,7 +57,7 @@ public class HumanPlayer extends Player {
 		String awnser = this.g.getUI().askForMove();
 		
 		if(awnser.trim().equals("b")); {
-			determineAction();
+			this.g.handleTurn(true);
 		}
 		
 		List<Move> list = parseMoveAwnser(awnser);
