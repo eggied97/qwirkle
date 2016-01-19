@@ -268,7 +268,8 @@ public class HandleCommand {
 		} else {
 			ch.sendMessage(protocol.getInstance().serverDrawTile(null));
 		}
-		
+
+
 		handleTurn(ch);
 	}
 
