@@ -259,7 +259,8 @@ public class HandleCommand {
 		ch.getPlayer().addScore(ScoreCalc.getInstance().calculate(ch.getGame().getBoard(), moves));
 
 		server.broadcast(ch.getGame().getPlayers(), protocol.getInstance().serverMovePut(moves));
-
+		
+		//TODO what to do when list.size() > bag.size() || bag.isEMpty()?
 		List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
 		ch.getPlayer().bagToHand(newTiles);
 

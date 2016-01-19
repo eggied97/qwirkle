@@ -24,11 +24,11 @@ public class TUIView implements UserInterface {
 
 	
 	public TUIView() {
-		Scanner s = new Scanner(System.in);
+		/*Scanner s = new Scanner(System.in);
 		
 		while(s.hasNextLine()){
 			System.out.println(s.nextLine());
-		}
+		}*/
 	}
 
 	@Override

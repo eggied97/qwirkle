@@ -81,7 +81,7 @@ public class Server {
 		all = new ArrayList<>();
 		start = new ArrayList<>();
 		identified = new ArrayList<>();
-		features = new IProtocol.Feature[0];
+		features = new IProtocol.Feature[1];
 		features[0] = IProtocol.Feature.CHAT;
 		// TODO add features when implemented
 	}
