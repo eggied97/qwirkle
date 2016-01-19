@@ -268,7 +268,7 @@ public class Server {
 				break;
 	
 			case IProtocol.CLIENT_MOVE_PUT:
-				if(inputArr.length > 2) {
+				if(inputArr.length > 1) {
 					handle.handleMovePut(inputArr, ch);
 				} else {
 					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
@@ -276,7 +276,7 @@ public class Server {
 				break;
 	
 			case IProtocol.CLIENT_MOVE_TRADE:
-				if(inputArr.length > 2) {
+				if(inputArr.length > 1) {
 					handle.handleMoveTrade(inputArr, ch);
 				} else {
 					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));

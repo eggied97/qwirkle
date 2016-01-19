@@ -36,6 +36,7 @@ public class GUIView implements UserInterface {
 	public Player login() {
 		boolean isActive = true;
 		while(isActive) {
+			System.out.println(frame.getName());
 		}
 		String name = frame.getName();
 		System.out.println(name);
