@@ -367,11 +367,11 @@ public class HandleCommand {
 		String messa = builder.toString();
 		if (channel.equals("global")) {
 			server.broadcast(ch.getGame().getPlayers(), messa);
-			protocol.getInstance().serverChat(channel, ch.getClientName(), messa);
+			protocol.serverChat(channel, ch.getClientName(), messa);
 			return;
 		} else {
 			for (ClientHandler clienthand : ch.getGame().getPlayers()) {
-				if (clienthand.getClientName().equals(channel)) {
+				if (clienthand.getClientName().equals("@" + channel)) {
 					clienthand.sendMessage(messa);
 					protocol.getInstance().serverChat(channel, ch.getClientName(), messa);
 					return;
