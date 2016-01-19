@@ -261,7 +261,7 @@ public class HandleCommand {
 		//TODO what to do when list.size() > bag.size() || bag.isEMpty()?
 		List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
 		ch.getPlayer().bagToHand(newTiles);
-
+		
 		ch.sendMessage(protocol.getInstance().serverDrawTile(newTiles));
 
 		handleTurn(ch);
