@@ -401,7 +401,13 @@ public class Game implements resultCallback {
 			String[] msgs = msg.split(" ");
 			String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
 
-			c.sendMessage(protocol.getInstance().clientChat(msgs[0], message.toString()));
+			StringBuilder builder = new StringBuilder();
+			for(String s : message) {
+			    builder.append(s + " ");
+			}
+			String messa = builder.toString();
+			
+			c.sendMessage(protocol.getInstance().clientChat(msgs[0], messa));
 			break;
 		default:
 			this.UI.showError("Wrong argument.");
