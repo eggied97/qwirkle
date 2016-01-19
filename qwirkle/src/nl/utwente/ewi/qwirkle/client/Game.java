@@ -32,9 +32,13 @@ public class Game implements resultCallback {
 	private List<Tile> tilesThatNeedToBeRemoved;
 
 	private Player turnPlayer;
+	
+	Map<IProtocol.Feature, Boolean> featuresEnabled;
 
 	boolean isFirstRound = true;
 	int turnCount = 0;
+	
+	boolean playing = true;
 
 	/**
 	 * 
@@ -47,7 +51,7 @@ public class Game implements resultCallback {
 	 * @param usingFeatures
 	 *            List of <code> Features </code> that are enabled
 	 */
-	public Game(UserInterface UI, List<Player> players, Client c, List<IProtocol.Feature> usingFeatures) {
+	public Game(UserInterface UI, List<Player> players, Client c, List<IProtocol.Feature> serverFeatures) {
 		this.board = new Board();
 
 		this.players = players;
@@ -57,7 +61,10 @@ public class Game implements resultCallback {
 		// TODO check if this is fast enough to get the turn message
 		c.setCallback(this);
 
-		this.usingFeatures = usingFeatures;
+		featuresEnabled = new HashMap<>();
+		checkFeatures(serverFeatures);
+		
+		this.usingFeatures = serverFeatures;
 	}
 
 	/**
@@ -68,8 +75,8 @@ public class Game implements resultCallback {
 		return this.UI;
 	}
 
-	private void checkFeatures() {
-		// TODO implement
+	private void checkFeatures(List<IProtocol.Feature> usingFeatures) {
+		
 	}
 
 	/**
@@ -442,6 +449,8 @@ public class Game implements resultCallback {
 
 		this.UI.printMessage("Win by " + (errorOrWin.equals("WIN") ? "win" : "error") + " :");
 		this.UI.showScore(scoreMap);
+		
+		playing = false;
 
 	}
 

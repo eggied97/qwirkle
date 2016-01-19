@@ -58,9 +58,15 @@ public class Bag {
 	 * @return random <code> Tile </code> from the bag
 	 */
 	public Tile getRandomTile() {
-		Tile t = tiles.get((int) (Math.random() * tiles.size()));
-		tiles.remove(t);
-		return t;
+		if(isEmpty()){
+			//TODO throw exception
+			return null;
+		}else{
+			Tile t = tiles.get((int) (Math.random() * (tiles.size() - 1)));
+			tiles.remove(t);
+			
+			return t;
+		}
 	}
 
 	/**
@@ -71,13 +77,22 @@ public class Bag {
 	 * @return <code> List<Tile> </code> of random tiles
 	 **/
 	public List<Tile> getRandomTile(int amount) {
-		List<Tile> l = new ArrayList<>();
-
-		for (int i = 0; i < amount; i++) {
-			l.add(getRandomTile());
+		if(amount > getBag().size()){
+			amount = getBag().size();
 		}
+		
+		if(isEmpty()){
+			//TODO throw exception?
+			return null;
+		}else{
+			List<Tile> l = new ArrayList<>();
+	
+			for (int i = 0; i < amount; i++) {
+				l.add(getRandomTile());
+			}
 
-		return l;
+			return l;
+		}
 	}
 
 	/**

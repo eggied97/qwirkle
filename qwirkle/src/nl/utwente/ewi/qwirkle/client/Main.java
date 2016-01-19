@@ -38,6 +38,7 @@ public class Main implements resultCallback {
 		Main m = new Main(args);
 	}
 
+	//In the start
 	public Main(String[] args) {
 		usingFeatures = new ArrayList<>();
 		UI = new TUIView();
@@ -48,6 +49,17 @@ public class Main implements resultCallback {
 		server.setCallback(this);
 
 		authenticateUser();
+	}
+	
+	//after a match
+	public Main(Player me, Client server,UserInterface ui){
+		this.me = me;
+		this.server = server;
+		this.server.setCallback(this);
+		this.UI = ui;
+		
+		prot = protocol.getInstance();
+		enterQueue();
 	}
 
 	private static void authenticateUser() {
