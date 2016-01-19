@@ -167,7 +167,7 @@ public class Main implements resultCallback {
 	}
 
 	private void handleGameStart(String[] args) throws tooManyPlayersException, tooFewPlayersException {
-		if (args.length > 3) {
+		if (args.length > 4) {
 			throw new tooManyPlayersException(args.length + 1);
 		} else if (args.length == 0) {
 			throw new tooFewPlayersException(args.length + 1);

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
@@ -73,7 +74,7 @@ public class Server {
 	 * Initialize the <code> Server </code>
 	 */
 	public void init() {
-		queues = new HashMap<>();
+		queues = new TreeMap<>();
 		queues.put(2, new ArrayList<ClientHandler>());
 		queues.put(3, new ArrayList<ClientHandler>());
 		queues.put(4, new ArrayList<ClientHandler>());
@@ -202,9 +203,11 @@ public class Server {
 	 * Checks whether one of the queues has the set amount of players required to start a <code> Game </code>
 	 */
 	public void checkQueues() {
-		for(Entry entry: queues.entrySet()) {
+
+		for(Entry entry: ((TreeMap<Integer, List<ClientHandler>>)queues).descendingMap().entrySet()) {
 			List<ClientHandler> queue = (List<ClientHandler>)entry.getValue();
 			if((int)entry.getKey() == queue.size()) {
+				
 				gameCounter++;
 				
 				games.put(gameCounter, queues.get((int)entry.getKey()));

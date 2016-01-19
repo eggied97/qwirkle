@@ -358,16 +358,22 @@ public class HandleCommand {
 	 */
 	public void handleChat(String[] strAy, ClientHandler ch) {
 		String channel = strAy[1];
-		String message = Arrays.copyOfRange(strAy, 2, strAy.length).toString();
+		System.out.println(channel);
+		String[] message = Arrays.copyOfRange(strAy, 2, strAy.length);
+		StringBuilder builder = new StringBuilder();
+		for(String s : message) {
+		    builder.append(s + " ");
+		}
+		String messa = builder.toString();
 		if (channel.equals("global")) {
-			server.broadcast(ch.getGame().getPlayers(), message);
-			protocol.getInstance().serverChat(channel, ch.getClientName(), message);
+			server.broadcast(ch.getGame().getPlayers(), messa);
+			protocol.getInstance().serverChat(channel, ch.getClientName(), messa);
 			return;
 		} else {
 			for (ClientHandler clienthand : ch.getGame().getPlayers()) {
 				if (clienthand.getClientName().equals(channel)) {
-					clienthand.sendMessage(message);
-					protocol.getInstance().serverChat(channel, ch.getClientName(), message);
+					clienthand.sendMessage(messa);
+					protocol.getInstance().serverChat(channel, ch.getClientName(), messa);
 					return;
 				}
 			}
