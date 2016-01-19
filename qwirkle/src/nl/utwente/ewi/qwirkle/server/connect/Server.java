@@ -189,6 +189,9 @@ public class Server {
 			players.add(ch.getPlayer());
 		}
 		Game game = new Game(list);
+		for(ClientHandler ch : list) {
+			ch.setGame(game);;
+		}
 		broadcast(list, protocol.getInstance().serverStartGame(players));
 		
 		game.run();
@@ -234,7 +237,7 @@ public class Server {
 		switch (inputArr[0]) {
 
 			case IProtocol.CLIENT_IDENTIFY:
-				if(inputArr.length < 2) {
+				if(inputArr.length > 1) {
 					if(ch.getGame() != null) {
 						ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
 						break;
@@ -278,7 +281,7 @@ public class Server {
 				break;
 	
 			case IProtocol.CLIENT_QUEUE:
-				if(inputArr.length > 2) {
+				if(inputArr.length > 1) {
 					removeHandler(ch);
 					handle.handleQueue(inputArr, ch);
 					if(handle.getWentWell()) {
@@ -294,7 +297,7 @@ public class Server {
 				
 				break;
 			case IProtocol.CLIENT_CHAT:
-				if(inputArr.length < 2) {
+				if(inputArr.length > 1) {
 					if(ch.isEnabled(IProtocol.Feature.CHAT)) {
 						handle.handleChat(inputArr, ch);
 					}
