@@ -1,16 +1,22 @@
 package nl.utwente.ewi.qwirkle.model.enums;
 
 public enum Color {
-	PURPLE(0), RED(1), ORANGE(2), YELLOW(3), GREEN(4), BLUE(5);
+	PURPLE(0, 'p'), RED(1, 'r'), ORANGE(2, 'o'), YELLOW(3, 'y'), GREEN(4, 'g'), BLUE(5, 'b');
 
 	public final int i;
+	public final char c;
 
-	private Color(int j) {
+	private Color(int j, char cc) {
 		this.i = j;
+		this.c = cc;
 	}
 
 	public int getInt() {
 		return i;
+	}
+	
+	public char getChar(){
+		return this.c;
 	}
 
 	public static Color getColorByInt(int j) {
