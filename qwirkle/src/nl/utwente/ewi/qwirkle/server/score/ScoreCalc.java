@@ -10,8 +10,6 @@ public class ScoreCalc {
 	public ScoreCalc() {
 
 	}
-
-	// TODO FIX THAT SHIT
 	
 	/**
 	 * Returns an instance of ScoreCalc

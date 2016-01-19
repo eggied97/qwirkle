@@ -110,7 +110,8 @@ public class HandleCommand {
 					features.add(IProtocol.Feature.LOBBY);
 					break;
 				default:
-					break;
+					setWentWell(false);
+					return;
 				}
 				i++;
 			}
@@ -147,7 +148,8 @@ public class HandleCommand {
 				break;
 			default:
 				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.QUEUE_INVALID));
-				break;
+				setWentWell(false);
+				return;
 			}
 		}
 
@@ -305,8 +307,7 @@ public class HandleCommand {
 			i++;
 		}
 		server.broadcast(players, protocol.serverEndGame(playersPlay, scores, 1));
-		// TODO end the game
-
+		server.addIdentified(players);
 	}
 
 	/**

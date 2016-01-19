@@ -7,7 +7,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.model.player.SocketPlayer;
@@ -26,6 +28,7 @@ public class ClientHandler extends Thread {
 	private List<Feature> features;
 	private Game game = null;
 	private Player player;
+	Map<IProtocol.Feature, Boolean> featuresEnabled = new HashMap<>();
 	
 	/**
 	 * Constructor of the ClientHandler which initialises the reader and writer
@@ -56,7 +59,7 @@ public class ClientHandler extends Thread {
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @return returns the <code> Player </code> connected to this <code>ClientHandler</code>
@@ -103,7 +106,21 @@ public class ClientHandler extends Thread {
 	 * @param features
 	 */
 	public void setFeatures(List<Feature> features) {
+		for(Feature featu : IProtocol.Feature.values()) {
+			featuresEnabled.put(featu, false);
+		}
+		for(Feature feat : features) {
+			featuresEnabled.put(feat, true);
+		}
 		this.features = features;
+	}
+	
+	/**
+	 * Returns an array of features
+	 * @return
+	 */
+	public List<IProtocol.Feature> getFeatures() {
+		return features;
 	}
 	/**
 	 * Sets the game 
