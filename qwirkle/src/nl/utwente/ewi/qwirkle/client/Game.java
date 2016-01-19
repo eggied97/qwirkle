@@ -12,6 +12,7 @@ import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.model.enums.inputState;
 import nl.utwente.ewi.qwirkle.model.exceptions.tooFewArgumentsException;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
@@ -32,13 +33,15 @@ public class Game implements resultCallback {
 	private List<Tile> tilesThatNeedToBeRemoved;
 
 	private Player turnPlayer;
-	
+
 	Map<IProtocol.Feature, Boolean> featuresEnabled;
 
 	boolean isFirstRound = true;
 	int turnCount = 0;
-	
+
 	boolean playing = true;
+
+	private userInputThread UIT;
 
 	/**
 	 * 
@@ -58,12 +61,16 @@ public class Game implements resultCallback {
 		this.UI = UI;
 		this.c = c;
 
+		UIT = new userInputThread(this);
+		UIT.start();
+		this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+
 		// TODO check if this is fast enough to get the turn message
 		c.setCallback(this);
 
 		featuresEnabled = new HashMap<>();
 		checkFeatures(serverFeatures);
-		
+
 		this.usingFeatures = serverFeatures;
 	}
 
@@ -76,7 +83,7 @@ public class Game implements resultCallback {
 	}
 
 	private void checkFeatures(List<IProtocol.Feature> usingFeatures) {
-		
+
 	}
 
 	/**
@@ -228,6 +235,10 @@ public class Game implements resultCallback {
 			this.UI.showError(sender + " > " + message);
 		}
 
+		if (getPlayerByName(sender) instanceof HumanPlayer) {
+			this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+		}
+
 	}
 
 	/**
@@ -281,7 +292,7 @@ public class Game implements resultCallback {
 				this.UI.showError("Enter a valid coordinates and/or tiles");
 				handleTurn(false);
 			}
-			
+
 		}
 	}
 
@@ -306,22 +317,21 @@ public class Game implements resultCallback {
 		if (turnPlayer instanceof HumanPlayer) {
 			this.UI.printMessage("Turn changed, its your turn now");
 			this.UI.showHand(turnPlayer.getHand());
-			
-			handlePlayerInput(((HumanPlayer) turnPlayer).determineAction());
-			
+			this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+
 		} else if (turnPlayer instanceof ComputerPlayer) {
 			handleTurnPcPlayer();
 		} else {
 			this.UI.printMessage("Turn changed, its " + turnPlayer.getName() + " turn now");
 		}
 	}
-	
-	private void handleTurnPcPlayer(){
-		//if the moves.size == 0 => do trade.
-		
+
+	private void handleTurnPcPlayer() {
+		// if the moves.size == 0 => do trade.
+
 		List<Move> moves = turnPlayer.determinePutMove(board);
-		
-		if(moves.size() == 0){
+
+		if (moves.size() == 0) {
 			List<Tile> tiles = turnPlayer.determineTradeMove();
 
 			tilesThatNeedToBeRemoved = new ArrayList<>();
@@ -330,7 +340,7 @@ public class Game implements resultCallback {
 			nextDrawNeedToRemoveTiles = true;
 
 			c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
-		}else{
+		} else {
 			tilesThatNeedToBeRemoved = new ArrayList<>();
 
 			for (Move m : moves) {
@@ -366,47 +376,93 @@ public class Game implements resultCallback {
 	 * 
 	 * @param input
 	 */
-	private void handlePlayerInput(String input) {
+	public void handlePlayerInput(String input, inputState state) {
 
-		// is p, e or c
-		switch (input) {
-		case "p":
-			List<Move> moves = ((HumanPlayer) turnPlayer).determinePutMove(board);
+		HumanPlayer hp = null;
 
-			tilesThatNeedToBeRemoved = new ArrayList<>();
-
-			for (Move m : moves) {
-				tilesThatNeedToBeRemoved.add(m.getTile());
+		for (Player p : players) {
+			if (p instanceof HumanPlayer) {
+				hp = (HumanPlayer) p;
 			}
+		}
 
-			nextDrawNeedToRemoveTiles = true;
-
-			c.sendMessage(protocol.getInstance().clientPutMove(moves));
-
-			break;
-		case "e":
-			List<Tile> tiles = ((HumanPlayer) turnPlayer).determineTradeMove();
-
-			tilesThatNeedToBeRemoved = new ArrayList<>();
-			tilesThatNeedToBeRemoved.addAll(tiles);
-
-			nextDrawNeedToRemoveTiles = true;
-
-			c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
-
-			break;
-		case "c":
-			String msg = ((HumanPlayer) turnPlayer).sendChat();
-
-			String[] msgs = msg.split(" ");
-			String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
-
-			c.sendMessage(protocol.getInstance().clientChat(msgs[0], message.toString()));
-			break;
-		default:
-			this.UI.showError("Wrong argument.");
-			handleTurn(true);
-			break;
+		switch (state) {
+			case IDLE:
+				switch (input) {
+					case "p":
+						if (turnPlayer.equals(hp)) {
+							this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_MOVE);
+							this.UIT.setInputState(inputState.FORMOVE);
+						} else {
+							this.UI.showError("Wait for your turn");
+						}
+		
+						break;
+					case "e":
+						if (turnPlayer.equals(hp)) {
+							this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_TRADE);
+							this.UIT.setInputState(inputState.FORTRADE);
+						} else {
+							this.UI.showError("Wait for your turn");
+						}
+		
+						break;
+					case "c":
+		
+						this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_CHAT);
+						this.UIT.setInputState(inputState.FORCHAT);
+						
+						break;
+					default:
+						this.UI.showError("Wrong argument.");
+						handleTurn(true);
+						break;
+					}
+				break;
+			case FORMOVE:
+				List<Move> moves = hp.parseMoveAwnser(input);
+	
+				tilesThatNeedToBeRemoved = new ArrayList<>();
+	
+				for (Move m : moves) {
+					tilesThatNeedToBeRemoved.add(m.getTile());
+				}
+	
+				nextDrawNeedToRemoveTiles = true;
+	
+				this.UIT.setInputState(inputState.IDLE);
+	
+				c.sendMessage(protocol.getInstance().clientPutMove(moves));
+	
+				break;
+			case FORTRADE:
+				List<Tile> tiles = hp.parseTradeAwnser(input);
+	
+				tilesThatNeedToBeRemoved = new ArrayList<>();
+				tilesThatNeedToBeRemoved.addAll(tiles);
+	
+				nextDrawNeedToRemoveTiles = true;
+	
+				this.UIT.setInputState(inputState.IDLE);
+	
+				c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
+	
+				break;
+			case FORCHAT:
+				String msg = input;
+	
+				String[] msgs = msg.split(" ");
+				String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
+				
+				StringBuilder builder = new StringBuilder();
+				for(String s : message) {
+				    builder.append(s + " ");
+				}
+				
+				this.UIT.setInputState(inputState.IDLE);
+				
+				c.sendMessage(protocol.getInstance().clientChat(msgs[0], builder.toString()));
+				break;
 		}
 	}
 
@@ -456,22 +512,10 @@ public class Game implements resultCallback {
 
 		this.UI.printMessage("Win by " + (errorOrWin.equals("WIN") ? "win" : "error") + " :");
 		this.UI.showScore(scoreMap);
-		
+
 		playing = false;
 
 	}
-	
-	private void determineActionFromUser(){
-		if (turnPlayer instanceof HumanPlayer) {
-		
-		}else{
-			//je bent niet aan zet -> doe nu alleen chat als dat kan
-			if(true){ //TODO if chat is enabled
-				
-			}
-		}
-	}
-
 	/**
 	 * 
 	 * @param name

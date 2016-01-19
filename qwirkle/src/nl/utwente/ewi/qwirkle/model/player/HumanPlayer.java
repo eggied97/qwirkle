@@ -83,7 +83,7 @@ public class HumanPlayer extends Player {
 	}
 
 
-	private List<Tile> parseTradeAwnser(String trades) {
+	public List<Tile> parseTradeAwnser(String trades) {
 		List<Tile> result = new ArrayList<>();
 
 		String[] mulTrades = trades.trim().split(" ");
@@ -95,7 +95,7 @@ public class HumanPlayer extends Player {
 		return result;
 	}
 
-	private List<Move> parseMoveAwnser(String a) {
+	public List<Move> parseMoveAwnser(String a) {
 		List<Move> result = new ArrayList<>();
 
 		for (String m : a.split(" ")) {

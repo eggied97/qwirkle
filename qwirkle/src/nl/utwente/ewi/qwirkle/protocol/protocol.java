@@ -351,4 +351,10 @@ public class protocol implements IProtocol {
 
 		return result;
 	}
+	
+	/*================================
+	 * UTILS
+	 * 
+	 * 
+	 * */
 }
