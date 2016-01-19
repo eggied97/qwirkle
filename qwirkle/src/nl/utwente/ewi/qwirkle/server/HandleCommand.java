@@ -241,10 +241,12 @@ public class HandleCommand {
 	 * @param ch
 	 */
 	public void handleMovePut(String[] strAy, ClientHandler ch) {
+		
 		if (!ch.getGame().hasTurn(ch)) {
 			// TODO may be error? -Egbert
 			return;
 		}
+		
 		List<Move> moves = new ArrayList<>();
 		List<Tile> tiles = new ArrayList<>();
 		for (int i = 1; i < strAy.length; i++) {
@@ -264,6 +266,17 @@ public class HandleCommand {
 			}
 			
 		}
+		if(ch.getGame().getBoard().isEmpty()) {
+			boolean startPoint = false;
+			for(Move m : moves) {
+				if(m.getPoint().equals(new Point(0,0))) {
+					startPoint = true;
+				}
+				ch.sendMessage(protocol.serverError(IProtocol.Error.MOVE_INVALID));
+				return;
+			}	
+		}
+		
 		if (!checkTiles(tiles, ch)) {
 			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.MOVE_TILES_UNOWNED));
 			return;
