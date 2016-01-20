@@ -272,9 +272,11 @@ public class HandleCommand {
 				if(m.getPoint().equals(new Point(0,0))) {
 					startPoint = true;
 				}
+			}	
+			if(!startPoint) {
 				ch.sendMessage(protocol.serverError(IProtocol.Error.MOVE_INVALID));
 				return;
-			}	
+			}
 		}
 		
 		if (!checkTiles(tiles, ch)) {
