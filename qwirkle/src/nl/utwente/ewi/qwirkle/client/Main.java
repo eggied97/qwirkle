@@ -42,7 +42,7 @@ public class Main implements resultCallback {
 	//In the start
 	public Main(String[] args) {
 		usingFeatures = new ArrayList<>();
-		UI = new GUIView();
+		UI = new TUIView();
 
 		prot = protocol.getInstance();
 		setupConnectionToServer(args);

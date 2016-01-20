@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import nl.utwente.ewi.qwirkle.model.exceptions.PlaceOccupiedException;
+import nl.utwente.ewi.qwirkle.server.score.ScoreCalc;
 
 public class Board {
 
@@ -42,10 +43,12 @@ public class Board {
 	 * Put all specified moves on the <code> Board </code>
 	 * @param moves
 	 */
-	public void putTile(List<Move> moves) {
+	public int putTile(List<Move> moves) {
 		for (Move m : moves) {
 			putTile(m);
 		}
+		
+		return new ScoreCalc().calculate(this, moves);
 	}
 
 	/**
