@@ -11,6 +11,7 @@ import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
+import nl.utwente.ewi.qwirkle.model.player.strategy.SuperStrategy;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 
 public class TUIView implements UserInterface {
@@ -38,6 +39,9 @@ public class TUIView implements UserInterface {
 
 		if(name.equals("COMPUTERMAN")){
 			return new ComputerPlayer("pcman" + (int)(Math.random() * 4));
+		}else if(name.equals("COMPUTERMANSLIM")){
+			return new ComputerPlayer("pcmanslim" + (int)(Math.random() * 4), new SuperStrategy());
+			
 		}
 		
 		return new HumanPlayer(name);
