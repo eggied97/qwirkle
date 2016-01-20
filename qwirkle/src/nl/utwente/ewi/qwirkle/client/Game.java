@@ -127,9 +127,6 @@ public class Game implements resultCallback {
 				break;
 
 			case IProtocol.SERVER_DRAWTILE:
-				if (args.length == 0) {
-					throw new tooFewArgumentsException(args.length);
-				}
 
 				if (nextDrawNeedToRemoveTiles) {
 					if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {

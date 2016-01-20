@@ -300,7 +300,7 @@ public class HandleCommand {
 			ch.getPlayer().bagToHand(newTiles);
 			ch.sendMessage(protocol.getInstance().serverDrawTile(newTiles));
 		} else {
-			ch.sendMessage(protocol.getInstance().serverDrawTile(null));
+			ch.sendMessage(protocol.getInstance().serverDrawTile(new ArrayList<Tile>()));
 		}
 
 
