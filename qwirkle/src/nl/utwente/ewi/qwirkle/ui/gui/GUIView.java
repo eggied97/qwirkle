@@ -109,7 +109,7 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void printMessage(String message) {
-		// TODO Auto-generated method stub
+		mFrame.setMessageLabel(message);
 		
 	}
 
@@ -147,6 +147,14 @@ public class GUIView implements UserInterface {
 	public String askForChatMessage() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void setScore(int[] score) {
+		
+	}
+	
+	public void setChat(String message) {
+		mFrame.setTextArea(message);
 	}
 
 }

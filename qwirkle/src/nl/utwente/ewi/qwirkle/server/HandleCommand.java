@@ -436,6 +436,7 @@ public class HandleCommand {
 			counter++;
 			if(counter == ch.getGame().getPlayers().size()) {
 				handleEndGame(ch);
+				return;
 			}
 		}
 	}
