@@ -17,6 +17,7 @@ import nl.utwente.ewi.qwirkle.model.exceptions.tooFewArgumentsException;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
+import nl.utwente.ewi.qwirkle.model.player.strategy.DumbStrategy;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
@@ -32,7 +33,7 @@ public class Game implements resultCallback {
 	private List<IProtocol.Feature> usingFeatures;
 	boolean nextDrawNeedToRemoveTiles = false;
 	private List<Tile> tilesThatNeedToBeRemoved;
-	
+
 	private Player turnPlayer;
 
 	Map<IProtocol.Feature, Boolean> featuresEnabled;
@@ -61,17 +62,16 @@ public class Game implements resultCallback {
 		this.players = players;
 		this.UI = UI;
 		this.c = c;
-				
 
 		UIT = new userInputThread(this);
 		UIT.start();
-		if(UI instanceof GUIView) {
+		if (UI instanceof GUIView) {
 			((GUIView) UI).changeFrame();
 		} else {
 			this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
 
 		}
-		
+
 		// TODO check if this is fast enough to get the turn message
 		c.setCallback(this);
 
@@ -103,7 +103,7 @@ public class Game implements resultCallback {
 		} else {
 			// TODO score
 			int[] score = new int[10];
-			((GUIView)this.UI).setScore(score);
+			((GUIView) this.UI).setScore(score);
 		}
 	}
 
@@ -237,7 +237,7 @@ public class Game implements resultCallback {
 
 		// For change of color between private/global we use showError and
 		// print message
-		if(this.UI instanceof TUIView) {
+		if (this.UI instanceof TUIView) {
 			if (isGlobal) {
 				this.UI.printMessage(sender + " > " + message);
 			} else {
@@ -254,7 +254,6 @@ public class Game implements resultCallback {
 				this.UI.showError(sender + " > " + message);
 			}
 		}
-		
 
 	}
 
@@ -289,7 +288,7 @@ public class Game implements resultCallback {
 	 */
 	private void handleMovePut(String[] moves) {
 		List<Move> aMoves = new ArrayList<>();
-		
+
 		for (String m : moves) {
 			String[] parts = m.split("@");
 
@@ -312,7 +311,7 @@ public class Game implements resultCallback {
 				handleTurn(false);
 			}
 		}
-		
+
 		int score = board.putTile(aMoves);
 		turnPlayer.addScore(score);
 	}
@@ -336,9 +335,8 @@ public class Game implements resultCallback {
 		}
 
 		if (turnPlayer instanceof HumanPlayer) {
-			
-			
-			if(this.UI instanceof TUIView) {
+
+			if (this.UI instanceof TUIView) {
 				this.UI.printMessage("Turn changed, its your turn now");
 				this.UI.showHand(turnPlayer.getHand());
 				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
@@ -414,103 +412,116 @@ public class Game implements resultCallback {
 		}
 
 		switch (state) {
-			case IDLE:
-				switch (input) {
-					case "p":
-						if (turnPlayer.equals(hp)) {
-							this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_MOVE);
-							this.UIT.setInputState(inputState.FORMOVE);
-						} else {
-							this.UI.showError("Wait for your turn");
-						}
-		
-						break;
-					case "e":
-						if (turnPlayer.equals(hp)) {
-							this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_TRADE);
-							this.UIT.setInputState(inputState.FORTRADE);
-						} else {
-							this.UI.showError("Wait for your turn");
-						}
-		
-						break;
-					case "c":
-		
-						this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_CHAT);
-						this.UIT.setInputState(inputState.FORCHAT);
-						
-						break;
-					default:
-						this.UI.showError("Wrong argument.");
-						handleTurn(true);
-						break;
-					}
-				break;
-								
-			case FORMOVE:
-				if(input.equals("b")){
-					this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
-					this.UIT.setInputState(inputState.IDLE);
-				}else{
-					
-					List<Move> moves = hp.parseMoveAwnser(input);
-		
-					if(moves == null){
-						this.UI.showError("Move set cannotbe empty!");
-						this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_MOVE);
-					}else{
-						
-						tilesThatNeedToBeRemoved = new ArrayList<>();
-			
-						for (Move m : moves) {
-							tilesThatNeedToBeRemoved.add(m.getTile());
-						}
-			
-						nextDrawNeedToRemoveTiles = true;
-			
-						this.UIT.setInputState(inputState.IDLE);
-			
-						c.sendMessage(protocol.getInstance().clientPutMove(moves));
-					}
+		case IDLE:
+			switch (input) {
+			case "p":
+				if (turnPlayer.equals(hp)) {
+					this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_MOVE);
+					this.UIT.setInputState(inputState.FORMOVE);
+				} else {
+					this.UI.showError("Wait for your turn");
 				}
+
 				break;
-			case FORTRADE:
-				if(input.equals("b")){
-					this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
-					this.UIT.setInputState(inputState.IDLE);
-				}else{
-					List<Tile> tiles = hp.parseTradeAwnser(input);
-		
+			case "e":
+				if (turnPlayer.equals(hp)) {
+					this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_TRADE);
+					this.UIT.setInputState(inputState.FORTRADE);
+				} else {
+					this.UI.showError("Wait for your turn");
+				}
+
+				break;
+			case "c":
+
+				this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_CHAT);
+				this.UIT.setInputState(inputState.FORCHAT);
+
+				break;
+			default:
+				this.UI.showError("Wrong argument.");
+				handleTurn(true);
+				break;
+			}
+			break;
+
+		case FORMOVE:
+			if (input.equals("b")) {
+				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+				this.UIT.setInputState(inputState.IDLE);
+			} else if (input.equals("h")) {
+				List<Move> hintedMoves = new DumbStrategy().determineMove(board, turnPlayer.getHand());
+
+				String hintmsg = "";
+
+				for (Move m : hintedMoves) {
+					hintmsg += turnPlayer.getHand().indexOf(m.getTile());
+					hintmsg += "@" + m.getPoint().getX() + "," + m.getPoint().getY();
+				}
+				
+				this.UI.printMessage(hintmsg);
+				this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_MOVE);
+
+			} else {
+
+				List<Move> moves = hp.parseMoveAwnser(input);
+
+				if (moves == null) {
+					this.UI.showError("Move set cannotbe empty!");
+					this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_MOVE);
+				} else {
+
 					tilesThatNeedToBeRemoved = new ArrayList<>();
-					tilesThatNeedToBeRemoved.addAll(tiles);
-		
-					nextDrawNeedToRemoveTiles = true;
-		
-					this.UIT.setInputState(inputState.IDLE);
-		
-					c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
-				}
-				break;
-			case FORCHAT:
-				if(input.equals("b")){
-					this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
-					this.UIT.setInputState(inputState.IDLE);
-				}else{
-					String msg = input;
-		
-					String[] msgs = msg.split(" ");
-					String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
-					
-					StringBuilder builder = new StringBuilder();
-					for(String s : message) {
-					    builder.append(s + " ");
+
+					for (Move m : moves) {
+						tilesThatNeedToBeRemoved.add(m.getTile());
 					}
-					
+
+					nextDrawNeedToRemoveTiles = true;
+
 					this.UIT.setInputState(inputState.IDLE);
-					
-					c.sendMessage(protocol.getInstance().clientChat(msgs[0], builder.toString()));
+
+					c.sendMessage(protocol.getInstance().clientPutMove(moves));
 				}
-				break;
+			}
+			break;
+		case FORTRADE:
+			if (input.equals("b")) {
+				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+				this.UIT.setInputState(inputState.IDLE);
+			} else {
+				List<Tile> tiles = hp.parseTradeAwnser(input);
+
+				tilesThatNeedToBeRemoved = new ArrayList<>();
+				tilesThatNeedToBeRemoved.addAll(tiles);
+
+				nextDrawNeedToRemoveTiles = true;
+
+				this.UIT.setInputState(inputState.IDLE);
+
+				c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
+			}
+			break;
+		case FORCHAT:
+			if (input.equals("b")) {
+				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+				this.UIT.setInputState(inputState.IDLE);
+			} else {
+				String msg = input;
+
+				String[] msgs = msg.split(" ");
+				String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
+
+				StringBuilder builder = new StringBuilder();
+				for (String s : message) {
+					builder.append(s + " ");
+				}
+
+				this.UIT.setInputState(inputState.IDLE);
+
+				c.sendMessage(protocol.getInstance().clientChat(msgs[0], builder.toString()));
+			}
+			break;
 		}
 	}
 
@@ -564,6 +575,7 @@ public class Game implements resultCallback {
 		playing = false;
 
 	}
+
 	/**
 	 * 
 	 * @param name
