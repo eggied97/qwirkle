@@ -100,6 +100,7 @@ public class Game implements resultCallback {
 			this.UI.printMessage("Current board situation : ");
 			this.UI.printMessage(board.toString());
 		} else {
+			((GUIView)this.UI).updateBoard();
 			// TODO score
 			int[] score = new int[10];
 			((GUIView)this.UI).setScore(score);
@@ -339,6 +340,7 @@ public class Game implements resultCallback {
 				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
 			} else {
 				this.UI.printMessage("It's your turn now");
+				this.UI.showHand(turnPlayer.getHand());
 			}
 
 		} else if (turnPlayer instanceof ComputerPlayer) {

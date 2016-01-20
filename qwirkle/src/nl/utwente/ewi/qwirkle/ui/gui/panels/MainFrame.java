@@ -11,6 +11,8 @@ import javax.swing.JRootPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -21,6 +23,7 @@ import javax.swing.BoxLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Component;
 
 public class MainFrame extends JFrame {
 
@@ -28,9 +31,14 @@ public class MainFrame extends JFrame {
 	private JTextArea textArea;
 	private JLabel scoreboard;
 	private JLabel messageLabel;
+	private List<JButton> handTiles;
 	
 	public JLabel getMessageLabel() {
 		return messageLabel;
+	}
+
+	public List<JButton> getHandTiles() {
+		return handTiles;
 	}
 
 	public void setMessageLabel(String message) {
@@ -75,6 +83,8 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
+		handTiles = new ArrayList<>();
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1000, 800);
 		contentPane = new JPanel();
@@ -109,8 +119,8 @@ public class MainFrame extends JFrame {
 		GridBagLayout gbl_panelChat = new GridBagLayout();
 		gbl_panelChat.columnWidths = new int[] {700, 100 };
 		gbl_panelChat.rowHeights = new int[] { 150, 50 };
-		gbl_panelChat.columnWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_panelChat.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelChat.columnWeights = new double[] { 0.0, 0.0 };
+		gbl_panelChat.rowWeights = new double[] { 0.0, 0.0 };
 		panelChat.setLayout(gbl_panelChat);
 		
 		textArea = new JTextArea();
@@ -193,10 +203,69 @@ public class MainFrame extends JFrame {
 		
 		GridBagLayout gbl_panelHand = new GridBagLayout();
 		gbl_panelHand.columnWidths = new int[] {100, 100};
-		gbl_panelHand.rowHeights = new int[] { 450, 100, 50 };
-		gbl_panelHand.columnWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_panelHand.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelHand.rowHeights = new int[] { 475, 75, 50 };
+		gbl_panelHand.columnWeights = new double[] { 0.0, 0.0 };
+		gbl_panelHand.rowWeights = new double[] { 0.0, 0.0, 0.0 };
 		panelHand.setLayout(gbl_panelHand);
+		
+		JPanel panelTiles = new JPanel();
+		GridBagConstraints gbc_panelTiles = new GridBagConstraints();
+		gbc_panelTiles.fill = GridBagConstraints.BOTH;
+		gbc_panelTiles.gridx = 0;
+		gbc_panelTiles.gridy = 0;
+		gbc_panelTiles.gridwidth = 2;
+		panelHand.add(panelTiles, gbc_panelTiles);
+		panelTiles.setLayout(new BoxLayout(panelTiles, BoxLayout.Y_AXIS));
+		
+		JButton btnTile1 = new JButton("");
+		btnTile1.setAlignmentX(CENTER_ALIGNMENT);
+		btnTile1.setMinimumSize(new Dimension(75, 75));
+		btnTile1.setPreferredSize(new Dimension(75, 75));
+		btnTile1.setMaximumSize(new Dimension(75, 75));
+		panelTiles.add(btnTile1);
+		
+		JButton btnTile2 = new JButton("");
+		btnTile2.setAlignmentX(CENTER_ALIGNMENT);
+		btnTile2.setMinimumSize(new Dimension(75, 75));
+		btnTile2.setPreferredSize(new Dimension(75, 75));
+		btnTile2.setMaximumSize(new Dimension(75, 75));
+		panelTiles.add(btnTile2);
+		
+		JButton btnTile3 = new JButton("");
+		btnTile3.setAlignmentX(CENTER_ALIGNMENT);
+		btnTile3.setMinimumSize(new Dimension(75, 75));
+		btnTile3.setPreferredSize(new Dimension(75, 75));
+		btnTile3.setMaximumSize(new Dimension(75, 75));
+		panelTiles.add(btnTile3);
+		
+		JButton btnTile4 = new JButton("");
+		btnTile4.setAlignmentX(CENTER_ALIGNMENT);
+		btnTile4.setMinimumSize(new Dimension(75, 75));
+		btnTile4.setPreferredSize(new Dimension(75, 75));
+		btnTile4.setMaximumSize(new Dimension(75, 75));
+		panelTiles.add(btnTile4);
+		
+		JButton btnTile5 = new JButton("");
+		btnTile5.setAlignmentX(CENTER_ALIGNMENT);
+		btnTile5.setMinimumSize(new Dimension(75, 75));
+		btnTile5.setPreferredSize(new Dimension(75, 75));
+		btnTile5.setMaximumSize(new Dimension(75, 75));
+		panelTiles.add(btnTile5);
+		
+		JButton btnTile6 = new JButton("");
+		btnTile6.setAlignmentX(CENTER_ALIGNMENT);
+		btnTile6.setMinimumSize(new Dimension(75, 75));
+		btnTile6.setPreferredSize(new Dimension(75, 75));
+		btnTile6.setMaximumSize(new Dimension(75, 75));
+		panelTiles.add(btnTile6);
+		
+		handTiles.add(btnTile1);
+		handTiles.add(btnTile2);
+		handTiles.add(btnTile3);
+		handTiles.add(btnTile4);
+		handTiles.add(btnTile5);
+		handTiles.add(btnTile6);
+		
 		
 		messageLabel = new JLabel();
 		GridBagConstraints gbc_messageLabel = new GridBagConstraints();
