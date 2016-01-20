@@ -11,6 +11,7 @@ import javax.swing.SwingConstants;
 import nl.utwente.ewi.qwirkle.model.Tile;
 
 public class imageGetter {
+	
 
 	BufferedImage wholeImage;
 	private final static int widthTile = 62;

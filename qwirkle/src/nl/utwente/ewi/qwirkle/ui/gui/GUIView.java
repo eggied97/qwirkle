@@ -1,9 +1,14 @@
 package nl.utwente.ewi.qwirkle.ui.gui;
 
 import java.awt.EventQueue;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
 import nl.utwente.ewi.qwirkle.client.Game;
 import nl.utwente.ewi.qwirkle.model.Tile;
@@ -11,16 +16,21 @@ import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
+import nl.utwente.ewi.qwirkle.ui.imageGetter;
 import nl.utwente.ewi.qwirkle.ui.gui.panels.ConnectPanel;
 import nl.utwente.ewi.qwirkle.ui.gui.panels.MainFrame;
+
 
 
 
 public class GUIView implements UserInterface {
 	ConnectPanel frame;
 	MainFrame mFrame;
+	private imageGetter img;
 	
 	public GUIView() {
+		img = new imageGetter();
+		
 		frame = new ConnectPanel();
 		frame.setVisible(true);
 		
@@ -121,7 +131,16 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void showHand(List<Tile> tiles) {
-		// TODO Auto-generated method stub
+		List<BufferedImage> tileImg = new ArrayList<>();
+		for(Tile t : tiles) {
+			tileImg.add(img.getImageByTile(t));
+		}
+		List<JButton> buttons =  mFrame.getHandTiles();
+		int i = 0;
+		for(JButton b : buttons) {
+			b.setIcon(new ImageIcon(tileImg.get(i)));
+			i++;
+		}
 		
 	}
 
@@ -155,6 +174,25 @@ public class GUIView implements UserInterface {
 	
 	public void setChat(String message) {
 		mFrame.setTextArea(message);
+	}
+
+
+
+	public void updateBoard() {
+		
+		
+	}
+	
+	public static void main(String[] args) {
+		GUIView gui = new GUIView();
+		List<Tile> tiles = new ArrayList<>();
+		tiles.add(new Tile(2));
+		tiles.add(new Tile(16));
+		tiles.add(new Tile(28));
+		tiles.add(new Tile(24));
+		tiles.add(new Tile(3));
+		tiles.add(new Tile(6));
+		gui.showHand(tiles);
 	}
 
 }
