@@ -32,7 +32,7 @@ public class Game implements resultCallback {
 	private List<IProtocol.Feature> usingFeatures;
 	boolean nextDrawNeedToRemoveTiles = false;
 	private List<Tile> tilesThatNeedToBeRemoved;
-
+	
 	private Player turnPlayer;
 
 	Map<IProtocol.Feature, Boolean> featuresEnabled;
@@ -61,6 +61,7 @@ public class Game implements resultCallback {
 		this.players = players;
 		this.UI = UI;
 		this.c = c;
+				
 
 		UIT = new userInputThread(this);
 		UIT.start();
@@ -288,6 +289,8 @@ public class Game implements resultCallback {
 	 *            - String representation of the move set
 	 */
 	private void handleMovePut(String[] moves) {
+		List<Move> aMoves = new ArrayList<>();
+		
 		for (String m : moves) {
 			String[] parts = m.split("@");
 
@@ -304,13 +307,15 @@ public class Game implements resultCallback {
 			try {
 				Point pResult = new Point(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
 				Move mResult = new Move(pResult, new Tile(Integer.parseInt(parts[0])));
-				board.putTile(mResult);
+				aMoves.add(mResult);
 			} catch (NumberFormatException e) {
 				this.UI.showError("Enter a valid coordinates and/or tiles");
 				handleTurn(false);
 			}
-
 		}
+		
+		int score = board.putTile(aMoves);
+		turnPlayer.addScore(score);
 	}
 
 	/**
