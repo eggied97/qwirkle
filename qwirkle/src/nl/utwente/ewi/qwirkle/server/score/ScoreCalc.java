@@ -30,7 +30,7 @@ public class ScoreCalc {
 		int score = 0;
 
 		// direction of the moves 0 is horizontal, 1 is vertical, default is 0
-
+		//TODO enums?
 		int direction = 0;
 		if (moves.size() > 1) {
 			if (moves.get(0).getPoint().getX() == moves.get(1).getPoint().getX()) {

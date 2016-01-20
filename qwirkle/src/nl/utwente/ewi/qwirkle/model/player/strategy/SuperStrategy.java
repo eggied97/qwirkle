@@ -9,7 +9,10 @@ import java.util.Map.Entry;
 
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
+import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.server.ValidMove;
+import nl.utwente.ewi.qwirkle.server.score.ScoreCalc;
 
 public class SuperStrategy implements Strategy {
 
@@ -18,6 +21,120 @@ public class SuperStrategy implements Strategy {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	/*
+	 * Other super smart strategy:
+	 * 
+	 * We use the dumb strategy over and over again, and chose the one with the
+	 * most points ant the end :).
+	 */
+	@Override
+	public List<Move> determineMove(Board b, List<Tile> hand) {
+		List<List<Move>> alleMovesMogelijk = getAllMoves(b, hand);
+
+		int hoogsteScore = 0;
+		List<Move> lijstHoogsteScore = new ArrayList<>();
+		
+		ScoreCalc sc = new ScoreCalc();
+		
+		for(List<Move> moves : alleMovesMogelijk){
+			Board bCopy = b.deepCopy();
+			bCopy.putTile(moves);
+			
+			int score = sc.calculate(bCopy, moves);
+			
+			
+			if(score > hoogsteScore){
+				hoogsteScore = score;
+				lijstHoogsteScore = new ArrayList<>();
+				lijstHoogsteScore.addAll(moves);
+			}
+		}
+
+		return lijstHoogsteScore;
+	}
+
+	private List<List<Move>> checkHandForMoves(Board b, List<Tile> hand, List<Move> eerderGelegd) {
+		List<List<Move>> result = new ArrayList<>();
+
+		boolean moveIsValid = false;
+		
+		Board bCopy = b.deepCopy();
+		
+		if (eerderGelegd != null) {
+			bCopy.putTile(eerderGelegd);
+		}
+		
+		List<Point> emptySpots = bCopy.getEmptySpots();
+		ValidMove vm = new ValidMove();
+
+		for (int i = 0; i < hand.size(); i++) {
+
+			Tile t = hand.get(i);
+
+			// check every empty spot
+			for (Point p : emptySpots) {
+
+				List<Move> eerderGelegdCopy = new ArrayList<>();
+				
+				if (eerderGelegd != null) {
+					eerderGelegdCopy.addAll(eerderGelegd);
+				}
+				
+				Move m = new Move(p, t);
+
+				eerderGelegdCopy.add(m);
+
+				moveIsValid = vm.validMoveSet(eerderGelegdCopy, b);
+
+				if (moveIsValid) {
+					result.add(eerderGelegdCopy);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	public List<List<Move>> getAllMoves(Board b, List<Tile> hand) {
+		Map<Integer, List<List<Move>>> alleLijsten = new HashMap<>();
+
+		List<List<Move>> result = checkHandForMoves(b, hand, null);
+		alleLijsten.put(0, result);
+
+		for (int i = 1; i < hand.size(); i++) {
+			List<List<Move>> gelegdeMoves = alleLijsten.get(i - 1);
+			List<Tile> handCopy = new ArrayList<>();
+			handCopy.addAll(hand);
+
+			List<List<Move>> tussenResult = new ArrayList<>();
+
+			for (List<Move> moves : gelegdeMoves) {
+				handCopy = new ArrayList<>();
+				handCopy.addAll(hand);
+
+				// then remove tiles from hand out of the move
+				for (Move m : moves) {
+					handCopy.remove(m.getTile());
+				}
+
+				// now check with the handCopy, where we can do a validMove
+				tussenResult.addAll(checkHandForMoves(b, handCopy, moves));
+
+			}
+
+			alleLijsten.put(i, tussenResult);
+		}
+
+		result = new ArrayList<>();
+
+		for (List<List<Move>> zetErIn : alleLijsten.values()) {
+			result.addAll(zetErIn);
+		}
+
+		return result;
+
 	}
 
 	/*
@@ -30,12 +147,11 @@ public class SuperStrategy implements Strategy {
 	 * the board, determine how many points we get out of that. Finally we place
 	 * the move wich gains us the most points -> INSTA WIN.
 	 * 
+	 * 
+	 * @Override public List<Move> determineMove(Board b, List<Tile> hand) {
+	 * 
+	 * return null; }
 	 */
-	@Override
-	public List<Move> determineMove(Board b, List<Tile> hand) {
-
-		return null;
-	}
 
 	/*
 	 * Smart strategy for trading:
@@ -105,77 +221,4 @@ public class SuperStrategy implements Strategy {
 
 		return result;
 	}
-
-	private List<Move> getBestPossibleMove(Board b, List<Tile> hand) {
-		List<Move> bestMoves = new ArrayList<>();
-
-		Board boardCopy = b.deepCopy();
-
-		List<List<Tile>> tilePairs = getAllPossibleTilePairs(hand);
-		List<Move> bestMoveSet = bestPossibleMoveSet(tilePairs);
-
-		return bestMoves;
-	}
-
-	public List<List<Tile>> getAllPossibleTilePairs(List<Tile> hand) {
-		List<List<Tile>> result = new ArrayList<>();
-
-		for (Tile t : hand) {
-			List<Tile> mR = new ArrayList<Tile>();
-			mR.add(t);
-			
-			result.add(mR);
-		}
-		
-		boolean done = false;
-		
-		//stop pas als er voor elke steen in de hand niks meer bijgelegt kan worden
-		while(!done){
-			
-			List<List<Tile>> tempStorage = new ArrayList<>();
-			
-			for(Tile t : hand){
-				
-				Iterator it = result.iterator();
-				
-				while(it.hasNext()){
-					List<Tile> tiles = (List<Tile>)it.next();
-					
-					if(tiles.get(tiles.size() - 1).isValidNeighbour(t)){
-						//past erachter
-						done = false;
-						List<Tile> middenResult = new ArrayList<Tile>();
-						middenResult.addAll(tiles);
-						middenResult.add(t);
-																	
-						tempStorage.add(middenResult);
-						
-					}else if(tiles.get(0).isValidNeighbour(t)){
-						//past ervoor, wordt als het goed is niet aangeroepen als tiles.size() == 1;
-						done = false;
-						List<Tile> middenResult = new ArrayList<Tile>();
-						middenResult.add(t);
-						middenResult.addAll(tiles);						
-						
-						tempStorage.add(middenResult);
-						
-					}else{
-						done = true;
-					}
-				}
-			}
-			
-			result.addAll(tempStorage);
-			tempStorage.clear();
-		}
-
-		return result;
-	}
-
-	private List<Move> bestPossibleMoveSet(List<List<Tile>> tilePairs) {
-		List<Move> result = new ArrayList<>();
-
-		return result;
-	}
-
 }
