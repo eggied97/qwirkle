@@ -3,12 +3,15 @@ package nl.utwente.ewi.qwirkle.ui.gui;
 import java.awt.EventQueue;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JToggleButton;
 
 import nl.utwente.ewi.qwirkle.client.Game;
 import nl.utwente.ewi.qwirkle.model.Tile;
@@ -123,9 +126,18 @@ public class GUIView implements UserInterface {
 		
 	}
 
-	@Override
-	public void showScore(Map<Player, Integer> scoreMap) {
-		// TODO Auto-generated method stub
+	public void showScore(List<Player> players) {
+		String result = "";
+		Map<Integer, String> scores = new TreeMap<>();
+		for(Player p : players) {
+			scores.put(p.getScore(), new String(p.getName() + " - " +  p.getScore()));
+		}
+		for(Map.Entry<Integer, String> e : scores.entrySet()) {
+			result += e.getValue();
+			result += "\n";
+		}
+		
+		
 		
 	}
 
@@ -135,9 +147,9 @@ public class GUIView implements UserInterface {
 		for(Tile t : tiles) {
 			tileImg.add(img.getImageByTile(t));
 		}
-		List<JButton> buttons =  mFrame.getHandTiles();
+		List<JToggleButton> buttons =  mFrame.getHandTiles();
 		int i = 0;
-		for(JButton b : buttons) {
+		for(JToggleButton b : buttons) {
 			b.setIcon(new ImageIcon(tileImg.get(i)));
 			i++;
 		}
@@ -193,6 +205,14 @@ public class GUIView implements UserInterface {
 		tiles.add(new Tile(3));
 		tiles.add(new Tile(6));
 		gui.showHand(tiles);
+	}
+
+
+
+	@Override
+	public void showScore(Map<Player, Integer> scoreMap) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

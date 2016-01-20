@@ -102,9 +102,7 @@ public class Game implements resultCallback {
 			this.UI.printMessage(board.toString());
 		} else {
 			((GUIView)this.UI).updateBoard();
-			// TODO score
-			int[] score = new int[10];
-			((GUIView)this.UI).setScore(score);
+			((GUIView)this.UI).showScore(players);
 		}
 	}
 
@@ -527,6 +525,9 @@ public class Game implements resultCallback {
 		for (Player p : players) {
 			if (p instanceof HumanPlayer || p instanceof ComputerPlayer) {
 				p.bagToHand(tiles);
+				if(this.UI instanceof GUIView) {
+					this.UI.showHand(p.getHand());
+				}
 			}
 		}
 	}
