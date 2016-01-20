@@ -20,6 +20,7 @@ import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
+import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
 import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
 public class Game implements resultCallback {
@@ -63,8 +64,13 @@ public class Game implements resultCallback {
 
 		UIT = new userInputThread(this);
 		UIT.start();
-		this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+		if(UI instanceof GUIView) {
+			((GUIView) UI).changeFrame();
+		} else {
+			this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
 
+		}
+		
 		// TODO check if this is fast enough to get the turn message
 		c.setCallback(this);
 

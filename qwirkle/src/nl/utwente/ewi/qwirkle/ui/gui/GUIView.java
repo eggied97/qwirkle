@@ -12,31 +12,33 @@ import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.gui.panels.ConnectPanel;
+import nl.utwente.ewi.qwirkle.ui.gui.panels.MainFrame;
 
 
 
 public class GUIView implements UserInterface {
 	ConnectPanel frame;
+	MainFrame mFrame;
 	
 	public GUIView() {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					frame = new ConnectPanel();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		frame = new ConnectPanel();
+		frame.setVisible(true);
+		
+		mFrame = new MainFrame();
+		mFrame.setVisible(false);
 		
 	}
+	
+	
 
 	@Override
 	public Player login() {
-		boolean isActive = true;
-		while(isActive) {
-			System.out.println(frame.getName());
+		while(!frame.isNameSet()) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		String name = frame.getName();
 		System.out.println(name);
@@ -49,10 +51,44 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public int[] queueWithHowManyPlayers() {
-		// TODO Auto-generated method stub
-		return null;
+		while(!frame.isQueueSet()) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		List<Boolean> queues = frame.getQueues();
+		int j = 0;
+		for(int i = 0; i < queues.size(); i++) {
+			if(queues.get(i)) {
+				j++;
+			}
+		}
+		
+		int[] enteredQueues = new int[j];
+		j = 0;
+		
+		for(int i = 0; i < queues.size(); i++) {
+			if(queues.get(i)) {
+				enteredQueues[j] = i+2;
+				j++;
+			}
+		}
+		return enteredQueues;
 	}
 
+	public void changeFrame() {
+		if(frame.isVisible()) {
+			frame.setVisible(false);
+			mFrame.setVisible(true);
+		} else {
+			frame.setVisible(true);
+			mFrame.setVisible(false);
+		}
+	}
+	
 	@Override
 	public void changeTurn(Player p) {
 		// TODO Auto-generated method stub

@@ -11,12 +11,44 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.ActionEvent;
+import java.awt.FlowLayout;
 
 public class ConnectPanel extends JFrame {
 
 	private JPanel contentPane;
-	private String name = "A";
+	private String name;
+	private boolean nameSet = false;
+	private boolean queueSet = false;
+	private List<Boolean> queues;
+	
+	
+	public boolean isQueueSet() {
+		return queueSet;
+	}
+
+	public void setQueueSet(boolean queueSet) {
+		this.queueSet = queueSet;
+	}
+
+	public boolean isNameSet() {
+		return nameSet;
+	}
+
+	public void setNameSet(boolean nameSet) {
+		this.nameSet = nameSet;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public List<Boolean> getQueues() {
+		return queues;
+	}
 
 	/**
 	 * Launch the application.
@@ -39,24 +71,29 @@ public class ConnectPanel extends JFrame {
 	 */
 	public ConnectPanel() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 163, 166);
+		setBounds(100, 100, 169, 135);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
 
-		JButton btnConnect = new JButton("Connect");
+		final JButton btnEnterQueues = new JButton("Enter Queue(s)");
+		btnEnterQueues.setEnabled(false);
+		
+		final JButton btnConnect = new JButton("Connect");
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = (String) JOptionPane.showInputDialog(contentPane, "Enter your name: ", "Name?",
 						JOptionPane.PLAIN_MESSAGE);
-				contentPane.setName(name);
+				setName(name);
+				setNameSet(true);
+				btnEnterQueues.setEnabled(true);
+				btnConnect.setEnabled(false);
 			}
 		});
-		btnConnect.setBounds(10, 11, 124, 23);
+		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		contentPane.add(btnConnect);
 
-		JButton btnEnterQueues = new JButton("Enter Queue(s)");
+		
 		btnEnterQueues.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JCheckBox two = new JCheckBox("Two Players");
@@ -68,9 +105,15 @@ public class ConnectPanel extends JFrame {
 				boolean twoSel = two.isSelected();
 				boolean threeSel = three.isSelected();
 				boolean fourSel = four.isSelected();
+				queues = new ArrayList<>();
+				queues.add(twoSel);
+				queues.add(threeSel);
+				queues.add(fourSel);
+				setQueueSet(true);
+				btnEnterQueues.setEnabled(false);
+				JOptionPane.showMessageDialog(contentPane, "You're added to the queue(s)" + "\n" + "Please wait for the game to start");
 			}
 		});
-		btnEnterQueues.setBounds(10, 45, 124, 23);
 		contentPane.add(btnEnterQueues);
 
 		JButton btnQuit = new JButton("Quit");
@@ -79,7 +122,6 @@ public class ConnectPanel extends JFrame {
 				dispose();
 			}
 		});
-		btnQuit.setBounds(10, 79, 124, 23);
 		contentPane.add(btnQuit);
 	}
 
