@@ -327,9 +327,15 @@ public class Game implements resultCallback {
 		}
 
 		if (turnPlayer instanceof HumanPlayer) {
-			this.UI.printMessage("Turn changed, its your turn now");
-			this.UI.showHand(turnPlayer.getHand());
-			this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+			
+			
+			if(this.UI instanceof TUIView) {
+				this.UI.printMessage("Turn changed, its your turn now");
+				this.UI.showHand(turnPlayer.getHand());
+				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+			} else {
+				this.UI.printMessage("It's your turn now");
+			}
 
 		} else if (turnPlayer instanceof ComputerPlayer) {
 			handleTurnPcPlayer();
