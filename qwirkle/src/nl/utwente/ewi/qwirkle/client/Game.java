@@ -100,6 +100,10 @@ public class Game implements resultCallback {
 		if (UI instanceof TUIView) {
 			this.UI.printMessage("Current board situation : ");
 			this.UI.printMessage(board.toString());
+		} else {
+			// TODO score
+			int[] score = new int[10];
+			((GUIView)this.UI).setScore(score);
 		}
 	}
 
