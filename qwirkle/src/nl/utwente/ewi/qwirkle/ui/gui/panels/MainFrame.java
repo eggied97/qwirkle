@@ -27,13 +27,22 @@ public class MainFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextArea textArea;
 	private JLabel scoreboard;
+	private JLabel messageLabel;
 	
+	public JLabel getMessageLabel() {
+		return messageLabel;
+	}
+
+	public void setMessageLabel(String message) {
+		messageLabel.setText(message);
+	}
+
 	public JTextArea getTextArea() {
 		return textArea;
 	}
 
-	public void setTextArea(JTextArea textArea) {
-		this.textArea = textArea;
+	public void setTextArea(String message) {
+		textArea.append(message + "\n");
 	}
 
 	public JLabel getScoreboard() {
@@ -141,7 +150,9 @@ public class MainFrame extends JFrame {
 		btnSend.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textArea.append("You> " + textField_1.getText() + "\n");
+				if(!textField_1.getText().equals("")) {
+					textArea.append("You> " + textField_1.getText() + "\n");
+				}
 				textField_1.setText("");;
 			}
 		});
@@ -165,7 +176,6 @@ public class MainFrame extends JFrame {
 		scoreboard.setMaximumSize(new Dimension(150, 150));
 		scoreboard.setAlignmentX(CENTER_ALIGNMENT);
 		scoreboard.setAlignmentY(TOP_ALIGNMENT);
-		scoreboard.setText("MWHAHAHAHAHAHA");
 		panelScore.add(scoreboard);
 		
 		
@@ -180,6 +190,35 @@ public class MainFrame extends JFrame {
 		gbc_panelHand.gridx = 1;
 		gbc_panelHand.gridy = 0;
 		contentPane.add(panelHand, gbc_panelHand);
+		
+		GridBagLayout gbl_panelHand = new GridBagLayout();
+		gbl_panelHand.columnWidths = new int[] {100, 100};
+		gbl_panelHand.rowHeights = new int[] { 450, 100, 50 };
+		gbl_panelHand.columnWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelHand.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		panelHand.setLayout(gbl_panelHand);
+		
+		messageLabel = new JLabel();
+		GridBagConstraints gbc_messageLabel = new GridBagConstraints();
+		gbc_messageLabel.fill = GridBagConstraints.BOTH;
+		gbc_messageLabel.gridx = 0;
+		gbc_messageLabel.gridy = 1;
+		gbc_messageLabel.gridwidth = 2;
+		panelHand.add(messageLabel, gbc_messageLabel);
+		
+		JButton btnTrade = new JButton("Trade");
+		GridBagConstraints gbc_btnTrade = new GridBagConstraints();
+		gbc_btnTrade.gridx = 0;
+		gbc_btnTrade.gridy = 2;
+		gbc_btnTrade.anchor = GridBagConstraints.NORTH;
+		panelHand.add(btnTrade, gbc_btnTrade);
+		
+		JButton btnMove = new JButton("Move");
+		GridBagConstraints gbc_btnMove = new GridBagConstraints();
+		gbc_btnMove.gridx = 1;
+		gbc_btnMove.gridy = 2;
+		gbc_btnMove.anchor = GridBagConstraints.NORTH;
+		panelHand.add(btnMove, gbc_btnMove);
 
 	}
 }

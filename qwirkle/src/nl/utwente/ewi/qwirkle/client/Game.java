@@ -235,15 +235,24 @@ public class Game implements resultCallback {
 
 		// For change of color between private/global we use showError and
 		// print message
-		if (isGlobal) {
-			this.UI.printMessage(sender + " > " + message);
-		} else {
-			this.UI.showError(sender + " > " + message);
-		}
+		if(this.UI instanceof TUIView) {
+			if (isGlobal) {
+				this.UI.printMessage(sender + " > " + message);
+			} else {
+				this.UI.showError(sender + " > " + message);
+			}
 
-		if (getPlayerByName(sender) instanceof HumanPlayer) {
-			this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+			if (getPlayerByName(sender) instanceof HumanPlayer) {
+				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+			}
+		} else {
+			if (isGlobal) {
+				this.UI.printMessage(sender + " > " + message);
+			} else {
+				this.UI.showError(sender + " > " + message);
+			}
 		}
+		
 
 	}
 
