@@ -21,21 +21,21 @@ public enum Color {
 
 	public static Color getColorByInt(int j) {
 		switch (j) {
-		case 0:
-			return PURPLE;
-		case 1:
-			return RED;
-		case 2:
-			return ORANGE;
-		case 3:
-			return YELLOW;
-		case 4:
-			return GREEN;
-		case 5:
-			return BLUE;
-
-		default:
-			return null;
+			case 0:
+				return PURPLE;
+			case 1:
+				return RED;
+			case 2:
+				return ORANGE;
+			case 3:
+				return YELLOW;
+			case 4:
+				return GREEN;
+			case 5:
+				return BLUE;
+	
+			default:
+				return null;
 		}
 	}
 }

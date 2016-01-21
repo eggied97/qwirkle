@@ -3,15 +3,15 @@ package nl.utwente.ewi.qwirkle.client;
 import java.util.Scanner;
 
 
-import nl.utwente.ewi.qwirkle.model.enums.inputState;
+import nl.utwente.ewi.qwirkle.model.enums.InputState;
 
-public class userInputThread extends Thread {
+public class UserInputThread extends Thread {
 
 	private Game g;
 	private boolean running = true;
-	private inputState state = inputState.IDLE;
+	private InputState state = InputState.IDLE;
 
-	public userInputThread(Game g) {
+	public UserInputThread(Game g) {
 		this.g = g;
 	}
 
@@ -19,7 +19,7 @@ public class userInputThread extends Thread {
 		this.running = b;
 	}
 	
-	public void setInputState(inputState s){
+	public void setInputState(InputState s) {
 		this.state = s;
 	}
 

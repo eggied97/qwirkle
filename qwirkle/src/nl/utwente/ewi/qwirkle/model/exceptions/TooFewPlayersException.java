@@ -1,10 +1,10 @@
 package nl.utwente.ewi.qwirkle.model.exceptions;
 
-public class tooFewPlayersException extends Exception {
+public class TooFewPlayersException extends Exception {
 
 	int p;
 
-	public tooFewPlayersException(int p) {
+	public TooFewPlayersException(int p) {
 		this.p = p;
 	}
 

@@ -30,7 +30,7 @@ public abstract class Player {
 	}
 
 	/**
-	 * Determine the move to be played by the player
+	 * Determine the move to be played by the player.
 	 * 
 	 * @param board
 	 * @return return a <code> Map </code> consisting of <code> Point </code>
@@ -45,23 +45,9 @@ public abstract class Player {
 
 	public abstract String sendChat();
 
-	/**
-	 * Make the move that has been determined
-	 * 
-	 * @param board
-	 */
-	/*public void makeMove(Board board) {
-		Object moves = determineMove(board);
-
-		if (moves instanceof List<?>) {
-			if (((List<?>) moves).get(0) instanceof Move) {
-				board.putTile((List<Move>) moves);
-			}
-		}
-	}*/
 
 	/**
-	 * Adds a list of tiles obtained from the bag to the hand of the player
+	 * Adds a list of tiles obtained from the bag to the hand of the player.
 	 * 
 	 * @param tiles
 	 */
@@ -81,7 +67,7 @@ public abstract class Player {
 	}
 
 	/**
-	 * removes the list of tiles from the players hand (after a trade / move)
+	 * removes the list of tiles from the players hand (after a trade / move).
 	 * 
 	 * @param tiles
 	 *            that need to be removed
@@ -100,7 +86,7 @@ public abstract class Player {
 	}
 
 	/**
-	 * adds the score of the move to the total score
+	 * adds the score of the move to the total score.
 	 * 
 	 * @param score
 	 *            of the move

@@ -1,15 +1,9 @@
 package nl.utwente.ewi.qwirkle.model;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.swing.JButton;
-
-import nl.utwente.ewi.qwirkle.model.exceptions.PlaceOccupiedException;
 import nl.utwente.ewi.qwirkle.server.score.ScoreCalc;
 
 public class Board {
@@ -26,23 +20,23 @@ public class Board {
 	 * @param y
 	 */
 	public Tile getTile(int x, int y) {
-		Point d  = new Point(x,y);
+		Point d  = new Point(x, y);
 		return map.get(d);
 	}
 	
 	/**
-	 * Creates a new <code> Point </code> and put the <code> Tile </code> at this position
+	 * Creates a new <code> Point </code> and put the <code> Tile </code> at this position.
 	 * @param x
 	 * @param y
 	 * @param t
 	 */
 	public void putTile(int x, int y, Tile t) {
-		Point d  = new Point(x,y);
+		Point d  = new Point(x, y);
 		map.put(d, t);
 	}
 	
 	/**
-	 * Put all specified moves on the <code> Board </code>
+	 * Put all specified moves on the <code> Board </code>.
 	 * @param moves
 	 */
 	public int putTile(List<Move> moves) {
@@ -54,7 +48,7 @@ public class Board {
 	}
 
 	/**
-	 * Put the specified <code> Move </code> on the <code> Board </code>
+	 * Put the specified <code> Move </code> on the <code> Board </code>.
 	 * @param m
 	 */
 	public void putTile(Move m) {
@@ -80,7 +74,7 @@ public class Board {
 	}
 
 	/**
-	 * Returns true if the tiles on the <code> Board </code> form a square
+	 * Returns true if the tiles on the <code> Board </code> form a square.
 	 * @return
 	 */
 	public boolean isSquare() {
@@ -90,9 +84,9 @@ public class Board {
 
 		double[] bound = getBoundaries();
 		
-		for(int i = (int)bound[0]; i < (int)bound[0] + 6; i++) {
-			for(int j = (int)bound[1]; j < (int)bound[1] + 6; j++) {
-				if(map.get(new Point(i,j)) == null) {
+		for (int i = (int) bound[0]; i < (int) bound[0] + 6; i++) {
+			for (int j = (int) bound[1]; j < (int) bound[1] + 6; j++) {
+				if (map.get(new Point(i, j)) == null) {
 					return false;
 				}
 			}
@@ -101,13 +95,13 @@ public class Board {
 	}
 
 	/**
-	 * Creates a String representing the <code> Board </code>
+	 * Creates a String representing the <code> Board </code>.
 	 */
 	public String toString() {
 		if (this.isEmpty()) {
 			return "(0,0)";
 		}
-
+ 
 		double[] bound = getBoundaries();
 		String result = "";
 		String cellText = "";
@@ -126,7 +120,7 @@ public class Board {
 				result += String.format("%-8s%-5s", cellText, "|");
 				//result += " | ";
 			}
-			result = result.trim().substring(0, result.trim().length()-1);
+			result = result.trim().substring(0, result.trim().length() - 1);
 			result += "\n";
 		}
 
@@ -134,16 +128,17 @@ public class Board {
 
 	}
 	
+	
 	/**
-	 * Returns a <code> List </code> of points where a <code> Tile </code> can be put
-	 * @return
+	 * Returns a <code> List </code> of points where a <code> Tile </code> can be put.
+	 * @return <code>List\<Point\ > </code> of empty spots
 	 */
-	public List<Point> getEmptySpots(){
+	public List<Point> getEmptySpots() {
 		List<Point> result = new ArrayList<>();
 		
 		if (this.isEmpty()) {
 			result.add(new Point(0, 0));
-		}else{
+		} else {
 	
 			double[] bound = getBoundaries();
 			
@@ -162,7 +157,7 @@ public class Board {
 	}
 
 	/**
-	 * Returns true if the <code> Board </code> is still empty
+	 * Returns true if the <code> Board </code> is still empty.
 	 * @return
 	 */
 	public boolean isEmpty() {
@@ -170,7 +165,7 @@ public class Board {
 	}
 
 	/**
-	 * Set the map 
+	 * Set the map.
 	 * @param m
 	 */
 	public void setMap(Map<Point, Tile> m) {
@@ -179,7 +174,7 @@ public class Board {
 	}
 
 	/**
-	 * Returns a deep copy of the <code> Board </code>
+	 * Returns a deep copy of the <code> Board </code>.
 	 * @return
 	 */
 	public Board deepCopy() {
@@ -193,7 +188,7 @@ public class Board {
 	}
 	
 	/**
-	 * Returns the map
+	 * Returns the map.
 	 * @return
 	 */
 	public Map<Point, Tile> getMap() {
@@ -202,7 +197,7 @@ public class Board {
 	
 	@Override
 	public boolean equals(Object b) {
-		return ((b instanceof Board) && ((Board)b).getMap().equals(this.getMap()));
+		return (b instanceof Board) && ((Board) b).getMap().equals(this.getMap());
 	}
 	
 

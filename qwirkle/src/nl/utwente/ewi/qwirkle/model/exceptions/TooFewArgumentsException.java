@@ -1,10 +1,10 @@
 package nl.utwente.ewi.qwirkle.model.exceptions;
 
-public class tooFewArgumentsException extends Exception {
+public class TooFewArgumentsException extends Exception {
 
 	int p;
 
-	public tooFewArgumentsException(int p) {
+	public TooFewArgumentsException(int p) {
 		this.p = p;
 	}
 

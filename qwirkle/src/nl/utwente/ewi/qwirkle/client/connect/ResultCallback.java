@@ -1,6 +1,6 @@
 package nl.utwente.ewi.qwirkle.client.connect;
 
-public interface resultCallback {
+public interface ResultCallback {
 
 	/**
 	 * 

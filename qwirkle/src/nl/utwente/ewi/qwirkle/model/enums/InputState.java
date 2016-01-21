@@ -1,5 +1,5 @@
 package nl.utwente.ewi.qwirkle.model.enums;
 
-public enum inputState {
+public enum InputState{
 	IDLE, FORMOVE, FORTRADE, FORCHAT;
 }

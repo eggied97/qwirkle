@@ -1,6 +1,5 @@
 package nl.utwente.ewi.qwirkle.client;
 
-import java.awt.SecondaryLoop;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -9,9 +8,9 @@ import java.util.List;
 
 import nl.utwente.ewi.qwirkle.util;
 import nl.utwente.ewi.qwirkle.client.connect.Client;
-import nl.utwente.ewi.qwirkle.client.connect.resultCallback;
-import nl.utwente.ewi.qwirkle.model.exceptions.tooFewPlayersException;
-import nl.utwente.ewi.qwirkle.model.exceptions.tooManyPlayersException;
+import nl.utwente.ewi.qwirkle.client.connect.ResultCallback;
+import nl.utwente.ewi.qwirkle.model.exceptions.TooFewPlayersException;
+import nl.utwente.ewi.qwirkle.model.exceptions.TooManyPlayersException;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.model.player.SocketPlayer;
@@ -20,11 +19,10 @@ import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
-import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
-public class Main implements resultCallback {
+public class Main implements ResultCallback {
 
-	private static final String USAGE_server = "Requires 2 arguments: <host> <port>";
+	private static final String USAGE_SERVER = "Requires 2 arguments: <host> <port>";
 	private static Client server;
 
 	private static UserInterface UI;
@@ -75,7 +73,7 @@ public class Main implements resultCallback {
 
 	private static void setupConnectionToServer(String[] args) {
 		if (args.length != 2) {
-			System.out.println(USAGE_server);
+			System.out.println(USAGE_SERVER);
 			System.exit(0);
 		}
 
@@ -124,54 +122,54 @@ public class Main implements resultCallback {
 		String[] args = Arrays.copyOfRange(results, 1, results.length);
 
 		switch (command) {
-		case IProtocol.SERVER_IDENITFY:
-			handleServerIdentify(args);
-			break;
-
-		case IProtocol.SERVER_GAMESTART:
-			try {
-				handleGameStart(args);
-			} catch (tooManyPlayersException | tooFewPlayersException e) {
-				e.printStackTrace();
-			}
-			break;
-
-		case IProtocol.SERVER_ERROR:
-			if (args.length < 1) {
-				// TODO throw error
-			}
-
-			switch (IProtocol.Error.valueOf(args[0])) {
-			case NAME_USED:
-				UI.showError("Name is already in use, please use another one...");
-				authenticateUser();
+			case IProtocol.SERVER_IDENITFY:
+				handleServerIdentify(args);
 				break;
-				
-			case NAME_INVALID:
-				UI.showError("Name is invalid, please use another one...");
-				authenticateUser();
+	
+			case IProtocol.SERVER_GAMESTART:
+				try {
+					handleGameStart(args);
+				} catch (TooManyPlayersException | TooFewPlayersException e) {
+					e.printStackTrace();
+				}
 				break;
-
-			case QUEUE_INVALID:
-				UI.showError("The queue you wanted to enter is invalid, please choose another one...");
-				enterQueue();
+	
+			case IProtocol.SERVER_ERROR:
+				if (args.length < 1) {
+					// TODO throw error
+				}
+	
+				switch (IProtocol.Error.valueOf(args[0])) {
+					case NAME_USED:
+						UI.showError("Name is already in use, please use another one...");
+						authenticateUser();
+						break;
+						
+					case NAME_INVALID:
+						UI.showError("Name is invalid, please use another one...");
+						authenticateUser();
+						break;
+		
+					case QUEUE_INVALID:
+						UI.showError("The queue you wanted to enter is invalid, please choose another one...");
+						enterQueue();
+						break;
+		
+					default:
+						break;
+				}
 				break;
-
+	
 			default:
 				break;
-			}
-			break;
-
-		default:
-			break;
 		}
 	}
 
-	private void handleGameStart(String[] args) throws tooManyPlayersException, tooFewPlayersException {
+	private void handleGameStart(String[] args) throws TooManyPlayersException, TooFewPlayersException {
 		if (args.length > 4) {
-			throw new tooManyPlayersException(args.length + 1);
+			throw new TooManyPlayersException(args.length + 1);
 		} else if (args.length == 0) {
-			throw new tooFewPlayersException(args.length + 1);
+			throw new TooFewPlayersException(args.length + 1);
 		}
 
 		List<Player> playersInGame = new ArrayList<>();
@@ -186,7 +184,7 @@ public class Main implements resultCallback {
 		Game g = new Game(UI, playersInGame, server, usingFeatures);
 		server.setCallback(g);
 		
-		if(me instanceof HumanPlayer){
+		if (me instanceof HumanPlayer) {
 			((HumanPlayer) me).setGame(g);
 		}
 	}
