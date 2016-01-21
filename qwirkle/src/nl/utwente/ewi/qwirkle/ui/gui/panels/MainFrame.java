@@ -92,6 +92,7 @@ public class MainFrame extends JFrame {
 	}
 
 	public void addButton(JButton but) {
+		System.out.println("1");
 		Point p = butCord.get(but);
 		int x = p.getX();
 		int y = p.getY();
@@ -132,6 +133,7 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void addButton(Point p) {
+		System.out.println("2");
 		int x = p.getX() - 144;
 		int y = p.getY() - 144;
 		JButton but = new JButton("(" + x + "," + y + ")");
@@ -147,17 +149,21 @@ public class MainFrame extends JFrame {
 				if(tiles.size() != 1) {
 					// do nothing
 				} else {
-					
+					addButton((JButton)e.getSource());
 				}
 				
 			}
 		});
 		but.setPreferredSize(new Dimension(50,50));
+		System.out.println("3");
 		GridBagConstraints gbc_but = new GridBagConstraints();
+		System.out.println(p.getX() + " " + p.getY());
 		gbc_but.gridx = p.getX();
 		gbc_but.gridy = p.getY();
 		buttons.add(but, gbc_but);
 		butCord.put(but, p);
+		this.repaint();
+		this.revalidate();
 	}
 
 	/**
@@ -215,6 +221,22 @@ public class MainFrame extends JFrame {
 		gbc_start.gridy = 144;
 		butCord.put(start, new Point(gbc_start.gridx, gbc_start.gridy));
 		buttons.add(start, gbc_start);
+		start.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<JToggleButton> tiles = new ArrayList<>();
+				for(JToggleButton b : handTiles) {
+					if(b.isSelected()) {
+						tiles.add(b);
+					}
+				}
+				if(tiles.size() != 1) {
+					// do nothing
+				} else {
+					addButton((JButton)e.getSource());
+				}
+			}
+		});
 		
 		boardScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		boardScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
