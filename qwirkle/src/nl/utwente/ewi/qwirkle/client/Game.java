@@ -255,14 +255,20 @@ public class Game implements ResultCallback {
 				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
 			}
 		} else {
+			
+			StringBuilder builder = new StringBuilder();
+			for (String s : Arrays.copyOfRange(args, 2, args.length)) {
+				builder.append(s + " ");
+			}
+			
 			if (isGlobal) {
 				Style s = ((GUIView)this.UI).getFrame().getTextArea().addStyle("Style", null);
-				StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.GREEN);
-				((GUIView)this.UI).setChat(sender + " > " + message, s);
+				StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.BLUE);
+				((GUIView)this.UI).setChat(sender + " > " + builder.toString(), s);
 			} else {
 				Style s = ((GUIView)this.UI).getFrame().getTextArea().addStyle("Style", null);
 				StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.MAGENTA);
-				((GUIView)this.UI).setChat(sender + " > " + message, s);
+				((GUIView)this.UI).setChat(sender + " > " + builder.toString(), s);
 			}
 		}
 
