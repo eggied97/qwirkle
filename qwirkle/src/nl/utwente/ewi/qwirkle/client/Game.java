@@ -106,7 +106,6 @@ public class Game implements resultCallback {
 			// TODO score
 			int[] score = new int[10];
 			((GUIView) this.UI).setScore(score);
-			
 		}
 	}
 
