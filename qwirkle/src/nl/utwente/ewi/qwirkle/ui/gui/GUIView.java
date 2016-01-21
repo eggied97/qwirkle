@@ -12,6 +12,7 @@ import java.util.concurrent.CountDownLatch;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JToggleButton;
+import javax.swing.text.Style;
 
 import nl.utwente.ewi.qwirkle.client.Game;
 import nl.utwente.ewi.qwirkle.model.Tile;
@@ -43,7 +44,9 @@ public class GUIView implements UserInterface {
 		
 	}
 	
-	
+	public MainFrame getFrame() {
+		return mFrame;
+	}
 
 	@Override
 	public Player login() {
@@ -190,8 +193,8 @@ public class GUIView implements UserInterface {
 		
 	}
 	
-	public void setChat(String message) {
-		mFrame.setTextArea(message);
+	public void setChat(String message, Style s) {
+		mFrame.setTextArea(message, s);
 	}
 
 
@@ -220,5 +223,6 @@ public class GUIView implements UserInterface {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

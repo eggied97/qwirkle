@@ -6,12 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+
 import nl.utwente.ewi.qwirkle.client.connect.Client;
 import nl.utwente.ewi.qwirkle.client.connect.ResultCallback;
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.model.enums.Color;
 import nl.utwente.ewi.qwirkle.model.enums.InputState;
 import nl.utwente.ewi.qwirkle.model.exceptions.TooFewArgumentsException;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
@@ -21,6 +26,7 @@ import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
+import nl.utwente.ewi.qwirkle.ui.gui.ProtocolControl;
 import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
 public class Game implements ResultCallback {
@@ -32,7 +38,7 @@ public class Game implements ResultCallback {
 	private List<IProtocol.Feature> usingFeatures;
 	boolean nextDrawNeedToRemoveTiles = false;
 	private List<Tile> tilesThatNeedToBeRemoved;
-
+	private ProtocolControl control;
 	private Player turnPlayer;
 
 	Map<IProtocol.Feature, Boolean> featuresEnabled;
@@ -64,7 +70,8 @@ public class Game implements ResultCallback {
 
 		UIT = new UserInputThread(this);
 		UIT.start();
-		if (UI instanceof GUIView) {
+		if(UI instanceof GUIView) {
+			control = new ProtocolControl(UI, this);
 			((GUIView) UI).changeFrame();
 		} else {
 			this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
@@ -80,6 +87,10 @@ public class Game implements ResultCallback {
 		this.usingFeatures = serverFeatures;
 	}
 
+	public Client getClient() {
+		return this.c;
+	}
+	
 	/**
 	 * 
 	 * @return the UserInterface instance that is used
@@ -231,7 +242,6 @@ public class Game implements ResultCallback {
 		String sender = args[1];
 
 		String message = Arrays.copyOfRange(args, 2, args.length).toString();
-
 		// For change of color between private/global we use showError and
 		// print message
 		if (this.UI instanceof TUIView) {
@@ -246,9 +256,13 @@ public class Game implements ResultCallback {
 			}
 		} else {
 			if (isGlobal) {
-				this.UI.printMessage(sender + " > " + message);
+				Style s = ((GUIView)this.UI).getFrame().getTextArea().addStyle("Style", null);
+				StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.GREEN);
+				((GUIView)this.UI).setChat(sender + " > " + message, s);
 			} else {
-				this.UI.showError(sender + " > " + message);
+				Style s = ((GUIView)this.UI).getFrame().getTextArea().addStyle("Style", null);
+				StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.MAGENTA);
+				((GUIView)this.UI).setChat(sender + " > " + message, s);
 			}
 		}
 
