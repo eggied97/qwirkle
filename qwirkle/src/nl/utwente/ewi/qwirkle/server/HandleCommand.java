@@ -317,6 +317,7 @@ public class HandleCommand {
 			handleEndGame(ch);
 		} else if (ch.getGame().getBag().isEmpty()) {
 			handlePass(ch);
+			return;
 		}
 
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverTurn(ch.getGame().getPlayerTurn()));
