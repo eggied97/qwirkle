@@ -339,7 +339,7 @@ public class protocol implements IProtocol {
 	public String serverChat(String channel, String sender, String message) {
 		String result = "";
 
-		result += this.CLIENT_CHAT;
+		result += this.SERVER_CHAT;
 		result += " ";
 		result += channel;
 		result += " ";

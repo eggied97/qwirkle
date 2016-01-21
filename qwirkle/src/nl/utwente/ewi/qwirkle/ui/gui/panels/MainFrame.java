@@ -9,8 +9,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import nl.utwente.ewi.qwirkle.model.Point;
+import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
+import nl.utwente.ewi.qwirkle.ui.gui.ProtocolControl;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -20,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.JTextArea;
@@ -37,13 +45,19 @@ import java.awt.CardLayout;
 public class MainFrame extends JFrame {
 
 	private JPanel contentPane;
-	private JTextArea textArea;
+	private JTextPane textArea;
 	private JLabel scoreboard;
 	private JLabel messageLabel;
 	private List<JToggleButton> handTiles;
 	private Map<JButton, Point> butCord;
 	private JPanel buttons;
+	private ProtocolControl control;
+	private StyledDocument doc;
 
+	public void setControl(ProtocolControl p) {
+		this.control = p;
+	}
+	
 	public JLabel getMessageLabel() {
 		return messageLabel;
 	}
@@ -56,12 +70,16 @@ public class MainFrame extends JFrame {
 		messageLabel.setText(message);
 	}
 
-	public JTextArea getTextArea() {
+	public JTextPane getTextArea() {
 		return textArea;
 	}
 
-	public void setTextArea(String message) {
-		textArea.append(message + "\n");
+	public void setTextArea(String message, Style s) {
+		try {
+			doc.insertString(doc.getLength(), message + "\n", s);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public JLabel getScoreboard() {
@@ -116,7 +134,24 @@ public class MainFrame extends JFrame {
 		int x = p.getX() - 144;
 		int y = p.getY() - 144;
 		JButton but = new JButton("(" + x + "," + y + ")");
-		but.setPreferredSize(new Dimension(30,30));
+		but.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<JToggleButton> tiles = new ArrayList<>();
+				for(JToggleButton b : handTiles) {
+					if(b.isSelected()) {
+						tiles.add(b);
+					}
+				}
+				if(tiles.size() != 1) {
+					// do nothing
+				} else {
+					
+				}
+				
+			}
+		});
+		but.setPreferredSize(new Dimension(50,50));
 		GridBagConstraints gbc_but = new GridBagConstraints();
 		gbc_but.gridx = p.getX();
 		gbc_but.gridy = p.getY();
@@ -173,7 +208,7 @@ public class MainFrame extends JFrame {
 		buttons.setLayout(gbl_buttons);
 		
 		JButton start = (new JButton("(0,0)"));
-		start.setPreferredSize(new Dimension(30,30));
+		start.setPreferredSize(new Dimension(50,50));
 		GridBagConstraints gbc_start = new GridBagConstraints();
 		gbc_start.gridx = 144;
 		gbc_start.gridy = 144;
@@ -201,7 +236,8 @@ public class MainFrame extends JFrame {
 		gbl_panelChat.rowWeights = new double[] { 0.0, 0.0 };
 		panelChat.setLayout(gbl_panelChat);
 
-		textArea = new JTextArea();
+		textArea = new JTextPane();
+		doc = textArea.getStyledDocument();
 		GridBagConstraints gbc_textArea = new GridBagConstraints();
 		gbc_textArea.fill = GridBagConstraints.BOTH;
 		gbc_textArea.insets = new Insets(0, 0, 5, 5);
@@ -239,10 +275,12 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!textField_1.getText().equals("")) {
-					textArea.append("You> " + textField_1.getText() + "\n");
+					Style s = textArea.addStyle("Style", null);
+					StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.BLACK);
+					setTextArea("You > " + textField_1.getText(), s);
+					control.handleChat(textField_1.getText());
 				}
 				textField_1.setText("");
-				;
 			}
 		});
 
