@@ -21,11 +21,10 @@ public class ProtocolControl {
 	
 	public void handleChat(String message) {
 		String channel = "global";
-		StringBuilder messa = new StringBuilder(message);
-		if(messa.charAt(0) == '@') {
+		if(message.charAt(0) == '@') {
 			channel = message.split(" ")[0];
 		}
-		client.sendMessage(protocol.getInstance().clientChat(channel, messa.toString()));
+		client.sendMessage(protocol.getInstance().clientChat(channel, message));
 	}
 	
 

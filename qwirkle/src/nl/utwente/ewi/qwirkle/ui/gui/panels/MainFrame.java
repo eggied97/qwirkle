@@ -77,6 +77,7 @@ public class MainFrame extends JFrame {
 	public void setTextArea(String message, Style s) {
 		try {
 			doc.insertString(doc.getLength(), message + "\n", s);
+			textArea.selectAll();
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
