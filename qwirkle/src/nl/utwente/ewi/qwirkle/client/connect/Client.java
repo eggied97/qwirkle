@@ -8,14 +8,13 @@ import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-
 public class Client extends Thread {
 	private String clientName;
 	private Socket sock;
 	private static BufferedReader systemIn;
 	private BufferedReader in;
 	private BufferedWriter out;
-	private resultCallback rc = null;
+	private ResultCallback rc = null;
 
 	public Client(InetAddress host, int port) {
 		this.clientName = host.getHostAddress();
@@ -29,15 +28,15 @@ public class Client extends Thread {
 			System.out.println("Could not create a socket on " + host + " and port " + port);
 		}
 	}
-	
-	public void setCallback(resultCallback rc){
-		this.rc = rc;
+
+	public void setCallback(ResultCallback aRC) {
+		this.rc = aRC;
 	}
-	
+
 	public void run() {
 		try {
-			while(true) {
-				if(rc != null){
+			while (true) {
+				if (rc != null) {
 					rc.resultFromServer(in.readLine());
 				}
 			}
@@ -45,7 +44,7 @@ public class Client extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void sendMessage(String msg) {
 		try {
 			out.write(msg);

@@ -37,7 +37,7 @@ public class BoardTests {
 		assertTrue(dcb.equals(b));
 		
 		dcb.putTile(2, 4, new Tile(5));
-		assertTrue(dcb.equals(b));
+		assertFalse(dcb.equals(b));
 	}
 	
 	@Test

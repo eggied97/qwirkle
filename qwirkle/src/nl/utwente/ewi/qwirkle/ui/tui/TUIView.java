@@ -109,7 +109,7 @@ public class TUIView implements UserInterface {
 		String result = "";
 		
 		for (int i = 0; i < tiles.size(); i++) {
-				result += tiles.get(i).getHumanReadableString() + " (" + i+")";
+			result += tiles.get(i).getHumanReadableString() + " (" + i+")";
 				result += " ";
 		}
 		

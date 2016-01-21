@@ -1,7 +1,5 @@
 package nl.utwente.ewi.qwirkle.model.player;
 
-import java.awt.Point;
-import java.util.HashMap;
 import java.util.List;
 
 import nl.utwente.ewi.qwirkle.model.Board;

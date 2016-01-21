@@ -11,11 +11,11 @@ import nl.utwente.ewi.qwirkle.server.ValidMove;
 
 public class DumbStrategy implements Strategy {
 
-	private static final String name = "DumbStrategy";
+	private static final String NAME = "DumbStrategy";
 
 	@Override
 	public String getName() {
-		return name;
+		return NAME;
 	}
 
 	/*

@@ -26,7 +26,7 @@ public class HumanPlayer extends Player {
 	// statement - Egbert
 	
 	@Override
-	public String determineAction(){
+	public String determineAction() {
 		if (this.g == null) {
 			// TODO throw error
 		}
@@ -35,10 +35,10 @@ public class HumanPlayer extends Player {
 	}
 
 	@Override
-	public List<Tile> determineTradeMove(){
+	public List<Tile> determineTradeMove() {
 		String awnserQ = this.g.getUI().askForTrade();
 
-		if(awnserQ.trim().equals("b")); {
+		if (awnserQ.trim().equals("b")) {
 			this.g.handleTurn(true);
 		}
 		
@@ -53,10 +53,10 @@ public class HumanPlayer extends Player {
 	}
 	
 	@Override
-	public List<Move> determinePutMove(Board board){
+	public List<Move> determinePutMove(Board board) {
 		String awnser = this.g.getUI().askForMove();
 		
-		if(awnser.trim().equals("b")); {
+		if (awnser.trim().equals("b")) { 
 			this.g.handleTurn(true);
 		}
 		

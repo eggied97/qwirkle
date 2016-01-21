@@ -14,7 +14,7 @@ public interface Strategy {
 	public String getName();
 
 	/**
-	 * determines the best move
+	 * determines the best move.
 	 * 
 	 * @param b
 	 *            the playing board

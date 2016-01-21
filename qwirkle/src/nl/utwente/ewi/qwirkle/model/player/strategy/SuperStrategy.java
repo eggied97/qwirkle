@@ -16,11 +16,11 @@ import nl.utwente.ewi.qwirkle.server.score.ScoreCalc;
 
 public class SuperStrategy implements Strategy {
 
-	private static final String name = "SuperStrategy";
+	private static final String NAME = "SuperStrategy";
 
 	@Override
 	public String getName() {
-		return name;
+		return NAME;
 	}
 
 	/*
@@ -38,14 +38,14 @@ public class SuperStrategy implements Strategy {
 		
 		ScoreCalc sc = new ScoreCalc();
 		
-		for(List<Move> moves : alleMovesMogelijk){
+		for (List<Move> moves : alleMovesMogelijk) {
 			Board bCopy = b.deepCopy();
 			bCopy.putTile(moves);
 			
 			int score = sc.calculate(bCopy, moves);
 			
 			
-			if(score > hoogsteScore){
+			if (score > hoogsteScore) {
 				hoogsteScore = score;
 				lijstHoogsteScore = new ArrayList<>();
 				lijstHoogsteScore.addAll(moves);

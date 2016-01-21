@@ -2,11 +2,11 @@ package nl.utwente.ewi.qwirkle.model.exceptions;
 
 import java.awt.Point;
 
-public class tooManyPlayersException extends Exception {
+public class TooManyPlayersException extends Exception {
 
 	int p;
 
-	public tooManyPlayersException(int p) {
+	public TooManyPlayersException(int p) {
 		this.p = p;
 	}
 
