@@ -18,6 +18,7 @@ import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
+import nl.utwente.ewi.qwirkle.model.player.strategy.SuperStrategy;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.imageGetter;
 import nl.utwente.ewi.qwirkle.ui.gui.panels.ConnectPanel;
@@ -54,9 +55,14 @@ public class GUIView implements UserInterface {
 			}
 		}
 		String name = frame.getName();
+		
+		frame.setNameSet(false); //reset name for when it is invalid (otherwise you get into a infinte loop)
+		
 		System.out.println(name);
 		if(name.equals("COMPUTERMAN")){
 			return new ComputerPlayer("pcman" + (int)(Math.random() * 4));
+		}else if(name.equals("COMPUTERMANSLIM")){
+			return new ComputerPlayer("pcmanslim" + (int)(Math.random() * 4), new SuperStrategy());
 		}
 		
 		return new HumanPlayer(name);
