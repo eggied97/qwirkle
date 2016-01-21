@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
@@ -24,6 +25,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Component;
+import java.awt.GridLayout;
+import javax.swing.ScrollPaneConstants;
+import java.awt.CardLayout;
 
 public class MainFrame extends JFrame {
 
@@ -31,13 +35,13 @@ public class MainFrame extends JFrame {
 	private JTextArea textArea;
 	private JLabel scoreboard;
 	private JLabel messageLabel;
-	private List<JButton> handTiles;
+	private List<JToggleButton> handTiles;
 	
 	public JLabel getMessageLabel() {
 		return messageLabel;
 	}
 
-	public List<JButton> getHandTiles() {
+	public List<JToggleButton> getHandTiles() {
 		return handTiles;
 	}
 
@@ -105,6 +109,28 @@ public class MainFrame extends JFrame {
 		gbc_panelBoard.gridx = 0;
 		gbc_panelBoard.gridy = 0;
 		contentPane.add(panelBoard, gbc_panelBoard);
+		
+		JPanel buttons = new JPanel(); 
+		JScrollPane boardScroll = new JScrollPane(buttons);
+		GridBagLayout gbl_buttons = new GridBagLayout();
+		gbl_buttons.columnWidths = new int[]{0};
+		gbl_buttons.rowHeights = new int[]{0};
+		gbl_buttons.columnWeights = new double[]{Double.MIN_VALUE};
+		gbl_buttons.rowWeights = new double[]{Double.MIN_VALUE};
+		buttons.setLayout(gbl_buttons);
+		boardScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		boardScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		boardScroll.setPreferredSize(new Dimension(750, 550));
+		panelBoard.add(boardScroll);
+		List<JButton> listl = new ArrayList<>();
+		for(int i =0; i< 1000; i++) {
+			JButton but = new JButton(""+ i);
+			listl.add(but);
+			buttons.add(but);
+			but.setVisible(true);
+		}
+		
+		
 
 		
 		// CHAT PANEL
@@ -217,42 +243,42 @@ public class MainFrame extends JFrame {
 		panelHand.add(panelTiles, gbc_panelTiles);
 		panelTiles.setLayout(new BoxLayout(panelTiles, BoxLayout.Y_AXIS));
 		
-		JButton btnTile1 = new JButton("");
+		JToggleButton btnTile1 = new JToggleButton("");
 		btnTile1.setAlignmentX(CENTER_ALIGNMENT);
 		btnTile1.setMinimumSize(new Dimension(75, 75));
 		btnTile1.setPreferredSize(new Dimension(75, 75));
 		btnTile1.setMaximumSize(new Dimension(75, 75));
 		panelTiles.add(btnTile1);
 		
-		JButton btnTile2 = new JButton("");
+		JToggleButton btnTile2 = new JToggleButton("");
 		btnTile2.setAlignmentX(CENTER_ALIGNMENT);
 		btnTile2.setMinimumSize(new Dimension(75, 75));
 		btnTile2.setPreferredSize(new Dimension(75, 75));
 		btnTile2.setMaximumSize(new Dimension(75, 75));
 		panelTiles.add(btnTile2);
 		
-		JButton btnTile3 = new JButton("");
+		JToggleButton btnTile3 = new JToggleButton("");
 		btnTile3.setAlignmentX(CENTER_ALIGNMENT);
 		btnTile3.setMinimumSize(new Dimension(75, 75));
 		btnTile3.setPreferredSize(new Dimension(75, 75));
 		btnTile3.setMaximumSize(new Dimension(75, 75));
 		panelTiles.add(btnTile3);
 		
-		JButton btnTile4 = new JButton("");
+		JToggleButton btnTile4 = new JToggleButton("");
 		btnTile4.setAlignmentX(CENTER_ALIGNMENT);
 		btnTile4.setMinimumSize(new Dimension(75, 75));
 		btnTile4.setPreferredSize(new Dimension(75, 75));
 		btnTile4.setMaximumSize(new Dimension(75, 75));
 		panelTiles.add(btnTile4);
 		
-		JButton btnTile5 = new JButton("");
+		JToggleButton btnTile5 = new JToggleButton("");
 		btnTile5.setAlignmentX(CENTER_ALIGNMENT);
 		btnTile5.setMinimumSize(new Dimension(75, 75));
 		btnTile5.setPreferredSize(new Dimension(75, 75));
 		btnTile5.setMaximumSize(new Dimension(75, 75));
 		panelTiles.add(btnTile5);
 		
-		JButton btnTile6 = new JButton("");
+		JToggleButton btnTile6 = new JToggleButton("");
 		btnTile6.setAlignmentX(CENTER_ALIGNMENT);
 		btnTile6.setMinimumSize(new Dimension(75, 75));
 		btnTile6.setPreferredSize(new Dimension(75, 75));
