@@ -241,31 +241,34 @@ public class Game implements ResultCallback {
 		Boolean isGlobal = args[0].equals("global");
 		String sender = args[1];
 
-		String message = Arrays.copyOfRange(args, 2, args.length).toString();
-		// For change of color between private/global we use showError and
-		// print message
-		if (this.UI instanceof TUIView) {
-			if (isGlobal) {
-				this.UI.printMessage(sender + " > " + message);
+		//only handle this if we ddidnt send this
+		if (!(getPlayerByName(sender) instanceof HumanPlayer)) {
+			
+			String message = Arrays.copyOfRange(args, 2, args.length).toString();
+			// For change of color between private/global we use showError and
+			// print message
+			if (this.UI instanceof TUIView) {
+				if (isGlobal) {
+					this.UI.printMessage(sender + " > " + message);
+				} else {
+					this.UI.showError(sender + " > " + message);
+				}
+	
+				if (getPlayerByName(sender) instanceof HumanPlayer) {
+					this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+				}
 			} else {
-				this.UI.showError(sender + " > " + message);
-			}
-
-			if (getPlayerByName(sender) instanceof HumanPlayer) {
-				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
-			}
-		} else {
-			if (isGlobal) {
-				Style s = ((GUIView)this.UI).getFrame().getTextArea().addStyle("Style", null);
-				StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.GREEN);
-				((GUIView)this.UI).setChat(sender + " > " + message, s);
-			} else {
-				Style s = ((GUIView)this.UI).getFrame().getTextArea().addStyle("Style", null);
-				StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.MAGENTA);
-				((GUIView)this.UI).setChat(sender + " > " + message, s);
+				if (isGlobal) {
+					Style s = ((GUIView)this.UI).getFrame().getTextArea().addStyle("Style", null);
+					StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.GREEN);
+					((GUIView)this.UI).setChat(sender + " > " + message, s);
+				} else {
+					Style s = ((GUIView)this.UI).getFrame().getTextArea().addStyle("Style", null);
+					StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.MAGENTA);
+					((GUIView)this.UI).setChat(sender + " > " + message, s);
+				}
 			}
 		}
-
 	}
 
 	/**
