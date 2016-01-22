@@ -34,6 +34,7 @@ public class HandleCommand {
 
 	/**
 	 * Returns true if all went well
+	 * 
 	 * @return
 	 */
 	public boolean getWentWell() {
@@ -41,7 +42,8 @@ public class HandleCommand {
 	}
 
 	/**
-	 * Set the value of WentWell 
+	 * Set the value of WentWell
+	 * 
 	 * @param t
 	 */
 	public void setWentWell(boolean t) {
@@ -50,6 +52,7 @@ public class HandleCommand {
 
 	/**
 	 * Returns an instance of <code> HandleCommand </code>
+	 * 
 	 * @param server
 	 * @return
 	 */
@@ -60,6 +63,7 @@ public class HandleCommand {
 	/**
 	 * Takes the name from the String array and match it with the given REGEX
 	 * Furthermore checks whether this name is already in use
+	 * 
 	 * @param strAy
 	 * @param ch
 	 */
@@ -89,6 +93,7 @@ public class HandleCommand {
 	/**
 	 * Checks the String array for features that are implemented by the Client
 	 * If there are any, add them to a list of features
+	 * 
 	 * @param strAy
 	 * @param ch
 	 */
@@ -127,7 +132,9 @@ public class HandleCommand {
 	}
 
 	/**
-	 * Check the String array for queue numbers to add the <code> ClientHandler </code> to
+	 * Check the String array for queue numbers to add the
+	 * <code> ClientHandler </code> to
+	 * 
 	 * @param strAy
 	 * @param ch
 	 */
@@ -164,9 +171,10 @@ public class HandleCommand {
 	}
 
 	/**
-	 * Checks whether the <code> ClientHandler </code> has the turn
-	 * Then check whether or not the trade is valid, and throw a fitting error if not
-	 * If it is valid, handle the trade and replace the tiles
+	 * Checks whether the <code> ClientHandler </code> has the turn Then check
+	 * whether or not the trade is valid, and throw a fitting error if not If it
+	 * is valid, handle the trade and replace the tiles
+	 * 
 	 * @param strAy
 	 * @param ch
 	 */
@@ -219,6 +227,7 @@ public class HandleCommand {
 
 	/**
 	 * Check whether the <code> ClientHandler </code> owns all given tiles
+	 * 
 	 * @param tiles
 	 * @param ch
 	 * @return
@@ -234,19 +243,19 @@ public class HandleCommand {
 	}
 
 	/**
-	 * Transform the String array into tiles and points
-	 * Validate the moves
-	 * Put the tiles on the board
+	 * Transform the String array into tiles and points Validate the moves Put
+	 * the tiles on the board
+	 * 
 	 * @param strAy
 	 * @param ch
 	 */
 	public void handleMovePut(String[] strAy, ClientHandler ch) {
-		
+
 		if (!ch.getGame().hasTurn(ch)) {
 			// TODO may be error? -Egbert
 			return;
 		}
-		
+
 		List<Move> moves = new ArrayList<>();
 		List<Tile> tiles = new ArrayList<>();
 		for (int i = 1; i < strAy.length; i++) {
@@ -264,21 +273,21 @@ public class HandleCommand {
 				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				return;
 			}
-			
+
 		}
-		if(ch.getGame().getBoard().isEmpty()) {
+		if (ch.getGame().getBoard().isEmpty()) {
 			boolean startPoint = false;
-			for(Move m : moves) {
-				if(m.getPoint().equals(new Point(0,0))) {
+			for (Move m : moves) {
+				if (m.getPoint().equals(new Point(0, 0))) {
 					startPoint = true;
 				}
-			}	
-			if(!startPoint) {
+			}
+			if (!startPoint) {
 				ch.sendMessage(protocol.serverError(IProtocol.Error.MOVE_INVALID));
 				return;
 			}
 		}
-		
+
 		if (!checkTiles(tiles, ch)) {
 			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.MOVE_TILES_UNOWNED));
 			return;
@@ -293,9 +302,9 @@ public class HandleCommand {
 		ch.getPlayer().addScore(ScoreCalc.getInstance().calculate(ch.getGame().getBoard(), moves));
 
 		server.broadcast(ch.getGame().getPlayers(), protocol.getInstance().serverMovePut(moves));
-		
-		//TODO what to do when list.size() > bag.size() || bag.isEMpty()?
-		if(!ch.getGame().getBag().isEmpty()) {
+
+		// TODO what to do when list.size() > bag.size() || bag.isEMpty()?
+		if (!ch.getGame().getBag().isEmpty()) {
 			List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
 			ch.getPlayer().bagToHand(newTiles);
 			ch.sendMessage(protocol.getInstance().serverDrawTile(newTiles));
@@ -303,12 +312,13 @@ public class HandleCommand {
 			ch.sendMessage(protocol.getInstance().serverDrawTile(new ArrayList<Tile>()));
 		}
 
-
 		handleTurn(ch);
 	}
 
 	/**
-	 * Checks whether the game ends, if it does not, pass the turn to the next player
+	 * Checks whether the game ends, if it does not, pass the turn to the next
+	 * player
+	 * 
 	 * @param ch
 	 */
 	public void handleTurn(ClientHandler ch) {
@@ -333,24 +343,34 @@ public class HandleCommand {
 
 	/**
 	 * End the game and round up the scores
+	 * 
 	 * @param ch
 	 */
 	public void handleEndGame(ClientHandler ch) {
-		List<ClientHandler> players = ch.getGame().getPlayers();
-		List<Player> playersPlay = new ArrayList<>();
-		int[] scores = new int[players.size()];
-		int i = 0;
-		for (ClientHandler player : players) {
-			playersPlay.add(player.getPlayer());
-			scores[i] = player.getPlayer().getScore();
-			i++;
+		if (ch.getGame().isRunning()) {
+			ch.getGame().setRunning(false);
+			
+			List<ClientHandler> players = ch.getGame().getPlayers();
+			List<Player> playersPlay = new ArrayList<>();
+			int[] scores = new int[players.size()];
+			int i = 0;
+			
+			for (ClientHandler player : players) {
+				playersPlay.add(player.getPlayer());
+				scores[i] = player.getPlayer().getScore();
+				i++;
+			}
+			
+			server.broadcast(players, protocol.serverEndGame(playersPlay, scores, 1));
+			server.addIdentified(players);
+			
 		}
-		server.broadcast(players, protocol.serverEndGame(playersPlay, scores, 1));
-		server.addIdentified(players);
 	}
 
 	/**
-	 * Present a score array with the scores in order of the players in the game array
+	 * Present a score array with the scores in order of the players in the game.
+	 * array
+	 * 
 	 * @param ch
 	 * @return
 	 */
@@ -368,7 +388,9 @@ public class HandleCommand {
 	}
 
 	/**
-	 * Checks to whom the message is concerned and write it to him/her if it is a valid channel
+	 * Checks to whom the message is concerned and write it to him/her if it is
+	 * a valid channel
+	 * 
 	 * @param strAy
 	 * @param ch
 	 */
@@ -377,19 +399,20 @@ public class HandleCommand {
 		System.out.println(channel);
 		String[] message = Arrays.copyOfRange(strAy, 2, strAy.length);
 		StringBuilder builder = new StringBuilder();
-		for(String s : message) {
-		    builder.append(s + " ");
+		for (String s : message) {
+			builder.append(s + " ");
 		}
 		String messa = builder.toString();
 		if (channel.equals("global")) {
-			server.broadcast(ch.getGame().getPlayers(),	protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
+			server.broadcast(ch.getGame().getPlayers(),
+					protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
 			return;
 		} else {
 			for (ClientHandler clienthand : ch.getGame().getPlayers()) {
 				System.out.println("@" + channel);
 				if (("@" + clienthand.getClientName()).equals(channel)) {
 					clienthand.sendMessage(protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
-					
+
 					return;
 				}
 			}
@@ -398,7 +421,9 @@ public class HandleCommand {
 	}
 
 	/**
-	 * Checks whether there are any valid moves left for the next player, otherwise, pass
+	 * Checks whether there are any valid moves left for the next player,
+	 * otherwise, pass
+	 * 
 	 * @param play
 	 * @param b
 	 * @return
@@ -424,17 +449,19 @@ public class HandleCommand {
 	}
 
 	/**
-	 * Tests whether a <code> Players </code> can do a valid <code> Move </code> otherwise pass
+	 * Tests whether a <code> Players </code> can do a valid <code> Move </code>
+	 * otherwise pass
+	 * 
 	 * @param ch
 	 */
 	public void handlePass(ClientHandler ch) {
 		int counter = 0;
-		while(!handleMovesLeft(ch.getGame().getPlayerTurn(), ch.getGame().getBoard())) {
+		while (!handleMovesLeft(ch.getGame().getPlayerTurn(), ch.getGame().getBoard())) {
 			server.broadcast(ch.getGame().getPlayers(), protocol.serverPass(ch.getGame().getPlayerTurn()));
 			server.broadcast(ch.getGame().getPlayers(), protocol.serverTurn(ch.getGame().getPlayerTurn()));
 			ch.getGame().nextTurn();
 			counter++;
-			if(counter == ch.getGame().getPlayers().size()) {
+			if (counter == ch.getGame().getPlayers().size()) {
 				handleEndGame(ch);
 				return;
 			}

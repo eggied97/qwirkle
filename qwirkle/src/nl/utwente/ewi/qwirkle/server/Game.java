@@ -16,13 +16,13 @@ public class Game {
 	private Bag bag;
 	private List<ClientHandler> players;
 	private int turn = 0;
+	private boolean running = true;
 	
 	public Game(List<ClientHandler> players) {
 		this.bag = new Bag();
 		this.board = new Board();
 		this.players = new ArrayList<>();
 		this.players.addAll(players);
-		// TODO PROTOCOL IMPLEMENTATION <- Still needed -Egbert
 	}
 	
 	/**
@@ -36,6 +36,22 @@ public class Game {
 		}
 	}
 	
+	
+	
+	/**
+	 * @return the running
+	 */
+	public boolean isRunning() {
+		return running;
+	}
+
+	/**
+	 * @param running the running to set
+	 */
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+
 	/**
 	 * Returns the player that holds the turn
 	 * @return

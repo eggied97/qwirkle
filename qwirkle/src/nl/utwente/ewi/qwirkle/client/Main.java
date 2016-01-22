@@ -31,14 +31,14 @@ public class Main implements ResultCallback {
 
 	private static Player me;
 
-	private static IProtocol.Feature[] implementedFeatures = {Feature.CHAT};
+	private static IProtocol.Feature[] implementedFeatures = { Feature.CHAT };
 	private static List<IProtocol.Feature> usingFeatures;
 
 	public static void main(String[] args) {
 		Main m = new Main(args);
 	}
 
-	//In the start
+	// In the start
 	public Main(String[] args) {
 		usingFeatures = new ArrayList<>();
 		UI = new TUIView();
@@ -50,14 +50,14 @@ public class Main implements ResultCallback {
 
 		authenticateUser();
 	}
-	
-	//after a match
-	public Main(Player me, Client server,UserInterface ui){
+
+	// after a match
+	public Main(Player me, Client server, UserInterface ui) {
 		this.me = me;
 		this.server = server;
 		this.server.setCallback(this);
 		this.UI = ui;
-		
+
 		prot = protocol.getInstance();
 		enterQueue();
 	}
@@ -123,49 +123,59 @@ public class Main implements ResultCallback {
 		String[] args = Arrays.copyOfRange(results, 1, results.length);
 
 		switch (command) {
-			case IProtocol.SERVER_IDENITFY:
-				handleServerIdentify(args);
+		case IProtocol.SERVER_IDENITFY:
+			handleServerIdentify(args);
+			break;
+
+		case IProtocol.SERVER_GAMESTART:
+			try {
+				handleGameStart(args);
+			} catch (TooManyPlayersException | TooFewPlayersException e) {
+				e.printStackTrace();
+			}
+			break;
+
+		case IProtocol.SERVER_ERROR:
+			if (args.length < 1) {
+				// TODO throw error
+			}
+
+			switch (IProtocol.Error.valueOf(args[0])) {
+			case NAME_USED:
+				UI.showError("Name is already in use, please use another one...");
+				authenticateUser();
 				break;
-	
-			case IProtocol.SERVER_GAMESTART:
-				try {
-					handleGameStart(args);
-				} catch (TooManyPlayersException | TooFewPlayersException e) {
-					e.printStackTrace();
-				}
+
+			case NAME_INVALID:
+				UI.showError("Name is invalid, please use another one...");
+				authenticateUser();
 				break;
-	
-			case IProtocol.SERVER_ERROR:
-				if (args.length < 1) {
-					// TODO throw error
-				}
-	
-				switch (IProtocol.Error.valueOf(args[0])) {
-					case NAME_USED:
-						UI.showError("Name is already in use, please use another one...");
-						authenticateUser();
-						break;
-						
-					case NAME_INVALID:
-						UI.showError("Name is invalid, please use another one...");
-						authenticateUser();
-						break;
-		
-					case QUEUE_INVALID:
-						UI.showError("The queue you wanted to enter is invalid, please choose another one...");
-						enterQueue();
-						break;
-		
-					default:
-						break;
-				}
+
+			case QUEUE_INVALID:
+				UI.showError("The queue you wanted to enter is invalid, please choose another one...");
+				enterQueue();
 				break;
-	
+
 			default:
 				break;
+			}
+			break;
+
+		default:
+			break;
 		}
 	}
 
+	/**
+	 * handles the input from the server when the server wants to start a game.
+	 * 
+	 * @param args
+	 *            of the server
+	 * @throws TooManyPlayersException
+	 *             when there are too many players (>4 players total)
+	 * @throws TooFewPlayersException
+	 *             when there are too few players.
+	 */
 	private void handleGameStart(String[] args) throws TooManyPlayersException, TooFewPlayersException {
 		if (args.length > 4) {
 			throw new TooManyPlayersException(args.length + 1);
@@ -184,12 +194,18 @@ public class Main implements ResultCallback {
 
 		Game g = new Game(UI, playersInGame, server, usingFeatures);
 		server.setCallback(g);
-		
+
 		if (me instanceof HumanPlayer) {
 			((HumanPlayer) me).setGame(g);
 		}
 	}
 
+	/**
+	 * handles the input from the server when server wants to authenticate.
+	 * 
+	 * @param args
+	 *            of the server
+	 */
 	private void handleServerIdentify(String[] args) {
 		if (args.length >= 1) {
 			for (String r : args) {

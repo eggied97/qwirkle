@@ -34,6 +34,9 @@ public class ValidMove {
 	 * @param b
 	 * @return
 	 */
+	//@ requires m != null;
+	//@ requires b != null;
+	//@ ensures \result == (b.getTile(m.getPoint().getX(), m.getPoint().getY()) == null);
 	public boolean isValidMove(Move m, Board b) {
 		List<Tile> tileSetXR = new ArrayList<>();
 		List<Tile> tileSetXL = new ArrayList<>();
@@ -164,6 +167,8 @@ public class ValidMove {
 	 * @param moves
 	 * @return
 	 */
+	//@requires moves != null;
+
 	public boolean validPointsX(List<Move> moves) {
 		for (int i = 0; i < moves.size() - 1; i++) {
 			if (moves.get(i).getPoint().getX() != moves.get(i + 1).getPoint().getX()) {
