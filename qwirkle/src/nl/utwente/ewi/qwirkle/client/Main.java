@@ -7,8 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.utwente.ewi.qwirkle.util;
+import nl.utwente.ewi.qwirkle.callback.ResultCallback;
+import nl.utwente.ewi.qwirkle.callback.UserInterfaceCallback;
 import nl.utwente.ewi.qwirkle.client.connect.Client;
-import nl.utwente.ewi.qwirkle.client.connect.ResultCallback;
+import nl.utwente.ewi.qwirkle.model.Move;
+import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.exceptions.TooFewPlayersException;
 import nl.utwente.ewi.qwirkle.model.exceptions.TooManyPlayersException;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
@@ -21,18 +24,18 @@ import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
 import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
-public class Main implements ResultCallback {
+public class Main implements ResultCallback, UserInterfaceCallback {
 
-	private static final String USAGE_SERVER = "Requires 2 arguments: <host> <port>";
-	private static Client server;
+	private final String USAGE_SERVER = "Requires 2 arguments: <host> <port>";
+	private Client server;
 
-	private static UserInterface UI;
-	private static protocol prot;
+	private UserInterface UI;
+	private protocol prot;
 
-	private static Player me;
+	private Player me;
 
-	private static IProtocol.Feature[] implementedFeatures = { Feature.CHAT };
-	private static List<IProtocol.Feature> usingFeatures;
+	private IProtocol.Feature[] implementedFeatures = { Feature.CHAT };
+	private List<IProtocol.Feature> usingFeatures;
 
 	public static void main(String[] args) {
 		Main m = new Main(args);
@@ -40,13 +43,17 @@ public class Main implements ResultCallback {
 
 	// In the start
 	public Main(String[] args) {
-		usingFeatures = new ArrayList<>();
-		UI = new GUIView();
+		this.usingFeatures = new ArrayList<>();
+		this.UI = new TUIView();
 
-		prot = protocol.getInstance();
+		if(this.UI instanceof TUIView){
+			((TUIView) this.UI).setInputCallback(this);
+		}
+		
+		this.prot = protocol.getInstance();
 		setupConnectionToServer(args);
 
-		server.setCallback(this);
+		this.server.setCallback(this);
 
 		authenticateUser();
 	}
@@ -57,22 +64,24 @@ public class Main implements ResultCallback {
 		this.server = server;
 		this.server.setCallback(this);
 		this.UI = ui;
+		
+		if(this.UI instanceof TUIView){
+			((TUIView) this.UI).setInputCallback(this);
+		}
 
 		prot = protocol.getInstance();
 		enterQueue();
 	}
 
-	private static void authenticateUser() {
-		me = UI.login();
-		sendMessageToServer(prot.clientGetConnectString(me.getName(), implementedFeatures));
+	private void authenticateUser() {
+		this.UI.askForLogin();
 	}
 
 	private void enterQueue() {
-		int[] queues = UI.queueWithHowManyPlayers();
-		sendMessageToServer(prot.clientQueue(queues));
+		this.UI.askQueueWithHowManyPlayers();		
 	}
 
-	private static void setupConnectionToServer(String[] args) {
+	private void setupConnectionToServer(String[] args) {
 		if (args.length != 2) {
 			System.out.println(USAGE_SERVER);
 			System.exit(0);
@@ -100,11 +109,11 @@ public class Main implements ResultCallback {
 		server.start();
 	}
 
-	private static void sendMessageToServer(String message) {
-		if (server != null && server.isAlive()) {
-			server.sendMessage(message);
+	private void sendMessageToServer(String message) {
+		if (this.server != null && this.server.isAlive()) {
+			this.server.sendMessage(message);
 		} else {
-			UI.showError("Wanted to send message via a server that has not been started");
+			this.UI.showError("Wanted to send message via a server that has not been started");
 			System.exit(0);
 		}
 	}
@@ -194,6 +203,7 @@ public class Main implements ResultCallback {
 
 		Game g = new Game(UI, playersInGame, server, usingFeatures);
 		server.setCallback(g);
+		UI.setCallback(g);
 
 		if (me instanceof HumanPlayer) {
 			((HumanPlayer) me).setGame(g);
@@ -218,5 +228,34 @@ public class Main implements ResultCallback {
 		// now go and ask for the queue
 		enterQueue();
 	}
+
+	@Override
+	public void login(Player p) {
+		me = p;
+		sendMessageToServer(prot.clientGetConnectString(me.getName(), implementedFeatures));
+	}
+
+	@Override
+	public void queue(int[] queue) {
+		sendMessageToServer(prot.clientQueue(queue));
+	}
+
+	@Override
+	public void determinedAction(String action) {} //not used
+
+	@Override
+	public void putMove(String unparsedString) {} //not used
+
+	@Override
+	public void putMove(List<Move> moves) {} //not used
+
+	@Override
+	public void putTrade(String unparsedString) {} //not used
+
+	@Override
+	public void putTrade(List<Tile> tiles) {} //not used
+
+	@Override
+	public void sendChat(String msg) {} //not used
 
 }

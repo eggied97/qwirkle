@@ -1,75 +1,62 @@
 package nl.utwente.ewi.qwirkle.ui.tui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
 import nl.utwente.ewi.qwirkle.util;
+import nl.utwente.ewi.qwirkle.callback.ResultCallback;
+import nl.utwente.ewi.qwirkle.callback.UserInputCallback;
+import nl.utwente.ewi.qwirkle.callback.UserInterfaceCallback;
 import nl.utwente.ewi.qwirkle.client.Game;
+import nl.utwente.ewi.qwirkle.client.UserInputThread;
+import nl.utwente.ewi.qwirkle.model.Move;
+import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.model.enums.InputState;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.model.player.strategy.SuperStrategy;
+import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 
-public class TUIView implements UserInterface {
+public class TUIView implements UserInterface, UserInputCallback {
 
-	public static final String QUESTION_ASK_NAME = "What is your name? ";
-	public static final String QUESTION_QUEUE = "With how many players would you like to play (2-4)? ( format: 2,3 )";
-	public static final String QUESTION_PLAY_OR_EXHANGE = "Do you want to play a Tile, or exhange a Tile or chat? (p/e/c)";
-	public static final String QUESTION_ASK_FOR_MOVE = "Which Tiles do you want to lay down?(h for a hint, or b to go back) \n format: [no_tile@x,y] :";
-	public static final String QUESTION_ASK_FOR_TRADE = "Which Tiles do you want to trade?(or b to go back) \n format: [no_tile] :";
-	public static final String QUESTION_ASK_FOR_CHAT = "The format for a chat message is as follow: \n global/@username message";
+	private static final String QUESTION_ASK_NAME = "What is your name? ";
+	private static final String QUESTION_QUEUE = "With how many players would you like to play (2-4)? ( format: 2,3 )";
+	private static final String QUESTION_PLAY_OR_EXHANGE = "Do you want to play a Tile, or exhange a Tile or chat? (p/e/c)";
+	private static final String QUESTION_ASK_FOR_MOVE = "Which Tiles do you want to lay down?(h for a hint, or b to go back) \n format: [no_tile@x,y] :";
+	private static final String QUESTION_ASK_FOR_TRADE = "Which Tiles do you want to trade?(or b to go back) \n format: [no_tile] :";
+	private static final String QUESTION_ASK_FOR_CHAT = "The format for a chat message is as follow: \n global/@username message";
 
+	private UserInterfaceCallback callback;	
+
+	private UserInputThread UIT;
 	
 	public TUIView() {
-		/*Scanner s = new Scanner(System.in);
-		
-		while(s.hasNextLine()){
-			System.out.println(s.nextLine());
-		}*/
+		UIT = new UserInputThread(this);
+		UIT.start();
+	}
+	
+	public void setInputCallback(UserInterfaceCallback callback){
+		this.callback = callback;
 	}
 
 	@Override
-	public Player login() {
-		// First ask name, then create a player instance, then return
-		String name = util.readString(QUESTION_ASK_NAME);
+	public void askForLogin() {
+		UIT.setInputState(InputState.FORLOGIN);
+		this.printMessage(QUESTION_ASK_NAME);
 
-		if(name.equals("COMPUTERMAN")){
-			return new ComputerPlayer("pcman" + (int)(Math.random() * 4));
-		}else if(name.equals("COMPUTERMANSLIM")){
-			return new ComputerPlayer("pcmanslim" + (int)(Math.random() * 4), new SuperStrategy());
-			
-		}
-		
-		return new HumanPlayer(name);
 	}
 
 	@Override
-	public int[] queueWithHowManyPlayers() {
-		String queue = util.readString(QUESTION_QUEUE);
-
-		String[] queues = queue.split(",");
-
-		//TODO check if this check is needed or not
-		if (queues.length == 0 || queues.length > 3) {
-			showError("Wrong input: " + QUESTION_QUEUE);
-			return queueWithHowManyPlayers();
-		} else {
-			int[] result = new int[queues.length];
-
-			for (int i = 0; i < result.length; i++) {
-				try {
-					result[i] = Integer.parseInt(queues[i].trim());
-				} catch (NumberFormatException e) {
-					showError("You have to enter an integer");
-					return queueWithHowManyPlayers();
-				}
-			}
-			return result;
-		}
+	public void askQueueWithHowManyPlayers() {
+		UIT.setInputState(InputState.FORQUEUE);
+		this.printMessage(QUESTION_QUEUE);		
 	}
 
 	@Override
@@ -117,22 +104,105 @@ public class TUIView implements UserInterface {
 	}
 
 	@Override
-	public String askForPlayOrExchange() {
-		return util.readString(QUESTION_PLAY_OR_EXHANGE);
+	public void askForPlayOrExchange() {
+		UIT.setInputState(InputState.IDLE);
+		this.printMessage(QUESTION_PLAY_OR_EXHANGE);
 	}
 
 	@Override
-	public String askForMove() {
-		return util.readString(QUESTION_ASK_FOR_MOVE);
+	public void askForMove() {
+		UIT.setInputState(InputState.FORMOVE);
+		this.printMessage(QUESTION_ASK_FOR_MOVE);
 	}
 
 	@Override
-	public String askForTrade() {
-		return util.readString(QUESTION_ASK_FOR_TRADE);
+	public void askForTrade() {
+		UIT.setInputState(InputState.FORTRADE);
+		this.printMessage(QUESTION_ASK_FOR_TRADE);
 	}
 
 	@Override
-	public String askForChatMessage() {
-		return util.readString(QUESTION_ASK_FOR_CHAT);
+	public void askForChatMessage() {
+		UIT.setInputState(InputState.FORCHAT);
+		this.printMessage(QUESTION_ASK_FOR_CHAT);
 	}
+
+	@Override
+	public void setCallback(UserInterfaceCallback callback) {
+		this.callback = callback;
+	}
+
+	@Override
+	public void handlePlayerInput(String input, InputState state) {
+		switch (state) {
+			case FORLOGIN:
+				String name = input;
+				Player p;
+	
+				if(name.equals("COMPUTERMAN")){
+					p =  new ComputerPlayer("pcman" + (int)(Math.random() * 4));
+				}else if(name.equals("COMPUTERMANSLIM")){
+					p =  new ComputerPlayer("pcmanslim" + (int)(Math.random() * 4), new SuperStrategy());				
+				}else{
+					p = new HumanPlayer(name);
+				}
+				
+				callback.login(p);
+				
+				break;
+				
+			case FORQUEUE:
+				String[] queues = input.split(",");
+				
+				int[] result = new int[0];
+
+				//TODO check if this check is needed or not
+				if (queues.length == 0 || queues.length > 3) {
+					showError("Wrong input: " + QUESTION_QUEUE);					
+					callback.queue(result);
+				} else {
+					result = new int[queues.length];
+
+					for (int i = 0; i < result.length; i++) {
+						try {
+							result[i] = Integer.parseInt(queues[i].trim());
+						} catch (NumberFormatException e) {
+							showError("You have to enter an integer");
+							result = new int[0];
+						}
+					}
+					
+					callback.queue(result);
+				}
+				break;
+			
+			case IDLE:
+				callback.determinedAction(input);
+				break;
+	
+			case FORMOVE:
+				if (input.equals("b")) {
+					this.askForPlayOrExchange();
+				} else {	
+					callback.putMove(input);
+				}
+				break;
+			case FORTRADE:
+				if (input.equals("b")) {
+					this.askForPlayOrExchange();
+				} else {
+					callback.putTrade(input);					
+				}
+				break;
+			case FORCHAT:
+				if (input.equals("b")) {
+					this.askForPlayOrExchange();
+				} else {
+					callback.sendChat(input);
+				}
+				break;
+		}
+	}
+	
+	
 }

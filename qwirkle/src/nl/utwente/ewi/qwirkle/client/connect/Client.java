@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import nl.utwente.ewi.qwirkle.callback.ResultCallback;
+
 public class Client extends Thread {
 	private String clientName;
 	private Socket sock;

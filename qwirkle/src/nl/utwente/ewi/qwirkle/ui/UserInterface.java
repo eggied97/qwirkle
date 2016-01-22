@@ -3,15 +3,16 @@ package nl.utwente.ewi.qwirkle.ui;
 import java.util.List;
 import java.util.Map;
 
+import nl.utwente.ewi.qwirkle.callback.UserInterfaceCallback;
 import nl.utwente.ewi.qwirkle.client.Game;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 
 public interface UserInterface {
 	// Protocol
-	public Player login(); // TODO maybe verander deze method name
+	public void askForLogin(); // TODO maybe verander deze method name
 
-	public int[] queueWithHowManyPlayers();
+	public void askQueueWithHowManyPlayers();
 
 	public void changeTurn(Player p);
 
@@ -23,13 +24,15 @@ public interface UserInterface {
 
 	public void showHand(List<Tile> tiles);
 
-	public String askForPlayOrExchange();
+	public void askForPlayOrExchange();
 
-	public String askForMove();
+	public void askForMove();
 
-	public String askForTrade();
+	public void askForTrade();
 	
-	public String askForChatMessage();
+	public void askForChatMessage();
+	
+	public void setCallback(UserInterfaceCallback callback);
 	
 	
 

@@ -31,12 +31,12 @@ public class HumanPlayer extends Player {
 			// TODO throw error
 		}
 		
-		return  this.g.getUI().askForPlayOrExchange();
+		return "";// this.g.getUI().askForPlayOrExchange();
 	}
 
 	@Override
 	public List<Tile> determineTradeMove() {
-		String awnserQ = this.g.getUI().askForTrade();
+		String awnserQ = "";//this.g.getUI().askForTrade();
 
 		if (awnserQ.trim().equals("b")) {
 			this.g.handleTurn(true);
@@ -54,7 +54,7 @@ public class HumanPlayer extends Player {
 	
 	@Override
 	public List<Move> determinePutMove(Board board) {
-		String awnser = this.g.getUI().askForMove();
+		String awnser = "";//this.g.getUI().askForMove();
 		
 		if (awnser.trim().equals("b")) { 
 			this.g.handleTurn(true);
@@ -72,7 +72,7 @@ public class HumanPlayer extends Player {
 	
 	@Override
 	public String sendChat() {
-		String messageToBeSent = this.g.getUI().askForChatMessage();
+		String messageToBeSent = "";//this.g.getUI().askForChatMessage();
 		
 		if (messageToBeSent.split(" ").length >= 2) {
 			// right format

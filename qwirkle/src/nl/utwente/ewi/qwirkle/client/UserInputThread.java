@@ -2,17 +2,17 @@ package nl.utwente.ewi.qwirkle.client;
 
 import java.util.Scanner;
 
-
+import nl.utwente.ewi.qwirkle.callback.UserInputCallback;
 import nl.utwente.ewi.qwirkle.model.enums.InputState;
 
 public class UserInputThread extends Thread {
 
-	private Game g;
 	private boolean running = true;
-	private InputState state = InputState.IDLE;
+	private InputState state = InputState.FORLOGIN;
+	private UserInputCallback callback;
 
-	public UserInputThread(Game g) {
-		this.g = g;
+	public UserInputThread(UserInputCallback callback) {
+		this.callback = callback;
 	}
 
 	public void setRunning(Boolean b) {
@@ -29,8 +29,8 @@ public class UserInputThread extends Thread {
 
 		while (s.hasNextLine()) {
 			String line = s.nextLine();
-			if (this.g != null) {
-				this.g.handlePlayerInput(line, this.state);
+			if (this.callback != null) {
+				this.callback.handlePlayerInput(line, this.state);
 			}
 		}
 	}

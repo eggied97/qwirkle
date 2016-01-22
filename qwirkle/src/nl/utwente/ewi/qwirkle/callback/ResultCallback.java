@@ -1,4 +1,4 @@
-package nl.utwente.ewi.qwirkle.client.connect;
+package nl.utwente.ewi.qwirkle.callback;
 
 public interface ResultCallback {
 

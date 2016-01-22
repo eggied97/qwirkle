@@ -10,8 +10,10 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 
+import nl.utwente.ewi.qwirkle.callback.ResultCallback;
+import nl.utwente.ewi.qwirkle.callback.UserInputCallback;
+import nl.utwente.ewi.qwirkle.callback.UserInterfaceCallback;
 import nl.utwente.ewi.qwirkle.client.connect.Client;
-import nl.utwente.ewi.qwirkle.client.connect.ResultCallback;
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
@@ -29,7 +31,7 @@ import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
 import nl.utwente.ewi.qwirkle.ui.gui.ProtocolControl;
 import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
-public class Game implements ResultCallback {
+public class Game implements ResultCallback, UserInterfaceCallback {
 
 	private Board board;
 	private List<Player> players;
@@ -48,7 +50,6 @@ public class Game implements ResultCallback {
 
 	boolean playing = true;
 
-	private UserInputThread UIT;
 
 	/**
 	 * 
@@ -68,14 +69,12 @@ public class Game implements ResultCallback {
 		this.UI = UI;
 		this.c = c;
 
-		UIT = new UserInputThread(this);
-		UIT.start();
+		
 		if (UI instanceof GUIView) {
 			control = new ProtocolControl(UI, this);
 			((GUIView) UI).changeFrame();
 		} else {
-			this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
-
+			this.UI.askForPlayOrExchange();
 		}
 
 		// TODO check if this is fast enough to get the turn message
@@ -192,7 +191,7 @@ public class Game implements ResultCallback {
 						throw new TooFewArgumentsException(args.length);
 					}
 	
-					handleMoveTrade(args);
+					handleMoveTradeFromOpponent(args);
 	
 					break;
 	
@@ -205,6 +204,7 @@ public class Game implements ResultCallback {
 					break;
 	
 				case IProtocol.SERVER_ERROR:
+					//TODO  INVALID_CHANNEL wordt niet gestuurt vanuit server :/
 					if (args.length < 1) {
 						throw new TooFewArgumentsException(args.length);
 					}
@@ -266,7 +266,7 @@ public class Game implements ResultCallback {
 				}
 
 				if (getPlayerByName(sender) instanceof HumanPlayer) {
-					this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+					this.UI.askForPlayOrExchange();
 				}
 			} else {
 
@@ -306,7 +306,7 @@ public class Game implements ResultCallback {
 	 * @param trades
 	 *            - number of tiles traded
 	 */
-	private void handleMoveTrade(String[] trades) {
+	private void handleMoveTradeFromOpponent(String[] trades) {
 		this.UI.printMessage(turnPlayer.getName() + " just traded " + trades[0] + " tiles.");
 	}
 
@@ -370,7 +370,8 @@ public class Game implements ResultCallback {
 			if (this.UI instanceof TUIView) {
 				this.UI.printMessage("Turn changed, its your turn now");
 				this.UI.showHand(turnPlayer.getHand());
-				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
+				
+				this.UI.askForPlayOrExchange();
 			} else {
 				this.UI.printMessage("It's your turn now");
 				this.UI.showHand(turnPlayer.getHand());
@@ -427,123 +428,7 @@ public class Game implements ResultCallback {
 			this.UI.printMessage("You passed because there were no moves for you to be made");
 		}
 	}
-
-	/**
-	 * handles the input from the user.
-	 * 
-	 * @param input
-	 */
-	public void handlePlayerInput(String input, InputState state) {
-
-		HumanPlayer hp = null;
-
-		for (Player p : players) {
-			if (p instanceof HumanPlayer) {
-				hp = (HumanPlayer) p;
-			}
-		}
-
-		switch (state) {
-		case IDLE:
-			switch (input) {
-			case "p":
-				if (turnPlayer.equals(hp)) {
-					this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_MOVE);
-					this.UIT.setInputState(InputState.FORMOVE);
-				} else {
-					this.UI.showError("Wait for your turn");
-				}
-
-				break;
-			case "e":
-				if (turnPlayer.equals(hp)) {
-					this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_TRADE);
-					this.UIT.setInputState(InputState.FORTRADE);
-				} else {
-					this.UI.showError("Wait for your turn");
-				}
-
-				break;
-			case "c":
-
-				this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_CHAT);
-				this.UIT.setInputState(InputState.FORCHAT);
-
-				break;
-			default:
-				this.UI.showError("Wrong argument.");
-				handleTurn(true);
-				break;
-			}
-			break;
-
-		case FORMOVE:
-			if (input.equals("b")) {
-				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
-				this.UIT.setInputState(InputState.IDLE);
-			} else {
-
-				List<Move> moves = hp.parseMoveAwnser(input);
-
-				if (moves == null) {
-					this.UI.showError("Move set cannotbe empty!");
-					this.UI.printMessage(((TUIView) this.UI).QUESTION_ASK_FOR_MOVE);
-				} else {
-
-					tilesThatNeedToBeRemoved = new ArrayList<>();
-
-					for (Move m : moves) {
-						tilesThatNeedToBeRemoved.add(m.getTile());
-					}
-
-					nextDrawNeedToRemoveTiles = true;
-
-					this.UIT.setInputState(InputState.IDLE);
-
-					c.sendMessage(protocol.getInstance().clientPutMove(moves));
-				}
-			}
-			break;
-		case FORTRADE:
-			if (input.equals("b")) {
-				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
-				this.UIT.setInputState(InputState.IDLE);
-			} else {
-				List<Tile> tiles = hp.parseTradeAwnser(input);
-
-				tilesThatNeedToBeRemoved = new ArrayList<>();
-				tilesThatNeedToBeRemoved.addAll(tiles);
-
-				nextDrawNeedToRemoveTiles = true;
-
-				this.UIT.setInputState(InputState.IDLE);
-
-				c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
-			}
-			break;
-		case FORCHAT:
-			if (input.equals("b")) {
-				this.UI.printMessage(((TUIView) this.UI).QUESTION_PLAY_OR_EXHANGE);
-				this.UIT.setInputState(InputState.IDLE);
-			} else {
-				String msg = input;
-
-				String[] msgs = msg.split(" ");
-				String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
-
-				StringBuilder builder = new StringBuilder();
-				for (String s : message) {
-					builder.append(s + " ");
-				}
-
-				this.UIT.setInputState(InputState.IDLE);
-
-				c.sendMessage(protocol.getInstance().clientChat(msgs[0], builder.toString()));
-			}
-			break;
-		}
-	}
-
+	
 	/**
 	 * handles when the user gets new tiles.
 	 * 
@@ -560,6 +445,8 @@ public class Game implements ResultCallback {
 				}
 			}
 		}
+		
+		this.UI.askForPlayOrExchange();
 	}
 
 	/**
@@ -613,6 +500,110 @@ public class Game implements ResultCallback {
 		}
 
 		return null;
+	}
+
+	@Override
+	public void login(Player p) {} //not called
+
+	@Override
+	public void queue(int[] queue) {} //not called
+
+	@Override
+	public void determinedAction(String action) {
+		switch (action) {
+			case "p":				
+				if (turnPlayer instanceof HumanPlayer) {
+					this.UI.askForMove();
+				} else {
+					this.UI.showError("Wait for your turn");
+				}
+	
+				break;
+			case "e":
+				if (turnPlayer instanceof HumanPlayer ) {
+					this.UI.askForTrade();
+				} else {
+					this.UI.showError("Wait for your turn");
+				}
+	
+				break;
+			case "c":	
+				this.UI.askForChatMessage();
+	
+				break;
+			default:
+				this.UI.showError("Wrong argument.");
+				handleTurn(true);
+				break;
+		}
+	}
+	
+
+
+	@Override
+	public void putMove(String unparsedString) {
+		if ( turnPlayer instanceof HumanPlayer ){
+			List<Move> moves = ((HumanPlayer)turnPlayer).parseMoveAwnser(unparsedString);
+			putMove(moves);
+		}		
+	}
+
+	@Override
+	public void putMove(List<Move> moves) {
+		if (moves == null || moves.size() == 0) {
+			this.UI.showError("Move set cannot be empty!");
+			this.UI.askForMove();
+		} else {
+			tilesThatNeedToBeRemoved = new ArrayList<>();
+
+			for (Move m : moves) {
+				tilesThatNeedToBeRemoved.add(m.getTile());
+			}
+
+			nextDrawNeedToRemoveTiles = true;
+
+			c.sendMessage(protocol.getInstance().clientPutMove(moves));
+		}
+	}
+	
+
+
+	@Override
+	public void putTrade(String unparsedString) {
+		if ( turnPlayer instanceof HumanPlayer ){
+			List<Tile> trades = ((HumanPlayer)turnPlayer).parseTradeAwnser(unparsedString);
+			putTrade(trades);
+		}
+	}
+
+	@Override
+	public void putTrade(List<Tile> tiles) {
+		tilesThatNeedToBeRemoved = new ArrayList<>();
+		tilesThatNeedToBeRemoved.addAll(tiles);
+
+		nextDrawNeedToRemoveTiles = true;
+
+		c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
+	}
+
+	@Override
+	public void sendChat(String msg) {
+		String[] msgs = msg.split(" ");
+		
+		if(msgs.length < 2){
+			this.UI.showError("You did not use the right format");
+			this.UI.askForChatMessage();
+		}
+		
+		String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
+
+		StringBuilder builder = new StringBuilder();
+		
+		for (String s : message) {
+			builder.append(s + " ");
+		}
+
+		c.sendMessage(protocol.getInstance().clientChat(msgs[0], builder.toString()));
 	}
 
 }
