@@ -15,7 +15,10 @@ import javax.swing.JButton;
 import javax.swing.JToggleButton;
 import javax.swing.text.Style;
 
+import nl.utwente.ewi.qwirkle.callback.UserInterfaceCallback;
 import nl.utwente.ewi.qwirkle.client.Game;
+import nl.utwente.ewi.qwirkle.model.Move;
+import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
@@ -62,7 +65,6 @@ public class GUIView implements UserInterface {
 		return mFrame;
 	}
 
-	@Override
 	public Player login() {
 		while(!connectPanelFrame.isNameSet()) {
 			try {
@@ -87,7 +89,6 @@ public class GUIView implements UserInterface {
 		return play;
 	}
 
-	@Override
 	public int[] queueWithHowManyPlayers() {
 		while(!connectPanelFrame.isQueueSet()) {
 			try {
@@ -183,27 +184,19 @@ public class GUIView implements UserInterface {
 	}
 
 	@Override
-	public String askForPlayOrExchange() {
-		// TODO Auto-generated method stub
-		return null;
+	public void askForPlayOrExchange() {
 	}
 
 	@Override
-	public String askForMove() {
-		// TODO Auto-generated method stub
-		return null;
+	public void askForMove() {
 	}
 
 	@Override
-	public String askForTrade() {
-		// TODO Auto-generated method stub
-		return null;
+	public void askForTrade() {
 	}
 
 	@Override
-	public String askForChatMessage() {
-		// TODO Auto-generated method stub
-		return null;
+	public void askForChatMessage() {
 	}
 	
 
@@ -214,9 +207,8 @@ public class GUIView implements UserInterface {
 
 
 
-	public void updateBoard() {
-		
-		
+	public void updateBoard(List<Move> moves) {
+		mFrame.addButton(moves);
 	}
 	
 	public static void main(String[] args) {
@@ -241,6 +233,24 @@ public class GUIView implements UserInterface {
 		for(Entry<Player, Integer> e : score.entrySet()) {
 			result += (e.getKey().getName() + " - " + e.getValue());
 		}
+		
+	}
+
+	@Override
+	public void askForLogin() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void askQueueWithHowManyPlayers() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCallback(UserInterfaceCallback callback) {
+		// TODO Auto-generated method stub
 		
 	}
 

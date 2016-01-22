@@ -120,7 +120,6 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			this.UI.printMessage("Current board situation : ");
 			this.UI.printMessage(board.toString());
 		} else {
-			((GUIView) this.UI).updateBoard();
 			((GUIView) this.UI).showScore(players);
 		}
 	}
@@ -345,6 +344,14 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 		int score = board.putTile(aMoves);
 		turnPlayer.addScore(score);
+		if(this.UI instanceof GUIView) {
+			Map<Player, Integer> scoreMap = new HashMap<>();
+			for(Player p : players) {
+				scoreMap.put(p, p.getScore());
+			}
+			((GUIView)this.UI).showScore(scoreMap);
+			((GUIView)this.UI).updateBoard(aMoves);
+		}
 	}
 
 	/**
