@@ -17,6 +17,8 @@ import javax.swing.text.Style;
 
 import nl.utwente.ewi.qwirkle.callback.UserInterfaceCallback;
 import nl.utwente.ewi.qwirkle.client.Game;
+import nl.utwente.ewi.qwirkle.model.Move;
+import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
@@ -42,7 +44,7 @@ public class GUIView implements UserInterface {
 	public GUIView(UserInterfaceCallback callback) { //var needed in callback, because our frame needs it :/
 		img = new imageGetter();
 		
-		this.callback = callback;
+		setCallback(callback);
 		
 		connectPanelFrame = new ConnectPanel(this.callback);
 		connectPanelFrame.setVisible(true);
@@ -60,11 +62,8 @@ public class GUIView implements UserInterface {
 		return mFrame;
 	}
 	
-	@Override
-	public void setCallback(UserInterfaceCallback callback) {
-		this.callback = callback;
-	}
 	
+
 	public void changeFrame() {
 		if(connectPanelFrame.isVisible()) {
 			connectPanelFrame.setVisible(false);
@@ -75,21 +74,7 @@ public class GUIView implements UserInterface {
 		}
 	}
 	
-	@Override
-	public void changeTurn(Player p) {
-		// TODO Auto-generated method stub		
-	}
-
-	@Override
-	public void playerTraded(Player p, int noOfTilesTraded) {
-		// TODO Auto-generated method stub		
-	}
-
-	@Override
-	public void showError(String message) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public void printMessage(String message) {
@@ -124,16 +109,13 @@ public class GUIView implements UserInterface {
 		}
 		
 	}
-	
+		
 	public void setChat(String message, Style s) {
 		mFrame.setTextArea(message, s);
 	}
 
-
-
-	public void updateBoard() {
-		
-		
+	public void updateBoard(List<Move> moves) {
+		mFrame.addButton(moves);
 	}
 	
 	//TODO remove below?
@@ -161,12 +143,17 @@ public class GUIView implements UserInterface {
 		}
 		
 	}
+	
+	@Override
+	public void setCallback(UserInterfaceCallback callback) {
+		this.callback = callback;
+	}
 
 	@Override
 	public void askForLogin() {
 		connectPanelFrame.resetName();
 	}
-
+	
 	@Override
 	public void askQueueWithHowManyPlayers() {
 		connectPanelFrame.resetQueue();
@@ -192,6 +179,21 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void askForChatMessage() {
+		// TODO Auto-generated method stub		
+	}
+	
+	@Override
+	public void changeTurn(Player p) {
+		// TODO Auto-generated method stub		
+	}
+
+	@Override
+	public void playerTraded(Player p, int noOfTilesTraded) {
+		// TODO Auto-generated method stub		
+	}
+
+	@Override
+	public void showError(String message) {
 		// TODO Auto-generated method stub		
 	}
 }
