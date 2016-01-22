@@ -84,6 +84,10 @@ public class ConnectPanel extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String name = (String) JOptionPane.showInputDialog(contentPane, "Enter your name: ", "Name?",
 						JOptionPane.PLAIN_MESSAGE);
+				
+				
+				
+				
 				setName(name);
 				setNameSet(true);
 				btnEnterQueues.setEnabled(true);

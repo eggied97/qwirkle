@@ -29,19 +29,25 @@ import nl.utwente.ewi.qwirkle.ui.gui.panels.MainFrame;
 
 
 public class GUIView implements UserInterface {
-	ConnectPanel frame;
+	ConnectPanel connectPanelFrame;
 	MainFrame mFrame;
 	private imageGetter img;
+
+	GraphicalCallback callback = null;
 	
 	public GUIView() {
 		img = new imageGetter();
 		
-		frame = new ConnectPanel();
-		frame.setVisible(true);
+		connectPanelFrame = new ConnectPanel();
+		connectPanelFrame.setVisible(true);
 		
 		mFrame = new MainFrame();
 		mFrame.setVisible(false);
 		
+	}
+	
+	public void setCallback(GraphicalCallback gc){
+		this.callback = gc;
 	}
 	
 	public MainFrame getFrame() {
@@ -50,16 +56,16 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public Player login() {
-		while(!frame.isNameSet()) {
+		while(!connectPanelFrame.isNameSet()) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		String name = frame.getName();
+		String name = connectPanelFrame.getName();
 		
-		frame.setNameSet(false); //reset name for when it is invalid (otherwise you get into a infinte loop)
+		connectPanelFrame.setNameSet(false); //reset name for when it is invalid (otherwise you get into a infinte loop)
 		
 		System.out.println(name);
 		if(name.equals("COMPUTERMAN")){
@@ -73,7 +79,7 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public int[] queueWithHowManyPlayers() {
-		while(!frame.isQueueSet()) {
+		while(!connectPanelFrame.isQueueSet()) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -81,7 +87,7 @@ public class GUIView implements UserInterface {
 			}
 		}
 		
-		List<Boolean> queues = frame.getQueues();
+		List<Boolean> queues = connectPanelFrame.getQueues();
 		int j = 0;
 		for(int i = 0; i < queues.size(); i++) {
 			if(queues.get(i)) {
@@ -102,11 +108,11 @@ public class GUIView implements UserInterface {
 	}
 
 	public void changeFrame() {
-		if(frame.isVisible()) {
-			frame.setVisible(false);
+		if(connectPanelFrame.isVisible()) {
+			connectPanelFrame.setVisible(false);
 			mFrame.setVisible(true);
 		} else {
-			frame.setVisible(true);
+			connectPanelFrame.setVisible(true);
 			mFrame.setVisible(false);
 		}
 	}

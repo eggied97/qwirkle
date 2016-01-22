@@ -27,5 +27,5 @@ public class ProtocolControl {
 		client.sendMessage(protocol.getInstance().clientChat(channel, message));
 	}
 	
-
+ 
 }
