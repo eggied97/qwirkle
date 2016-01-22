@@ -20,9 +20,9 @@ import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.ui.imageGetter;
 import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
-import nl.utwente.ewi.qwirkle.ui.gui.ProtocolControl;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -60,7 +60,6 @@ public class MainFrame extends JFrame {
 	private List<Tile> tiles;
 	private Map<JButton, Point> butCord;
 	private JPanel buttons;
-	private ProtocolControl control;
 	private StyledDocument doc;
 	private imageGetter imgGet;
 	private List<Move> moveSet;
@@ -95,10 +94,6 @@ public class MainFrame extends JFrame {
 		}
 		this.repaint();
 		this.revalidate();
-	}
-	
-	public void setControl(ProtocolControl p) {
-		this.control = p;
 	}
 	
 	public JLabel getMessageLabel() {
@@ -369,7 +364,8 @@ public class MainFrame extends JFrame {
 					Style s = textArea.addStyle("Style", null);
 					StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.BLACK);
 					setTextArea("You > " + textField_1.getText(), s);
-					control.handleChat(textField_1.getText());
+					
+					handleChat(textField_1.getText());
 				}
 				textField_1.setText("");
 			}
@@ -487,15 +483,13 @@ public class MainFrame extends JFrame {
 						trade.put(b, handTiles.indexOf(b));
 					}
 				}
-				if(trade.isEmpty()) {
-				} else {
+				if(!trade.isEmpty()) {				
 					for(JToggleButton b : trade.keySet()) {
 						toTrade.add(tiles.get(trade.get(b)));
 					}
 				}
-				if(!control.handleTrade(toTrade)) {
-					setMessageLabel("Not your turn!");
-				}
+				
+				handleTrade(toTrade);				
 			}
 		});
 		GridBagConstraints gbc_btnTrade = new GridBagConstraints();
@@ -507,7 +501,10 @@ public class MainFrame extends JFrame {
 		JButton btnMove = new JButton("Move");
 		btnMove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!control.handleMove(moveSet)) {
+				
+				handleMove(moveSet);
+				
+				if(false) { //TODO iets om hier te  checken (of andere functie)
 					setMessageLabel("Not your turn!");
 					undoMoves();
 				}
@@ -542,5 +539,32 @@ public class MainFrame extends JFrame {
 		gbc_btnUndo.anchor = GridBagConstraints.NORTH;
 		panelHand.add(btnUndo, gbc_btnUndo);
 
+	}
+	
+	/*========================
+	 * omvormers
+	 * =======================
+	 * */
+	
+	public void handleChat(String message) {
+		String channel = "global";
+		if(message.charAt(0) != '@') {
+			message = channel + " " + message;
+		}
+		this.callback.sendChat(message);
+	}
+	
+	public void handleMove(List<Move> moveSet) {
+		
+		for(Move m : moveSet) {
+			m.getPoint().setX(m.getPoint().getX() - 144);
+			m.getPoint().setY(m.getPoint().getY() - 144);
+		}
+		
+		this.callback.putMove(moveSet);
+	}
+	
+	public void handleTrade(List<Tile> tiles) {
+		this.callback.putTrade(tiles);
 	}
 }
