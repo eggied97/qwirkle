@@ -32,7 +32,20 @@ public class ProtocolControl {
 	
 	public boolean handleMove(List<Move> moveSet) {
 		if(gui.getPlayer().equals(game.getTurnPlayer())) {
+			for(Move m : moveSet) {
+				m.getPoint().setX(m.getPoint().getX() - 144);
+				m.getPoint().setY(m.getPoint().getY() - 144);
+			}
 			client.sendMessage(protocol.getInstance().clientPutMove(moveSet));
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean handleTrade(List<Tile> tiles) {
+		if(gui.getPlayer().equals(game.getTurnPlayer())) {
+			client.sendMessage(protocol.getInstance().clientTradeMove(tiles));
 			return true;
 		} else {
 			return false;

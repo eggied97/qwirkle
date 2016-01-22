@@ -36,7 +36,7 @@ public class GUIView implements UserInterface {
 
 	private Player play;
 
-	GraphicalCallback callback = null;
+	//GraphicalCallback callback = null;
 
 	
 	public GUIView() {
@@ -54,9 +54,9 @@ public class GUIView implements UserInterface {
 		return play;
 	}
 	
-	public void setCallback(GraphicalCallback gc){
-		this.callback = gc;
-	}
+	//public void setCallback(GraphicalCallback gc){
+	//	this.callback = gc;
+	//}
 	
 	public MainFrame getFrame() {
 		return mFrame;

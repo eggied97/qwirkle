@@ -69,24 +69,29 @@ public class MainFrame extends JFrame {
 		this.tiles = tiles;
 	}
 	
+	
+	
 	public void undoMoves() {
-		List<JButton> but = new ArrayList<>();
 		for(Move m : moveSet) {
 			for(Entry<JButton, Point> e : butCord.entrySet()) {
 				if(e.getValue().equals(m.getPoint())) {
-					but.add(e.getKey());
+					e.getKey().setIcon(null);
 				}
 			}
 		}
-		for(JButton b: but) {
-			butCord.remove(b);
-			buttons.remove(b);
+		buttons.removeAll();
+		butCord.clear();
+		moveSet.clear();
+		for(JButton b : butInf.keySet()) {
+			buttons.add(b, butInf.get(b));
+			butCord.put(b, new Point(butInf.get(b).gridx, butInf.get(b).gridy));
 		}
-		Map<JButton, Point> bCord = new HashMap<>(butCord);
-		
-		this.revalidate();
+		for(JToggleButton b : handTiles) {
+			b.setEnabled(true);
+			b.setSelected(false);
+		}
 		this.repaint();
-		
+		this.revalidate();
 	}
 	
 	public void setControl(ProtocolControl p) {
@@ -455,6 +460,26 @@ public class MainFrame extends JFrame {
 		panelHand.add(messageLabel, gbc_messageLabel);
 
 		JButton btnTrade = new JButton("Trade");
+		btnTrade.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				List<Tile> toTrade = new ArrayList<>();
+				Map<JToggleButton, Integer> trade = new HashMap<>();
+				for(JToggleButton b : handTiles) {
+					if(b.isSelected()) {
+						trade.put(b, handTiles.indexOf(b));
+					}
+				}
+				if(trade.isEmpty()) {
+				} else {
+					for(JToggleButton b : trade.keySet()) {
+						toTrade.add(tiles.get(trade.get(b)));
+					}
+				}
+				if(!control.handleTrade(toTrade)) {
+					setMessageLabel("Not your turn!");
+				}
+			}
+		});
 		GridBagConstraints gbc_btnTrade = new GridBagConstraints();
 		gbc_btnTrade.gridx = 0;
 		gbc_btnTrade.gridy = 2;
