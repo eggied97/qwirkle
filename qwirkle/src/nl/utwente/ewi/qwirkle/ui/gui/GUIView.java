@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 
@@ -195,9 +196,7 @@ public class GUIView implements UserInterface {
 		return null;
 	}
 	
-	public void setScore(int[] score) {
-		
-	}
+
 	
 	public void setChat(String message, Style s) {
 		mFrame.setTextArea(message, s);
@@ -226,7 +225,12 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void showScore(Map<Player, Integer> scoreMap) {
-		// TODO Auto-generated method stub
+		String result = "";
+		TreeMap<Player, Integer> score = new TreeMap<>();
+		score.putAll(scoreMap);
+		for(Entry<Player, Integer> e : score.entrySet()) {
+			result += (e.getKey().getName() + " - " + e.getValue());
+		}
 		
 	}
 
