@@ -41,10 +41,6 @@ public class TUIView implements UserInterface, UserInputCallback {
 		UIT = new UserInputThread(this);
 		UIT.start();
 	}
-	
-	public void setInputCallback(UserInterfaceCallback callback){
-		this.callback = callback;
-	}
 
 	@Override
 	public void askForLogin() {

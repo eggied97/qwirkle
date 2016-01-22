@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JToggleButton;
 import javax.swing.text.Style;
 
+import nl.utwente.ewi.qwirkle.callback.UserInterfaceCallback;
 import nl.utwente.ewi.qwirkle.client.Game;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
@@ -30,93 +31,40 @@ import nl.utwente.ewi.qwirkle.ui.gui.panels.MainFrame;
 
 
 public class GUIView implements UserInterface {
-	ConnectPanel connectPanelFrame;
-	MainFrame mFrame;
+	private ConnectPanel connectPanelFrame;
+	private MainFrame mFrame;
 	private imageGetter img;
 
 	private Player play;
 
-	//GraphicalCallback callback = null;
-
+	private UserInterfaceCallback callback;
 	
-	public GUIView() {
+	public GUIView(UserInterfaceCallback callback) { //var needed in callback, because our frame needs it :/
 		img = new imageGetter();
 		
-		connectPanelFrame = new ConnectPanel();
+		this.callback = callback;
+		
+		connectPanelFrame = new ConnectPanel(this.callback);
 		connectPanelFrame.setVisible(true);
 		
-		mFrame = new MainFrame();
+		mFrame = new MainFrame(this.callback);
 		mFrame.setVisible(false);
-		
 	}
 	
 	public Player getPlayer() {
 		return play;
 	}
 	
-	//public void setCallback(GraphicalCallback gc){
-	//	this.callback = gc;
-	//}
 	
 	public MainFrame getFrame() {
 		return mFrame;
 	}
-
+	
 	@Override
-	public Player login() {
-		while(!connectPanelFrame.isNameSet()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		String name = connectPanelFrame.getName();
-		
-		connectPanelFrame.setNameSet(false); //reset name for when it is invalid (otherwise you get into a infinte loop)
-		
-		System.out.println(name);
-		if(name.equals("COMPUTERMAN")){
-			play = new ComputerPlayer("pcman" + (int)(Math.random() * 4));
-			return play;
-		}else if(name.equals("COMPUTERMANSLIM")){
-			play =  new ComputerPlayer("pcmanslim" + (int)(Math.random() * 4), new SuperStrategy());
-			return play;
-		}
-		play = new HumanPlayer(name);
-		return play;
+	public void setCallback(UserInterfaceCallback callback) {
+		this.callback = callback;
 	}
-
-	@Override
-	public int[] queueWithHowManyPlayers() {
-		while(!connectPanelFrame.isQueueSet()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		List<Boolean> queues = connectPanelFrame.getQueues();
-		int j = 0;
-		for(int i = 0; i < queues.size(); i++) {
-			if(queues.get(i)) {
-				j++;
-			}
-		}
-		
-		int[] enteredQueues = new int[j];
-		j = 0;
-		
-		for(int i = 0; i < queues.size(); i++) {
-			if(queues.get(i)) {
-				enteredQueues[j] = i+2;
-				j++;
-			}
-		}
-		return enteredQueues;
-	}
-
+	
 	public void changeFrame() {
 		if(connectPanelFrame.isVisible()) {
 			connectPanelFrame.setVisible(false);
@@ -129,14 +77,12 @@ public class GUIView implements UserInterface {
 	
 	@Override
 	public void changeTurn(Player p) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 	@Override
 	public void playerTraded(Player p, int noOfTilesTraded) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 	@Override
@@ -147,8 +93,7 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void printMessage(String message) {
-		mFrame.setMessageLabel(message);
-		
+		mFrame.setMessageLabel(message);		
 	}
 
 	public void showScore(List<Player> players) {
@@ -160,11 +105,9 @@ public class GUIView implements UserInterface {
 		for(Map.Entry<Integer, String> e : scores.entrySet()) {
 			result += e.getValue();
 			result += "\n";
-		}
-		
-		
-		
+		}		
 	}
+	
 
 	@Override
 	public void showHand(List<Tile> tiles) {
@@ -181,32 +124,6 @@ public class GUIView implements UserInterface {
 		}
 		
 	}
-
-	@Override
-	public String askForPlayOrExchange() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String askForMove() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String askForTrade() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String askForChatMessage() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-
 	
 	public void setChat(String message, Style s) {
 		mFrame.setTextArea(message, s);
@@ -219,7 +136,8 @@ public class GUIView implements UserInterface {
 		
 	}
 	
-	public static void main(String[] args) {
+	//TODO remove below?
+	/*public static void main(String[] args) {
 		GUIView gui = new GUIView();
 		List<Tile> tiles = new ArrayList<>();
 		tiles.add(new Tile(2));
@@ -229,7 +147,7 @@ public class GUIView implements UserInterface {
 		tiles.add(new Tile(3));
 		tiles.add(new Tile(6));
 		gui.showHand(tiles);
-	}
+	}*/
 
 
 
@@ -244,5 +162,36 @@ public class GUIView implements UserInterface {
 		
 	}
 
+	@Override
+	public void askForLogin() {
+		connectPanelFrame.resetName();
+	}
 
+	@Override
+	public void askQueueWithHowManyPlayers() {
+		connectPanelFrame.resetQueue();
+	}
+
+	@Override
+	public void askForPlayOrExchange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void askForMove() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void askForTrade() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void askForChatMessage() {
+		// TODO Auto-generated method stub		
+	}
 }

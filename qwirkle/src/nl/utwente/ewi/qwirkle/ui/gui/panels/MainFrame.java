@@ -15,6 +15,7 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import nl.utwente.ewi.qwirkle.callback.UserInterfaceCallback;
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
@@ -64,6 +65,8 @@ public class MainFrame extends JFrame {
 	private imageGetter imgGet;
 	private List<Move> moveSet;
 	private Map<JButton, GridBagConstraints> butInf;
+	
+	private UserInterfaceCallback callback;
 
 	public void setTiles(List<Tile> tiles) {
 		this.tiles = tiles;
@@ -209,7 +212,7 @@ public class MainFrame extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -220,18 +223,20 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame() {
+	public MainFrame(UserInterfaceCallback callback) {
 		butInf = new HashMap<>();
 		moveSet = new ArrayList<>();
 		tiles = new ArrayList<>();
 		imgGet = new imageGetter();
 		butCord = new HashMap<>();
 		handTiles = new ArrayList<>();
+		
+		this.callback = callback;
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1000, 800);

@@ -44,11 +44,9 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	// In the start
 	public Main(String[] args) {
 		this.usingFeatures = new ArrayList<>();
-		this.UI = new TUIView();
-
-		if(this.UI instanceof TUIView){
-			((TUIView) this.UI).setInputCallback(this);
-		}
+		this.UI = new GUIView(this);
+		
+		this.UI.setCallback(this);
 		
 		this.prot = protocol.getInstance();
 		setupConnectionToServer(args);
@@ -65,9 +63,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		this.server.setCallback(this);
 		this.UI = ui;
 		
-		if(this.UI instanceof TUIView){
-			((TUIView) this.UI).setInputCallback(this);
-		}
+		this.UI.setCallback(this);
 
 		prot = protocol.getInstance();
 		enterQueue();
