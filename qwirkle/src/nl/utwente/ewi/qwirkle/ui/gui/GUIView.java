@@ -33,12 +33,11 @@ public class GUIView implements UserInterface {
 	ConnectPanel connectPanelFrame;
 	MainFrame mFrame;
 	private imageGetter img;
-<<<<<<< HEAD
+
 	private Player play;
-=======
 
 	GraphicalCallback callback = null;
->>>>>>> refs/remotes/origin/master
+
 	
 	public GUIView() {
 		img = new imageGetter();
@@ -51,13 +50,12 @@ public class GUIView implements UserInterface {
 		
 	}
 	
-<<<<<<< HEAD
 	public Player getPlayer() {
 		return play;
-=======
+	}
+	
 	public void setCallback(GraphicalCallback gc){
 		this.callback = gc;
->>>>>>> refs/remotes/origin/master
 	}
 	
 	public MainFrame getFrame() {
