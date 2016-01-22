@@ -33,6 +33,7 @@ public class GUIView implements UserInterface {
 	ConnectPanel frame;
 	MainFrame mFrame;
 	private imageGetter img;
+	private Player play;
 	
 	public GUIView() {
 		img = new imageGetter();
@@ -43,6 +44,10 @@ public class GUIView implements UserInterface {
 		mFrame = new MainFrame();
 		mFrame.setVisible(false);
 		
+	}
+	
+	public Player getPlayer() {
+		return play;
 	}
 	
 	public MainFrame getFrame() {
@@ -64,12 +69,14 @@ public class GUIView implements UserInterface {
 		
 		System.out.println(name);
 		if(name.equals("COMPUTERMAN")){
-			return new ComputerPlayer("pcman" + (int)(Math.random() * 4));
+			play = new ComputerPlayer("pcman" + (int)(Math.random() * 4));
+			return play;
 		}else if(name.equals("COMPUTERMANSLIM")){
-			return new ComputerPlayer("pcmanslim" + (int)(Math.random() * 4), new SuperStrategy());
+			play =  new ComputerPlayer("pcmanslim" + (int)(Math.random() * 4), new SuperStrategy());
+			return play;
 		}
-		
-		return new HumanPlayer(name);
+		play = new HumanPlayer(name);
+		return play;
 	}
 
 	@Override
@@ -157,6 +164,7 @@ public class GUIView implements UserInterface {
 		for(Tile t : tiles) {
 			tileImg.add(img.getImageByTile(t));
 		}
+		mFrame.setTiles(tiles);
 		List<JToggleButton> buttons =  mFrame.getHandTiles();
 		int i = 0;
 		for(JToggleButton b : buttons) {
