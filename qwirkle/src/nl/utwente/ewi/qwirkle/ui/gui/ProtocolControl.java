@@ -30,6 +30,7 @@ public class ProtocolControl {
 		client.sendMessage(protocol.getInstance().clientChat(channel, message));
 	}
 	
+<<<<<<< HEAD
 	public boolean handleMove(List<Move> moveSet) {
 		if(gui.getPlayer().equals(game.getTurnPlayer())) {
 			client.sendMessage(protocol.getInstance().clientPutMove(moveSet));
@@ -39,4 +40,7 @@ public class ProtocolControl {
 		}
 	}
 
+=======
+ 
+>>>>>>> refs/remotes/origin/master
 }
