@@ -87,12 +87,11 @@ public class MainFrame extends JFrame {
 		return scoreboard;
 	}
 
-	public void setScoreboard(JLabel scoreboard) {
-		this.scoreboard = scoreboard;
+	public void setScoreboard(String score) {
+		scoreboard.setText(score);
 	}
 
 	public void addButton(JButton but) {
-		System.out.println("1");
 		Point p = butCord.get(but);
 		int x = p.getX();
 		int y = p.getY();
@@ -133,10 +132,9 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void addButton(Point p) {
-		System.out.println("2");
 		int x = p.getX() - 144;
 		int y = p.getY() - 144;
-		JButton but = new JButton("(" + x + "," + y + ")");
+		JButton but = new JButton();
 		but.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -155,9 +153,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 		but.setPreferredSize(new Dimension(50,50));
-		System.out.println("3");
 		GridBagConstraints gbc_but = new GridBagConstraints();
-		System.out.println(p.getX() + " " + p.getY());
 		gbc_but.gridx = p.getX();
 		gbc_but.gridy = p.getY();
 		buttons.add(but, gbc_but);
@@ -214,7 +210,7 @@ public class MainFrame extends JFrame {
 		GridBagLayout gbl_buttons = new GridBagLayout();
 		buttons.setLayout(gbl_buttons);
 		
-		JButton start = (new JButton("(0,0)"));
+		JButton start = (new JButton());
 		start.setPreferredSize(new Dimension(50,50));
 		GridBagConstraints gbc_start = new GridBagConstraints();
 		gbc_start.gridx = 144;
