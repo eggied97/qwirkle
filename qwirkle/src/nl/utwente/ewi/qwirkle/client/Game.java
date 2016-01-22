@@ -28,7 +28,6 @@ import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.protocol;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
-import nl.utwente.ewi.qwirkle.ui.gui.ProtocolControl;
 import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
 public class Game implements ResultCallback, UserInterfaceCallback {
@@ -40,7 +39,6 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	private List<IProtocol.Feature> usingFeatures;
 	boolean nextDrawNeedToRemoveTiles = false;
 	private List<Tile> tilesThatNeedToBeRemoved;
-	private ProtocolControl control;
 	private Player turnPlayer;
 
 	Map<IProtocol.Feature, Boolean> featuresEnabled;
@@ -68,10 +66,8 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		this.players = players;
 		this.UI = UI;
 		this.c = c;
-
 		
 		if (UI instanceof GUIView) {
-			control = new ProtocolControl(UI, this);
 			((GUIView) UI).changeFrame();
 		} else {
 			this.UI.askForPlayOrExchange();
