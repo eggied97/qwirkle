@@ -228,6 +228,9 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	@Override
 	public void login(Player p) {
 		me = p;
+		if(this.UI instanceof GUIView) {
+			((GUIView) this.UI).setPlayer(p);
+		}
 		sendMessageToServer(prot.clientGetConnectString(me.getName(), implementedFeatures));
 	}
 

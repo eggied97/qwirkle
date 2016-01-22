@@ -130,17 +130,22 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void addButton(List<Move> moves) {
+		List<JButton> newBut = new ArrayList<>();
 		for(Move m : moves) {
 			JButton but = new JButton();
 			but.setPreferredSize(new Dimension(50,50));
-			but.setIcon(new ImageIcon(imgGet.getImageByTile(m.getTile())));
 			GridBagConstraints gbc_but = new GridBagConstraints();
 			gbc_but.gridx = m.getPoint().getX() + 144;
 			gbc_but.gridy = m.getPoint().getY() + 144;
 			buttons.add(but, gbc_but);
 			Point p = new Point(m.getPoint().getX() + 144, m.getPoint().getY() + 144);
 			butCord.put(but, p);
+			but.setIcon(new ImageIcon(imgGet.getImageByTile(m.getTile())));
+			newBut.add(but);
 			this.revalidate();
+		}
+		for(JButton b : newBut) {
+			addButton(b);
 		}
 	}
 

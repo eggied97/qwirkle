@@ -57,6 +57,9 @@ public class GUIView implements UserInterface {
 		return play;
 	}
 	
+	public void setPlayer(Player p) {
+		this.play = p;
+	}
 	
 	public MainFrame getFrame() {
 		return mFrame;
@@ -135,12 +138,16 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void showScore(Map<Player, Integer> scoreMap) {
-		String result = "";
-		TreeMap<Player, Integer> score = new TreeMap<>();
-		score.putAll(scoreMap);
-		for(Entry<Player, Integer> e : score.entrySet()) {
-			result += (e.getKey().getName() + " - " + e.getValue());
+		StringBuilder result = new StringBuilder();
+		result.append("SCORE" + "\n");
+		TreeMap<Integer, Player> score = new TreeMap<>();
+		for(Entry<Player, Integer> e : scoreMap.entrySet()) {
+			score.put(e.getValue(), e.getKey());
 		}
+		for(Entry<Integer, Player> e : score.entrySet()) {
+			result.append(e.getValue().getName() + " - " + e.getValue() + "\n");
+		}
+		mFrame.setScoreboard(result.toString());
 		
 	}
 	
