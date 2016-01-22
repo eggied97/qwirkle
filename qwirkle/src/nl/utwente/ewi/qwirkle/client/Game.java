@@ -87,6 +87,10 @@ public class Game implements ResultCallback {
 		this.usingFeatures = serverFeatures;
 	}
 
+	public Player getTurnPlayer() {
+		return turnPlayer;
+	}
+	
 	public Client getClient() {
 		return this.c;
 	}

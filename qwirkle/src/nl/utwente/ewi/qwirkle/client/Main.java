@@ -41,7 +41,7 @@ public class Main implements ResultCallback {
 	// In the start
 	public Main(String[] args) {
 		usingFeatures = new ArrayList<>();
-		UI = new TUIView();
+		UI = new GUIView();
 
 		prot = protocol.getInstance();
 		setupConnectionToServer(args);

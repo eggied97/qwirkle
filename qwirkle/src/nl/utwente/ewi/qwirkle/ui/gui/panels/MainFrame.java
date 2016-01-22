@@ -15,7 +15,11 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import nl.utwente.ewi.qwirkle.model.Board;
+import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
+import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.ui.imageGetter;
 import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
 import nl.utwente.ewi.qwirkle.ui.gui.ProtocolControl;
 
@@ -25,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -34,6 +39,8 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import java.awt.FlowLayout;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -49,11 +56,44 @@ public class MainFrame extends JFrame {
 	private JLabel scoreboard;
 	private JLabel messageLabel;
 	private List<JToggleButton> handTiles;
+	private List<Tile> tiles;
 	private Map<JButton, Point> butCord;
 	private JPanel buttons;
 	private ProtocolControl control;
 	private StyledDocument doc;
+	private imageGetter imgGet;
+	private List<Move> moveSet;
+	private Map<JButton, GridBagConstraints> butInf;
 
+	public void setTiles(List<Tile> tiles) {
+		this.tiles = tiles;
+	}
+	
+	
+	
+	public void undoMoves() {
+		for(Move m : moveSet) {
+			for(Entry<JButton, Point> e : butCord.entrySet()) {
+				if(e.getValue().equals(m.getPoint())) {
+					e.getKey().setIcon(null);
+				}
+			}
+		}
+		buttons.removeAll();
+		butCord.clear();
+		moveSet.clear();
+		for(JButton b : butInf.keySet()) {
+			buttons.add(b, butInf.get(b));
+			butCord.put(b, new Point(butInf.get(b).gridx, butInf.get(b).gridy));
+		}
+		for(JToggleButton b : handTiles) {
+			b.setEnabled(true);
+			b.setSelected(false);
+		}
+		this.repaint();
+		this.revalidate();
+	}
+	
 	public void setControl(ProtocolControl p) {
 		this.control = p;
 	}
@@ -138,16 +178,21 @@ public class MainFrame extends JFrame {
 		but.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<JToggleButton> tiles = new ArrayList<>();
+				List<JToggleButton> tils = new ArrayList<>();
 				for(JToggleButton b : handTiles) {
 					if(b.isSelected()) {
-						tiles.add(b);
+						tils.add(b);
 					}
 				}
-				if(tiles.size() != 1) {
+				if(tils.size() != 1) {
 					// do nothing
 				} else {
-					addButton((JButton)e.getSource());
+					JButton source = (JButton)e.getSource();
+					tils.get(0).setSelected(false);
+					tils.get(0).setEnabled(false);
+					source.setIcon(new ImageIcon(imgGet.getImageByTile(tiles.get(handTiles.indexOf(tils.get(0))))));
+					moveSet.add(new Move(butCord.get(source), tiles.get(handTiles.indexOf(tils.get(0)))));
+					addButton(source);
 				}
 				
 			}
@@ -158,7 +203,6 @@ public class MainFrame extends JFrame {
 		gbc_but.gridy = p.getY();
 		buttons.add(but, gbc_but);
 		butCord.put(but, p);
-		this.repaint();
 		this.revalidate();
 	}
 
@@ -182,6 +226,10 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
+		butInf = new HashMap<>();
+		moveSet = new ArrayList<>();
+		tiles = new ArrayList<>();
+		imgGet = new imageGetter();
 		butCord = new HashMap<>();
 		handTiles = new ArrayList<>();
 
@@ -217,18 +265,24 @@ public class MainFrame extends JFrame {
 		gbc_start.gridy = 144;
 		butCord.put(start, new Point(gbc_start.gridx, gbc_start.gridy));
 		buttons.add(start, gbc_start);
+		butInf.put(start, gbc_start);
 		start.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<JToggleButton> tiles = new ArrayList<>();
+				List<JToggleButton> tils = new ArrayList<>();
 				for(JToggleButton b : handTiles) {
 					if(b.isSelected()) {
-						tiles.add(b);
+						tils.add(b);
 					}
 				}
-				if(tiles.size() != 1) {
+				if(tils.size() != 1) {
 					// do nothing
 				} else {
+					JButton source = (JButton)e.getSource();
+					tils.get(0).setSelected(false);
+					tils.get(0).setEnabled(false);					
+					source.setIcon(new ImageIcon(imgGet.getImageByTile(tiles.get(handTiles.indexOf(tils.get(0))))));
+					moveSet.add(new Move(butCord.get(source), tiles.get(handTiles.indexOf(tils.get(0)))));
 					addButton((JButton)e.getSource());
 				}
 			}
@@ -334,7 +388,7 @@ public class MainFrame extends JFrame {
 
 		GridBagLayout gbl_panelHand = new GridBagLayout();
 		gbl_panelHand.columnWidths = new int[] { 100, 100 };
-		gbl_panelHand.rowHeights = new int[] { 475, 75, 50 };
+		gbl_panelHand.rowHeights = new int[] { 400, 75, 40, 40 };
 		gbl_panelHand.columnWeights = new double[] { 0.0, 0.0 };
 		gbl_panelHand.rowWeights = new double[] { 0.0, 0.0, 0.0 };
 		panelHand.setLayout(gbl_panelHand);
@@ -350,44 +404,44 @@ public class MainFrame extends JFrame {
 
 		JToggleButton btnTile1 = new JToggleButton("");
 		btnTile1.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile1.setMinimumSize(new Dimension(75, 75));
-		btnTile1.setPreferredSize(new Dimension(75, 75));
-		btnTile1.setMaximumSize(new Dimension(75, 75));
+		btnTile1.setMinimumSize(new Dimension(60, 60));
+		btnTile1.setPreferredSize(new Dimension(60, 60));
+		btnTile1.setMaximumSize(new Dimension(60, 60));
 		panelTiles.add(btnTile1);
 
 		JToggleButton btnTile2 = new JToggleButton("");
 		btnTile2.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile2.setMinimumSize(new Dimension(75, 75));
-		btnTile2.setPreferredSize(new Dimension(75, 75));
-		btnTile2.setMaximumSize(new Dimension(75, 75));
+		btnTile2.setMinimumSize(new Dimension(60, 60));
+		btnTile2.setPreferredSize(new Dimension(60, 60));
+		btnTile2.setMaximumSize(new Dimension(60, 60));
 		panelTiles.add(btnTile2);
 
 		JToggleButton btnTile3 = new JToggleButton("");
 		btnTile3.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile3.setMinimumSize(new Dimension(75, 75));
-		btnTile3.setPreferredSize(new Dimension(75, 75));
-		btnTile3.setMaximumSize(new Dimension(75, 75));
+		btnTile3.setMinimumSize(new Dimension(60, 60));
+		btnTile3.setPreferredSize(new Dimension(60, 60));
+		btnTile3.setMaximumSize(new Dimension(60, 60));
 		panelTiles.add(btnTile3);
 
 		JToggleButton btnTile4 = new JToggleButton("");
 		btnTile4.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile4.setMinimumSize(new Dimension(75, 75));
-		btnTile4.setPreferredSize(new Dimension(75, 75));
-		btnTile4.setMaximumSize(new Dimension(75, 75));
+		btnTile4.setMinimumSize(new Dimension(60, 60));
+		btnTile4.setPreferredSize(new Dimension(60, 60));
+		btnTile4.setMaximumSize(new Dimension(60, 60));
 		panelTiles.add(btnTile4);
 
 		JToggleButton btnTile5 = new JToggleButton("");
 		btnTile5.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile5.setMinimumSize(new Dimension(75, 75));
-		btnTile5.setPreferredSize(new Dimension(75, 75));
-		btnTile5.setMaximumSize(new Dimension(75, 75));
+		btnTile5.setMinimumSize(new Dimension(60, 60));
+		btnTile5.setPreferredSize(new Dimension(60, 60));
+		btnTile5.setMaximumSize(new Dimension(60, 60));
 		panelTiles.add(btnTile5);
 
 		JToggleButton btnTile6 = new JToggleButton("");
 		btnTile6.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile6.setMinimumSize(new Dimension(75, 75));
-		btnTile6.setPreferredSize(new Dimension(75, 75));
-		btnTile6.setMaximumSize(new Dimension(75, 75));
+		btnTile6.setMinimumSize(new Dimension(60, 60));
+		btnTile6.setPreferredSize(new Dimension(60, 60));
+		btnTile6.setMaximumSize(new Dimension(60, 60));
 		panelTiles.add(btnTile6);
 
 		handTiles.add(btnTile1);
@@ -406,6 +460,26 @@ public class MainFrame extends JFrame {
 		panelHand.add(messageLabel, gbc_messageLabel);
 
 		JButton btnTrade = new JButton("Trade");
+		btnTrade.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				List<Tile> toTrade = new ArrayList<>();
+				Map<JToggleButton, Integer> trade = new HashMap<>();
+				for(JToggleButton b : handTiles) {
+					if(b.isSelected()) {
+						trade.put(b, handTiles.indexOf(b));
+					}
+				}
+				if(trade.isEmpty()) {
+				} else {
+					for(JToggleButton b : trade.keySet()) {
+						toTrade.add(tiles.get(trade.get(b)));
+					}
+				}
+				if(!control.handleTrade(toTrade)) {
+					setMessageLabel("Not your turn!");
+				}
+			}
+		});
 		GridBagConstraints gbc_btnTrade = new GridBagConstraints();
 		gbc_btnTrade.gridx = 0;
 		gbc_btnTrade.gridy = 2;
@@ -413,11 +487,42 @@ public class MainFrame extends JFrame {
 		panelHand.add(btnTrade, gbc_btnTrade);
 
 		JButton btnMove = new JButton("Move");
+		btnMove.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(!control.handleMove(moveSet)) {
+					setMessageLabel("Not your turn!");
+					undoMoves();
+				}
+			}
+		});
 		GridBagConstraints gbc_btnMove = new GridBagConstraints();
 		gbc_btnMove.gridx = 1;
 		gbc_btnMove.gridy = 2;
 		gbc_btnMove.anchor = GridBagConstraints.NORTH;
 		panelHand.add(btnMove, gbc_btnMove);
+		
+		JButton btnHelp = new JButton("Hint");
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		GridBagConstraints gbc_btnHelp = new GridBagConstraints();
+		gbc_btnHelp.gridx = 0;
+		gbc_btnHelp.gridy = 3;
+		gbc_btnHelp.anchor = GridBagConstraints.NORTH;
+		panelHand.add(btnHelp, gbc_btnHelp);
+		
+		JButton btnUndo = new JButton("Undo");
+		btnUndo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				undoMoves();
+			}
+		});
+		GridBagConstraints gbc_btnUndo = new GridBagConstraints();
+		gbc_btnUndo.gridx = 1;
+		gbc_btnUndo.gridy = 3;
+		gbc_btnUndo.anchor = GridBagConstraints.NORTH;
+		panelHand.add(btnUndo, gbc_btnUndo);
 
 	}
 }
