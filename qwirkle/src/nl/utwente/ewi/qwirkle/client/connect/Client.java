@@ -43,7 +43,9 @@ public class Client extends Thread {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			//server closed
+			System.out.println("Server disconnected");
+			System.exit(0);
 		}
 	}
 

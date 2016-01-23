@@ -87,6 +87,8 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void undoMoves() {
+		System.out.println("undo");
+		
 		for(Move m : moveSet) {
 			for(Entry<JButton, Point> e : butCord.entrySet()) {
 				if(e.getValue().equals(m.getPoint())) {
