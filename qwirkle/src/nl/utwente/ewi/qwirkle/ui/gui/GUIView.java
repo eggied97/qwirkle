@@ -65,7 +65,9 @@ public class GUIView implements UserInterface {
 		return mFrame;
 	}
 	
-	
+	public void setUICallback(UserInterfaceCallback callback) {
+		this.getFrame().setCallback(callback);
+	}
 
 	public void changeFrame() {
 		if(connectPanelFrame.isVisible()) {

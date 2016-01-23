@@ -71,7 +71,9 @@ public class MainFrame extends JFrame {
 		this.tiles = tiles;
 	}
 	
-	
+	public void setCallback(UserInterfaceCallback callback) {
+		this.callback = callback;
+	}
 	
 	public void undoMoves() {
 		for(Move m : moveSet) {
@@ -506,7 +508,6 @@ public class MainFrame extends JFrame {
 		JButton btnMove = new JButton("Move");
 		btnMove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				handleMove(moveSet);
 				
 				if(false) { //TODO iets om hier te  checken (of andere functie)
@@ -560,7 +561,6 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void handleMove(List<Move> moveSet) {
-		
 		for(Move m : moveSet) {
 			m.getPoint().setX(m.getPoint().getX() - 144);
 			m.getPoint().setY(m.getPoint().getY() - 144);

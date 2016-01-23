@@ -69,6 +69,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		
 		if (UI instanceof GUIView) {
 			((GUIView) UI).changeFrame();
+			((GUIView) UI).setCallback(this);
 		} else {
 			this.UI.askForPlayOrExchange();
 		}
