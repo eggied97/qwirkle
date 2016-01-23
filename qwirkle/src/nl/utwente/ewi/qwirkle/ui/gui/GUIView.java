@@ -204,6 +204,7 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void showError(String message) {
-		// TODO Auto-generated method stub		
+		mFrame.setMessageLabel(message);
+		mFrame.emptyMoveSet();
 	}
 }

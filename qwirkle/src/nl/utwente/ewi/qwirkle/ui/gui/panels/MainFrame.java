@@ -68,6 +68,10 @@ public class MainFrame extends JFrame {
 	
 	private UserInterfaceCallback callback;
 	
+	public void emptyMoveSet() {
+		this.moveSet.clear();
+	}
+	
 	public boolean hasTurn() {
 		return this.turn;
 	}
