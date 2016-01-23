@@ -53,17 +53,25 @@ import java.awt.CardLayout;
 public class MainFrame extends JFrame {
 
 	private JPanel contentPane;
+	private JPanel buttons;
+	
 	private JTextPane textArea;
+	
 	private JLabel scoreboard;
 	private JLabel messageLabel;
+	
 	private List<JToggleButton> handTiles;
 	private List<Tile> tiles;
-	private Map<JButton, Point> butCord;
-	private JPanel buttons;
+
+	private List<Move> moveSet;//temp for the moves made
+	
 	private StyledDocument doc;
+	
 	private imageGetter imgGet;
-	private List<Move> moveSet;
+	
 	private Map<JButton, GridBagConstraints> butInf;
+	private Map<JButton, Point> butCord;
+	
 	private boolean turn = false;
 	
 	private UserInterfaceCallback callback;
@@ -99,6 +107,7 @@ public class MainFrame extends JFrame {
 		buttons.removeAll();
 		butCord.clear();
 		moveSet.clear();
+		
 		for(JButton b : butInf.keySet()) {
 			buttons.add(b, butInf.get(b));
 			butCord.put(b, new Point(butInf.get(b).gridx, butInf.get(b).gridy));
@@ -108,8 +117,9 @@ public class MainFrame extends JFrame {
 			b.setEnabled(true);
 			b.setSelected(false);
 		}
-		this.repaint();
+		
 		this.revalidate();
+		this.repaint();
 	}
 	
 	public JLabel getMessageLabel() {
@@ -175,16 +185,20 @@ public class MainFrame extends JFrame {
 		}
 		
 
+		this.repaint();
+		this.revalidate();
 	}
 
 	public void addButton(JButton but) {
 		Point p = butCord.get(but);
 		int x = p.getX();
 		int y = p.getY();
+		
 		Point left = new Point(x + 1, y);
 		Point right = new Point(x - 1, y);
 		Point up = new Point(x, y - 1);
 		Point down = new Point(x, y + 1);
+		
 		boolean lft = true;
 		boolean rght= true;
 		boolean Up = true;
@@ -249,6 +263,7 @@ public class MainFrame extends JFrame {
 		butInf.put(but, gbc_but);
 		butCord.put(but, p);
 		
+
 		this.repaint();
 		this.revalidate();
 	}

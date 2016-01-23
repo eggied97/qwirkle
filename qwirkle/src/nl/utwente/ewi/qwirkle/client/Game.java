@@ -239,6 +239,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	}
 	
 	private void handleProblemWithMove(){
+		
 		if(this.UI instanceof GUIView){
 			((GUIView)this.UI).handleProblemWithMove();
 		}
@@ -541,6 +542,19 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 				}
 	
 				break;
+				
+			case "s":
+				Map<Player, Integer> scoreMap = new HashMap<>();
+				
+				for(Player p : players){
+					scoreMap.put(p, p.getScore());
+				}
+				
+				//TODO sort map
+				
+				this.UI.showScore(scoreMap);
+				break;
+				
 			case "c":	
 				this.UI.askForChatMessage();
 	
