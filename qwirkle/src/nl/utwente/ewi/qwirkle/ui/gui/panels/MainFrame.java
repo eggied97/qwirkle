@@ -64,8 +64,13 @@ public class MainFrame extends JFrame {
 	private imageGetter imgGet;
 	private List<Move> moveSet;
 	private Map<JButton, GridBagConstraints> butInf;
+	private boolean turn = false;
 	
 	private UserInterfaceCallback callback;
+	
+	public boolean hasTurn() {
+		return this.turn;
+	}
 
 	public void setTiles(List<Tile> tiles) {
 		this.tiles = tiles;
@@ -90,6 +95,7 @@ public class MainFrame extends JFrame {
 			buttons.add(b, butInf.get(b));
 			butCord.put(b, new Point(butInf.get(b).gridx, butInf.get(b).gridy));
 		}
+		
 		for(JToggleButton b : handTiles) {
 			b.setEnabled(true);
 			b.setSelected(false);
@@ -107,6 +113,9 @@ public class MainFrame extends JFrame {
 	}
 
 	public void setMessageLabel(String message) {
+		if(message.equals("It's your turn now")) {
+			turn = true;
+		}
 		messageLabel.setText(message);
 	}
 
@@ -139,6 +148,7 @@ public class MainFrame extends JFrame {
 			GridBagConstraints gbc_but = new GridBagConstraints();
 			gbc_but.gridx = m.getPoint().getX() + 144;
 			gbc_but.gridy = m.getPoint().getY() + 144;
+			butInf.put(but, gbc_but);
 			buttons.add(but, gbc_but);
 			Point p = new Point(m.getPoint().getX() + 144, m.getPoint().getY() + 144);
 			butCord.put(but, p);
@@ -220,6 +230,7 @@ public class MainFrame extends JFrame {
 		gbc_but.gridx = p.getX();
 		gbc_but.gridy = p.getY();
 		buttons.add(but, gbc_but);
+		butInf.put(but, gbc_but);
 		butCord.put(but, p);
 		this.revalidate();
 	}
@@ -483,20 +494,28 @@ public class MainFrame extends JFrame {
 		JButton btnTrade = new JButton("Trade");
 		btnTrade.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				List<Tile> toTrade = new ArrayList<>();
-				Map<JToggleButton, Integer> trade = new HashMap<>();
-				for(JToggleButton b : handTiles) {
-					if(b.isSelected()) {
-						trade.put(b, handTiles.indexOf(b));
+				if(hasTurn()) {
+					List<Tile> toTrade = new ArrayList<>();
+					Map<JToggleButton, Integer> trade = new HashMap<>();
+					for(JToggleButton b : handTiles) {
+						if(b.isSelected()) {
+							trade.put(b, handTiles.indexOf(b));
+						}
+					}
+					if(!trade.isEmpty()) {				
+						for(JToggleButton b : trade.keySet()) {
+							toTrade.add(tiles.get(trade.get(b)));
+						}
+					}
+					
+					handleTrade(toTrade);		
+				} else {
+					setMessageLabel("Not your turn!");
+					for(JToggleButton b : handTiles) {
+						b.setSelected(false);
 					}
 				}
-				if(!trade.isEmpty()) {				
-					for(JToggleButton b : trade.keySet()) {
-						toTrade.add(tiles.get(trade.get(b)));
-					}
-				}
-				
-				handleTrade(toTrade);				
+						
 			}
 		});
 		GridBagConstraints gbc_btnTrade = new GridBagConstraints();
@@ -508,9 +527,9 @@ public class MainFrame extends JFrame {
 		JButton btnMove = new JButton("Move");
 		btnMove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				handleMove(moveSet);
-				
-				if(false) { //TODO iets om hier te  checken (of andere functie)
+				if(hasTurn()) { 
+					handleMove(moveSet);
+				} else {
 					setMessageLabel("Not your turn!");
 					undoMoves();
 				}

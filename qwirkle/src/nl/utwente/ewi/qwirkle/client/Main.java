@@ -246,7 +246,9 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	public void putMove(String unparsedString) {} //not used
 
 	@Override
-	public void putMove(List<Move> moves) {} //not used
+	public void putMove(List<Move> moves) {
+	} //not used
+	
 
 	@Override
 	public void putTrade(String unparsedString) {} //not used

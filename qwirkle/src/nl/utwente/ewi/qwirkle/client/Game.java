@@ -69,7 +69,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		
 		if (UI instanceof GUIView) {
 			((GUIView) UI).changeFrame();
-			((GUIView) UI).setCallback(this);
+			((GUIView) UI).setUICallback(this);
 		} else {
 			this.UI.askForPlayOrExchange();
 		}
@@ -592,6 +592,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 	@Override
 	public void sendChat(String msg) {
+		
 		String[] msgs = msg.split(" ");
 		
 		if(msgs.length < 2){

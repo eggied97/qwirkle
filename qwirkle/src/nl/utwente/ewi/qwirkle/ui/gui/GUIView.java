@@ -111,6 +111,7 @@ public class GUIView implements UserInterface {
 		for(JToggleButton b : buttons) {
 			b.setIcon(new ImageIcon(tileImg.get(i)));
 			i++;
+			b.setEnabled(true);
 		}
 		
 	}
