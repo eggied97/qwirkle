@@ -78,6 +78,8 @@ public class MainFrame extends JFrame {
 
 	public void setTiles(List<Tile> tiles) {
 		this.tiles = tiles;
+		
+		emptyMoveSet(); //called after a draw tile, so a succesfull movePut
 	}
 	
 	public void setCallback(UserInterfaceCallback callback) {
@@ -146,23 +148,31 @@ public class MainFrame extends JFrame {
 	
 	public void addButton(List<Move> moves) {
 		List<JButton> newBut = new ArrayList<>();
+		
 		for(Move m : moves) {
+			
 			JButton but = new JButton();
 			but.setPreferredSize(new Dimension(50,50));
 			GridBagConstraints gbc_but = new GridBagConstraints();
 			gbc_but.gridx = m.getPoint().getX() + 144;
 			gbc_but.gridy = m.getPoint().getY() + 144;
+			
 			butInf.put(but, gbc_but);
 			buttons.add(but, gbc_but);
+			
 			Point p = new Point(m.getPoint().getX() + 144, m.getPoint().getY() + 144);
 			butCord.put(but, p);
+			
 			but.setIcon(new ImageIcon(imgGet.getImageByTile(m.getTile())));
-			newBut.add(but);
-			this.revalidate();
+			
+			newBut.add(but);			
 		}
+		
 		for(JButton b : newBut) {
 			addButton(b);
 		}
+		
+
 	}
 
 	public void addButton(JButton but) {
@@ -236,6 +246,8 @@ public class MainFrame extends JFrame {
 		buttons.add(but, gbc_but);
 		butInf.put(but, gbc_but);
 		butCord.put(but, p);
+		
+		this.repaint();
 		this.revalidate();
 	}
 

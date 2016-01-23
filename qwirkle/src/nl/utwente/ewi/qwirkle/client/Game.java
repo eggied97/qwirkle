@@ -208,7 +208,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 					switch (IProtocol.Error.valueOf(args[0])) {
 						case MOVE_INVALID:
 							this.UI.showError("The move you made was invalid.");
-							handleTurn(true);
+							handleProblemWithMove();
 							break;
 		
 						case MOVE_TILES_UNOWNED:
@@ -236,6 +236,14 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		} catch (TooFewArgumentsException e) {
 			this.UI.showError("Something went bad with the protocol message : " + e.getMessage());
 		}
+	}
+	
+	private void handleProblemWithMove(){
+		if(this.UI instanceof GUIView){
+			((GUIView)this.UI).handleProblemWithMove();
+		}
+		
+		handleTurn(true);
 	}
 
 	/**
@@ -341,11 +349,14 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 		int score = board.putTile(aMoves);
 		turnPlayer.addScore(score);
+		
 		if(this.UI instanceof GUIView) {
 			Map<Player, Integer> scoreMap = new HashMap<>();
+			
 			for(Player p : players) {
 				scoreMap.put(p, p.getScore());
 			}
+			
 			((GUIView)this.UI).showScore(scoreMap);
 			((GUIView)this.UI).updateBoard(aMoves);
 		}
@@ -440,7 +451,6 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	 *            - the tiles recieved
 	 */
 	private void handleDrawTile(String[] tiles) {
-		System.err.println("drawTile ");
 		for (Player p : players) {
 			if (p instanceof HumanPlayer || p instanceof ComputerPlayer) {
 				p.bagToHand(tiles);

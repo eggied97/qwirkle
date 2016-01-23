@@ -102,10 +102,13 @@ public class GUIView implements UserInterface {
 	@Override
 	public void showHand(List<Tile> tiles) {
 		List<BufferedImage> tileImg = new ArrayList<>();
+		
 		for(Tile t : tiles) {
 			tileImg.add(img.getImageByTile(t));
 		}
+		
 		mFrame.setTiles(tiles);
+		
 		List<JToggleButton> buttons =  mFrame.getHandTiles();
 		int i = 0;
 		for(JToggleButton b : buttons) {
@@ -124,20 +127,9 @@ public class GUIView implements UserInterface {
 		mFrame.addButton(moves);
 	}
 	
-	//TODO remove below?
-	/*public static void main(String[] args) {
-		GUIView gui = new GUIView();
-		List<Tile> tiles = new ArrayList<>();
-		tiles.add(new Tile(2));
-		tiles.add(new Tile(16));
-		tiles.add(new Tile(28));
-		tiles.add(new Tile(24));
-		tiles.add(new Tile(3));
-		tiles.add(new Tile(6));
-		gui.showHand(tiles);
-	}*/
-
-
+	public void handleProblemWithMove(){
+		mFrame.undoMoves();
+	}
 
 	@Override
 	public void showScore(Map<Player, Integer> scoreMap) {

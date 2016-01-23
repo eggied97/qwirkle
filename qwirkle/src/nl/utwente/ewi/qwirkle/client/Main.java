@@ -128,46 +128,46 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		String[] args = Arrays.copyOfRange(results, 1, results.length);
 
 		switch (command) {
-		case IProtocol.SERVER_IDENITFY:
-			handleServerIdentify(args);
-			break;
-
-		case IProtocol.SERVER_GAMESTART:
-			try {
-				handleGameStart(args);
-			} catch (TooManyPlayersException | TooFewPlayersException e) {
-				e.printStackTrace();
-			}
-			break;
-
-		case IProtocol.SERVER_ERROR:
-			if (args.length < 1) {
-				// TODO throw error
-			}
-
-			switch (IProtocol.Error.valueOf(args[0])) {
-			case NAME_USED:
-				UI.showError("Name is already in use, please use another one...");
-				authenticateUser();
+			case IProtocol.SERVER_IDENITFY:
+				handleServerIdentify(args);
 				break;
-
-			case NAME_INVALID:
-				UI.showError("Name is invalid, please use another one...");
-				authenticateUser();
+	
+			case IProtocol.SERVER_GAMESTART:
+				try {
+					handleGameStart(args);
+				} catch (TooManyPlayersException | TooFewPlayersException e) {
+					e.printStackTrace();
+				}
 				break;
-
-			case QUEUE_INVALID:
-				UI.showError("The queue you wanted to enter is invalid, please choose another one...");
-				enterQueue();
+	
+			case IProtocol.SERVER_ERROR:
+				if (args.length < 1) {
+					// TODO throw error
+				}
+	
+				switch (IProtocol.Error.valueOf(args[0])) {
+					case NAME_USED:
+						UI.showError("Name is already in use, please use another one...");
+						authenticateUser();
+						break;
+		
+					case NAME_INVALID:
+						UI.showError("Name is invalid, please use another one...");
+						authenticateUser();
+						break;
+		
+					case QUEUE_INVALID:
+						UI.showError("The queue you wanted to enter is invalid, please choose another one...");
+						enterQueue();
+						break;
+		
+					default:
+						break;
+				}
 				break;
-
+	
 			default:
 				break;
-			}
-			break;
-
-		default:
-			break;
 		}
 	}
 
