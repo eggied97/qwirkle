@@ -28,6 +28,7 @@ import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.imageGetter;
 import nl.utwente.ewi.qwirkle.ui.gui.panels.ConnectPanel;
 import nl.utwente.ewi.qwirkle.ui.gui.panels.MainFrame;
+import nl.utwente.ewi.qwirkle.ui.gui.panels.PortFrame;
 
 
 
@@ -36,6 +37,7 @@ public class GUIView implements UserInterface {
 	private ConnectPanel connectPanelFrame;
 	private MainFrame mFrame;
 	private imageGetter img;
+	private PortFrame servFrame;
 
 	private Player play;
 
@@ -43,11 +45,15 @@ public class GUIView implements UserInterface {
 	
 	public GUIView() { //var needed in callback, because our frame needs it :/
 		img = new imageGetter();
+		
 	}
 	
 	public void setup(UserInterfaceCallback callback) {
+		servFrame = new PortFrame(this.callback);
+		servFrame.setVisible(true);
+		
 		connectPanelFrame = new ConnectPanel(this.callback);
-		connectPanelFrame.setVisible(true);
+		connectPanelFrame.setVisible(false);
 		
 		mFrame = new MainFrame(this.callback);
 		mFrame.setVisible(false);
@@ -153,6 +159,8 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void askForLogin() {
+		servFrame.dispose();
+		connectPanelFrame.setVisible(true);
 		connectPanelFrame.resetName();
 	}
 	
