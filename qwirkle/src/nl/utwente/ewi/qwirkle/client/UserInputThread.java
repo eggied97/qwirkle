@@ -8,7 +8,7 @@ import nl.utwente.ewi.qwirkle.model.enums.InputState;
 public class UserInputThread extends Thread {
 
 	private boolean running = true;
-	private InputState state = InputState.FORLOGIN;
+	private InputState state = InputState.FORSERVERINFORMATION;
 	private UserInputCallback callback;
 
 	public UserInputThread(UserInputCallback callback) {

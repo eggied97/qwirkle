@@ -132,13 +132,17 @@ public class GUIView implements UserInterface {
 	}
 
 	@Override
-	public void showScore(Map<Player, Integer> scoreMap) {
-		String result = "";
-		result += ("SCORE" + "\n");
+	public void showScore(Map<Player, Integer> scoreMap, boolean fromGameEnd) {
+		StringBuilder result = new StringBuilder();
+		result.append("SCORE" + "\n");
+		TreeMap<Integer, Player> score = new TreeMap<>();
 		for(Entry<Player, Integer> e : scoreMap.entrySet()) {
-			result += (e.getKey().getName().toString() + " - " + e.getValue().toString() + "\n");
+			score.put(e.getValue(), e.getKey());
 		}
-		mFrame.setScoreboard(result);
+		for(Entry<Integer, Player> e : score.entrySet()) {
+			result.append(e.getValue().getName() + " - " + e.getValue() + "\n");
+		}
+		mFrame.setScoreboard(result.toString());
 		
 	}
 	
@@ -194,5 +198,11 @@ public class GUIView implements UserInterface {
 	public void showError(String message) {
 		mFrame.setMessageLabel(message);
 		mFrame.emptyMoveSet();
+	}
+
+	@Override
+	public void askForServerInformation() {
+		// TODO Auto-generated method stub
+		
 	}
 }

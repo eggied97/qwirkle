@@ -43,25 +43,24 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 
 	// In the start
 	public Main(String[] args) {
+		//set up some variables
 		this.usingFeatures = new ArrayList<>();
-		this.UI = new GUIView(this);
-		
-		this.UI.setCallback(this);
-		
+		this.UI = new TUIView();
 		this.prot = Protocol.getInstance();
-		setupConnectionToServer(args);
-
-		this.server.setCallback(this);
-
-		authenticateUser();
+		
+		this.UI.setCallback(this); // set the callback for UI changes
+		
+		this.UI.askForServerInformation();
 	}
 
 	// after a match
-	public Main(Player me, Client server, UserInterface ui) {
+	public Main(Player me, Client server, UserInterface ui, List<IProtocol.Feature> usingFeatures) {
 		this.me = me;
 		this.server = server;
 		this.server.setCallback(this);
 		this.UI = ui;
+		
+		this.usingFeatures = usingFeatures;
 		
 		this.UI.setCallback(this);
 
@@ -77,33 +76,6 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		this.UI.askQueueWithHowManyPlayers();		
 	}
 
-	private void setupConnectionToServer(String[] args) {
-		if (args.length != 2) {
-			System.out.println(USAGE_SERVER);
-			System.exit(0);
-		}
-
-		InetAddress host = null;
-		int port = 0;
-
-		try {
-			host = InetAddress.getByName(args[0]);
-			port = Integer.parseInt(args[1]);
-
-		} catch (NumberFormatException | IOException e) {
-			e.printStackTrace(System.out);
-			System.exit(0);
-
-			/*
-			 * System.out.println("No valid portnumber"); System.exit(0);
-			 * System.out.println("No host known by that name"); System.exit(0);
-			 */
-
-		}
-
-		server = new Client(host, port);
-		server.start();
-	}
 
 	private void sendMessageToServer(String message) {
 		if (this.server != null && this.server.isAlive()) {
@@ -128,7 +100,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		String[] args = Arrays.copyOfRange(results, 1, results.length);
 
 		switch (command) {
-			case IProtocol.SERVER_IDENITFY:
+			case IProtocol.SERVER_IDENTIFY:
 				handleServerIdentify(args);
 				break;
 	
@@ -193,10 +165,14 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		playersInGame.add(me);
 
 		for (String name : args) {
-			Player p = new SocketPlayer(name);
-			playersInGame.add(p);
+			if(!name.equals(me.getName())){				
+				Player p = new SocketPlayer(name);
+				playersInGame.add(p);
+			}
 		}
 
+		me.newGame(); //so we start clear on a possible new match
+		
 		Game g = new Game(UI, playersInGame, server, usingFeatures);
 		server.setCallback(g);
 		UI.setCallback(g);
@@ -225,6 +201,35 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		enterQueue();
 	}
 
+	@Override
+	public void setupServer(String serverInformation) {
+		String[] parts = serverInformation.split("@");
+		
+		if(parts.length != 2){
+			this.UI.showError("Wrong format.");
+			this.UI.askForServerInformation();
+		}else{
+			InetAddress host = null;
+			int port = 0;
+
+			try {
+				host = InetAddress.getByName(parts[0]);
+				port = Integer.parseInt(parts[1]);
+
+				server = new Client(host, port);
+				server.start();	
+				
+				this.server.setCallback(this); //set the callback for incomming server messages
+
+				authenticateUser();
+				
+			} catch (NumberFormatException | IOException e) {
+				this.UI.showError("Server doesnt exist, or you entered the wrong port");
+				this.UI.askForServerInformation();
+			}			
+		}
+	}
+	
 	@Override
 	public void login(Player p) {
 		me = p;
@@ -258,5 +263,13 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 
 	@Override
 	public void sendChat(String msg) {} //not used
+
+	@Override
+	public void printHint() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 
 }

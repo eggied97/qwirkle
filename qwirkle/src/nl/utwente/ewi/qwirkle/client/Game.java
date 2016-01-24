@@ -25,6 +25,7 @@ import nl.utwente.ewi.qwirkle.model.exceptions.TooFewArgumentsException;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
+import nl.utwente.ewi.qwirkle.model.player.strategy.DumbStrategy;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
@@ -43,6 +44,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	private Player turnPlayer;
 
 	Map<IProtocol.Feature, Boolean> featuresEnabled;
+	List<IProtocol.Feature> serverFeatures;
 
 	boolean isFirstRound = true;
 	int turnCount = 0;
@@ -74,8 +76,10 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			this.UI.askForPlayOrExchange();
 		}
 
-		// TODO check if this is fast enough to get the turn message
-		c.setCallback(this);
+		c.setCallback(this); //set the callback so we receive messages from the server
+		
+		this.serverFeatures = new ArrayList<>();
+		this.serverFeatures.addAll(serverFeatures);
 
 		featuresEnabled = new HashMap<>();
 		checkFeatures(serverFeatures);
@@ -124,7 +128,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			}
 			
 
-			((GUIView) this.UI).showScore(scoreMap);
+			((GUIView) this.UI).showScore(scoreMap, false);
 			
 			((GUIView) this.UI).updateBoard(board.getButtonBoard());
 		}
@@ -207,7 +211,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 				handleIncommingChatMessage(args);
 				break;
-
+				
 			case IProtocol.SERVER_ERROR:
 				// TODO INVALID_CHANNEL wordt niet gestuurt vanuit server :/
 				if (args.length < 1) {
@@ -228,7 +232,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 				case TRADE_FIRST_TURN:
 					this.UI.showError("You wanted to trade on your first turn, you cant do this.");
 					handleTurn(true);
-					break;
+				
 
 				case INVALID_CHANNEL:
 					this.UI.showError(
@@ -359,7 +363,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 		int score = board.putTile(aMoves);
 		turnPlayer.addScore(score);
-
+		
 	}
 
 	/**
@@ -493,10 +497,22 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		}
 
 		this.UI.printMessage("Win by " + (errorOrWin.equals("WIN") ? "win" : "error") + " :");
-		this.UI.showScore(scoreMap);
+		this.UI.showScore(scoreMap, true);
 
 		playing = false;
 
+		
+		//TODO create new main
+		
+		Player me = null;
+		
+		for(Player p : players){
+			if(p instanceof HumanPlayer || p instanceof ComputerPlayer){
+				me = p;
+			}
+		}
+		
+		new Main(me, c, this.UI, this.serverFeatures);
 	}
 
 	/**
@@ -527,43 +543,42 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	@Override
 	public void determinedAction(String action) {
 		switch (action) {
-		case "p":
-			if (turnPlayer instanceof HumanPlayer) {
-				this.UI.askForMove();
-			} else {
-				this.UI.showError("Wait for your turn");
-			}
-
-			break;
-		case "e":
-			if (turnPlayer instanceof HumanPlayer) {
-				this.UI.askForTrade();
-			} else {
-				this.UI.showError("Wait for your turn");
-			}
-
-			break;
-
-		case "s":
-			Map<Player, Integer> scoreMap = new HashMap<>();
-
-			for (Player p : players) {
-				scoreMap.put(p, p.getScore());
-			}
-
-			// TODO sort map
-
-			this.UI.showScore(scoreMap);
-			break;
-
-		case "c":
-			this.UI.askForChatMessage();
-
-			break;
-		default:
-			this.UI.showError("Wrong argument.");
-			handleTurn(true);
-			break;
+			case "p":				
+				if (turnPlayer instanceof HumanPlayer) {
+					this.UI.askForMove();
+				} else {
+					this.UI.showError("Wait for your turn");
+				}
+	
+				break;
+			case "e":
+				if (turnPlayer instanceof HumanPlayer ) {
+					this.UI.askForTrade();
+				} else {
+					this.UI.showError("Wait for your turn");
+				}
+	
+				break;
+				
+			case "s":
+				Map<Player, Integer> scoreMap = new HashMap<>();
+				
+				for(Player p : players){
+					scoreMap.put(p, p.getScore());
+				}
+				
+				//TODO sort map
+				
+				this.UI.showScore(scoreMap, false);
+				break;
+				
+			case "c":	
+				this.UI.askForChatMessage();
+				break;
+			default:
+				this.UI.showError("Wrong argument.");
+				handleTurn(true);
+				break;
 		}
 	}
 
@@ -630,6 +645,19 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		}
 
 		c.sendMessage(Protocol.getInstance().clientChat(msgs[0], builder.toString()));
+	}
+
+	@Override
+	public void setupServer(String serverInformation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void printHint() {
+		List<Move> hint = new DumbStrategy().determineMove(board, turnPlayer.getHand());
+		
+		this.UI.printMessage(hint.get(0).toString());
 	}
 
 }

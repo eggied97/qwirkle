@@ -345,6 +345,7 @@ public class HandleCommand {
 		ch.getGame().nextTurn();
 		if (ch.getGame().gameEnd()) {
 			handleEndGame(ch);
+			return;
 		} else if (ch.getGame().getBag().isEmpty()) {
 			handlePass(ch);
 			return;
