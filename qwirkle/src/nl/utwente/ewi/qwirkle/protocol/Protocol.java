@@ -137,7 +137,7 @@ public class Protocol implements IProtocol {
 	public String serverConnectOk(IProtocol.Feature[] features) {
 		String result = "";
 
-		result += this.SERVER_IDENITFY;
+		result += this.SERVER_IDENTIFY;
 		result += " ";
 
 		int count = 0;

@@ -47,4 +47,6 @@ public interface UserInterfaceCallback {
 	public void putTrade(List<Tile> tiles);
 
 	public void sendChat(String msg);
+	
+	public void printHint();
 }

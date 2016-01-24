@@ -193,6 +193,8 @@ public class TUIView implements UserInterface, UserInputCallback {
 			case FORMOVE:
 				if (input.equals("b")) {
 					this.askForPlayOrExchange();
+				}else if(input.equals("h")){
+					callback.printHint();
 				} else {	
 					callback.putMove(input);
 				}

@@ -260,6 +260,12 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	@Override
 	public void sendChat(String msg) {} //not used
 
+	@Override
+	public void printHint() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }

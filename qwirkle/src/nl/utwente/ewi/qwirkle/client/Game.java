@@ -24,6 +24,7 @@ import nl.utwente.ewi.qwirkle.model.exceptions.TooFewArgumentsException;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
+import nl.utwente.ewi.qwirkle.model.player.strategy.DumbStrategy;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
@@ -500,6 +501,16 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 		
 		//TODO create new main
+		
+		Player me = null;
+		
+		for(Player p : players){
+			if(p instanceof HumanPlayer || p instanceof ComputerPlayer){
+				me = p;
+			}
+		}
+		
+		new Main(me, c, this.UI);
 	}
 
 	/**
@@ -641,6 +652,13 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	public void setupServer(String serverInformation) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void printHint() {
+		List<Move> hint = new DumbStrategy().determineMove(board, turnPlayer.getHand());
+		
+		this.UI.printMessage(hint.get(0).toString());
 	}
 
 }
