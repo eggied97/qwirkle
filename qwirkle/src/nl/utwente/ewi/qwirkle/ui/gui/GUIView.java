@@ -123,8 +123,8 @@ public class GUIView implements UserInterface {
 		mFrame.setTextArea(message, s);
 	}
 
-	public void updateBoard(List<Move> moves) {
-		mFrame.addButton(moves);
+	public void updateBoard(Map<Point, Tile> board) {
+		mFrame.update(board);
 	}
 	
 	public void handleProblemWithMove(){
@@ -133,16 +133,12 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void showScore(Map<Player, Integer> scoreMap) {
-		StringBuilder result = new StringBuilder();
-		result.append("SCORE" + "\n");
-		TreeMap<Integer, Player> score = new TreeMap<>();
+		String result = "";
+		result += ("SCORE" + "\n");
 		for(Entry<Player, Integer> e : scoreMap.entrySet()) {
-			score.put(e.getValue(), e.getKey());
+			result += (e.getKey().getName().toString() + " - " + e.getValue().toString() + "\n");
 		}
-		for(Entry<Integer, Player> e : score.entrySet()) {
-			result.append(e.getValue().getName() + " - " + e.getValue() + "\n");
-		}
-		mFrame.setScoreboard(result.toString());
+		mFrame.setScoreboard(result);
 		
 	}
 	

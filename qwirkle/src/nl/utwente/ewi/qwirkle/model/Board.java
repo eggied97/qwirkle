@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 import nl.utwente.ewi.qwirkle.server.score.ScoreCalc;
 
 public class Board {
@@ -198,6 +200,16 @@ public class Board {
 	@Override
 	public boolean equals(Object b) {
 		return (b instanceof Board) && ((Board) b).getMap().equals(this.getMap());
+	}
+	
+	public Map<Point, Tile> getButtonBoard() {
+		Map<Point, Tile> result = new HashMap<>();
+		for(Entry<Point, Tile> e : map.entrySet()) {
+			int x = e.getKey().getX() + 144;
+			int y = e.getKey().getY() + 144;
+			result.put(new Point(x, y), e.getValue());
+		}
+		return result;
 	}
 	
 
