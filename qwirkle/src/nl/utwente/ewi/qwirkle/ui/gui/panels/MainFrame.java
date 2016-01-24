@@ -146,7 +146,7 @@ public class MainFrame extends JFrame {
 		
 		for(JButton b : butInf.keySet()) {
 			buttons.add(b, butInf.get(b));
-			butCord.put(b, new Point(butInf.get(b).gridx, butInf.get(b).gridy));
+			butCord.put(b, new Point(butInf.get(b).gridx + 144, butInf.get(b).gridy + 144));
 		}
 		
 		for(JToggleButton b : handTiles) {

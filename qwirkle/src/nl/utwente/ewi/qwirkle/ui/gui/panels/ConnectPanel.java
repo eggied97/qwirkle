@@ -115,20 +115,28 @@ public class ConnectPanel extends JFrame {
 					}
 				}
 				
-				int[] enteredQueues = new int[j];				
-				j = 0;
+				if(j == 0){
+					//no queues selected
+					JOptionPane.showMessageDialog(contentPane, "You need to select atleast 1 queue");
+					
+					
+				}else{
 				
-				for(int i = 0; i < queues.size(); i++) {
-					if(queues.get(i)) {
-						enteredQueues[j] = i+2;
-						j++;
+					int[] enteredQueues = new int[j];				
+					j = 0;
+					
+					for(int i = 0; i < queues.size(); i++) {
+						if(queues.get(i)) {
+							enteredQueues[j] = i+2;
+							j++;
+						}
 					}
+					
+					callback.queue(enteredQueues);
+					
+					btnEnterQueues.setEnabled(false);
+					JOptionPane.showMessageDialog(contentPane, "You're added to the queue(s)" + "\n" + "Please wait for the game to start");
 				}
-				
-				callback.queue(enteredQueues);
-				
-				btnEnterQueues.setEnabled(false);
-				JOptionPane.showMessageDialog(contentPane, "You're added to the queue(s)" + "\n" + "Please wait for the game to start");
 			}
 		});
 		
