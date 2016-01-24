@@ -45,7 +45,10 @@ public abstract class Player {
 
 	public abstract String sendChat();
 
-	public void newGame(){
+	/**
+	 * needs to be called when entered a new game, so we reset the score & hand.
+	 */
+	public void newGame() {
 		this.hand.clear();
 		this.score = 0;
 	}
@@ -59,6 +62,11 @@ public abstract class Player {
 		hand.addAll(tiles);
 	}
 
+	/**
+	 * converts the string array to tiles, and then add those tiles.
+	 * 
+	 * @param tiles
+	 */
 	public void bagToHand(String[] tiles) {
 		List<Tile> lTiles = new ArrayList<>();
 
