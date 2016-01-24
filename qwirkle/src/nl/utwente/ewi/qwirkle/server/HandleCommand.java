@@ -11,7 +11,7 @@ import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
-import nl.utwente.ewi.qwirkle.protocol.protocol;
+import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.server.connect.ClientHandler;
 import nl.utwente.ewi.qwirkle.server.connect.Server;
 import nl.utwente.ewi.qwirkle.server.score.ScoreCalc;
@@ -19,7 +19,7 @@ import nl.utwente.ewi.qwirkle.server.score.ScoreCalc;
 public class HandleCommand {
 
 	private Server server;
-	private protocol protocol = new protocol();
+	private Protocol protocol = new Protocol();
 	private ValidMove valid = new ValidMove();
 	private boolean wentWell = true;
 	private final static String REGEX = "^[a-zA-Z0-9-_]{2,16}$";
@@ -28,45 +28,53 @@ public class HandleCommand {
 	 * 
 	 * @param server
 	 */
+	//@requires server != null;
 	public HandleCommand(Server server) {
 		this.server = server;
 	}
 
 	/**
-	 * Returns true if all went well
+	 * Returns true if all went well.
 	 * 
 	 * @return
 	 */
-	public boolean getWentWell() {
+	
+	/*@ pure */ public boolean getWentWell() {
 		return wentWell;
 	}
 
 	/**
-	 * Set the value of WentWell
+	 * Set the value of WentWell.
 	 * 
 	 * @param t
 	 */
+	//@ ensures getWentWell() == t;
 	public void setWentWell(boolean t) {
 		wentWell = t;
 	}
 
 	/**
-	 * Returns an instance of <code> HandleCommand </code>
+	 * Returns an instance of <code> HandleCommand </code>.
 	 * 
 	 * @param server
 	 * @return
 	 */
+	//@ requires server != null;
 	public static HandleCommand getInstance(Server server) {
 		return new HandleCommand(server);
 	}
 
 	/**
-	 * Takes the name from the String array and match it with the given REGEX
-	 * Furthermore checks whether this name is already in use
+	 * Takes the name from the String array and match it with the given REGEX.
+	 * Furthermore checks whether this name is already in use.
 	 * 
 	 * @param strAy
 	 * @param ch
 	 */
+	//@ requires strAy != null;
+	//@ requires strAy.length() > 2;
+	//@ requires ch != null;
+	
 	public void handleIdentifyName(String[] strAy, ClientHandler ch) {
 		String name = strAy[1];
 		if (name.matches(REGEX) && !name.equals(null)) {
@@ -75,7 +83,7 @@ public class HandleCommand {
 				// name you want to set
 				if (handler.equals(ch)) {
 				} else if (handler.getClientName().equals(name)) {
-					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.NAME_USED));
+					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.NAME_USED));
 					wentWell = false;
 					return;
 				}
@@ -83,7 +91,7 @@ public class HandleCommand {
 
 			ch.setClientName(name);
 		} else {
-			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.NAME_INVALID));
+			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.NAME_INVALID));
 			wentWell = false;
 			return;
 		}
@@ -97,27 +105,31 @@ public class HandleCommand {
 	 * @param strAy
 	 * @param ch
 	 */
+	//@ requires ch != null;
+	//@ requires strAy != null;
 	public void handleIdentifyFeatures(String[] strAy, ClientHandler ch) {
 		List<IProtocol.Feature> features = new ArrayList<>();
+		
 		if (strAy.length > 2) {
 			for (int i = 2; i < strAy.length; i++) {
 				switch (IProtocol.Feature.valueOf(strAy[i])) {
-				case CHAT:
-					features.add(IProtocol.Feature.CHAT);
-					break;
-				case CHALLENGE:
-					features.add(IProtocol.Feature.CHALLENGE);
-					break;
-				case LEADERBOARD:
-					features.add(IProtocol.Feature.LEADERBOARD);
-					break;
-				case LOBBY:
-					features.add(IProtocol.Feature.LOBBY);
-					break;
-				default:
-					setWentWell(false);
-					return;
+					case CHAT:
+						features.add(IProtocol.Feature.CHAT);
+						break;
+					case CHALLENGE:
+						features.add(IProtocol.Feature.CHALLENGE);
+						break;
+					case LEADERBOARD:
+						features.add(IProtocol.Feature.LEADERBOARD);
+						break;
+					case LOBBY:
+						features.add(IProtocol.Feature.LOBBY);
+						break;
+					default:
+						setWentWell(false);
+						return;
 				}
+				//TODO hoort deze i++ hier wel? -Egbert
 				i++;
 			}
 			ch.setFeatures(features);
@@ -133,11 +145,13 @@ public class HandleCommand {
 
 	/**
 	 * Check the String array for queue numbers to add the
-	 * <code> ClientHandler </code> to
+	 * <code> ClientHandler </code> to.
 	 * 
 	 * @param strAy
 	 * @param ch
 	 */
+	//@ requires ch != null;
+	//@ requires strAy != null;
 	public void handleQueue(String[] strAy, ClientHandler ch) {
 		String queue = strAy[1];
 		String[] queueSpl = queue.split(",");
@@ -147,24 +161,24 @@ public class HandleCommand {
 			try {
 				q = Integer.parseInt(queueSpl[i]);
 			} catch (NumberFormatException e) {
-				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.QUEUE_INVALID));
+				ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.QUEUE_INVALID));
 				setWentWell(false);
 				return;
 			}
 			switch (q) {
-			case 2:
-				map.get(2).add(ch);
-				break;
-			case 3:
-				map.get(3).add(ch);
-				break;
-			case 4:
-				map.get(4).add(ch);
-				break;
-			default:
-				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.QUEUE_INVALID));
-				setWentWell(false);
-				return;
+				case 2:
+					map.get(2).add(ch);
+					break;
+				case 3:
+					map.get(3).add(ch);
+					break;
+				case 4:
+					map.get(4).add(ch);
+					break;
+				default:
+					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.QUEUE_INVALID));
+					setWentWell(false);
+					return;
 			}
 		}
 
@@ -173,11 +187,13 @@ public class HandleCommand {
 	/**
 	 * Checks whether the <code> ClientHandler </code> has the turn Then check
 	 * whether or not the trade is valid, and throw a fitting error if not If it
-	 * is valid, handle the trade and replace the tiles
+	 * is valid, handle the trade and replace the tiles.
 	 * 
 	 * @param strAy
 	 * @param ch
 	 */
+	//@ requires ch != null;
+	//@ requires strAy != null;
 	public void handleMoveTrade(String[] strAy, ClientHandler ch) {
 
 		if (!ch.getGame().hasTurn(ch)) {
@@ -189,7 +205,7 @@ public class HandleCommand {
 			try {
 				tiles.add(new Tile(Integer.parseInt(strAy[i])));
 			} catch (NumberFormatException e) {
-				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+				ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				return;
 			}
 		}
@@ -199,14 +215,15 @@ public class HandleCommand {
 			tilesInt.add(t.getIntOfTile());
 		}
 
-		if (ch.getGame().getBag().isEmpty() || ch.getGame().getBag().getAmountOfTiles() - tiles.size() < 0) {
-			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.DECK_EMPTY));
+		if (ch.getGame().getBag().isEmpty() || 
+						ch.getGame().getBag().getAmountOfTiles() - tiles.size() < 0) {
+			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.DECK_EMPTY));
 			return;
 		} else if (ch.getGame().getBoard().isEmpty()) {
-			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.TRADE_FIRST_TURN));
+			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.TRADE_FIRST_TURN));
 			return;
 		} else if (!checkTiles(tiles, ch)) {
-			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.MOVE_TILES_UNOWNED));
+			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.MOVE_TILES_UNOWNED));
 			return;
 		}
 
@@ -226,12 +243,15 @@ public class HandleCommand {
 	}
 
 	/**
-	 * Check whether the <code> ClientHandler </code> owns all given tiles
+	 * Check whether the <code> ClientHandler </code> owns all given tiles.
 	 * 
 	 * @param tiles
 	 * @param ch
 	 * @return
 	 */
+	//@ requires ch != null;
+	//@ requires tiles != null;
+	//@ ensures ((\forall int i; (i >= 0 && i < tiles.size()) ==> (ch.getPlayer().getHand().contains(tiles.get(i))) ) ==> \result = true;
 	public boolean checkTiles(List<Tile> tiles, ClientHandler ch) {
 		List<Tile> playerTiles = ch.getPlayer().getHand();
 		for (Tile t : tiles) {
@@ -244,11 +264,13 @@ public class HandleCommand {
 
 	/**
 	 * Transform the String array into tiles and points Validate the moves Put
-	 * the tiles on the board
+	 * the tiles on the board.
 	 * 
 	 * @param strAy
 	 * @param ch
 	 */
+	//@ requires ch != null;
+	//@ requires strAy != null;
 	public void handleMovePut(String[] strAy, ClientHandler ch) {
 
 		if (!ch.getGame().hasTurn(ch)) {
@@ -270,7 +292,7 @@ public class HandleCommand {
 				tiles.add(t);
 				moves.add(m);
 			} catch (NumberFormatException e) {
-				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+				ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				return;
 			}
 
@@ -289,27 +311,26 @@ public class HandleCommand {
 		}
 
 		if (!checkTiles(tiles, ch)) {
-			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.MOVE_TILES_UNOWNED));
+			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.MOVE_TILES_UNOWNED));
 			return;
 		}
 		if (!valid.validMoveSet(moves, ch.getGame().getBoard())) {
-			ch.sendMessage(
-					nl.utwente.ewi.qwirkle.protocol.protocol.getInstance().serverError(IProtocol.Error.MOVE_INVALID));
+			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.MOVE_INVALID));
 			return;
 		}
 		ch.getGame().getBoard().putTile(moves);
 
 		ch.getPlayer().addScore(ScoreCalc.getInstance().calculate(ch.getGame().getBoard(), moves));
 
-		server.broadcast(ch.getGame().getPlayers(), protocol.getInstance().serverMovePut(moves));
+		server.broadcast(ch.getGame().getPlayers(), Protocol.getInstance().serverMovePut(moves));
 
 		// TODO what to do when list.size() > bag.size() || bag.isEMpty()?
 		if (!ch.getGame().getBag().isEmpty()) {
 			List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
 			ch.getPlayer().bagToHand(newTiles);
-			ch.sendMessage(protocol.getInstance().serverDrawTile(newTiles));
+			ch.sendMessage(Protocol.getInstance().serverDrawTile(newTiles));
 		} else {
-			ch.sendMessage(protocol.getInstance().serverDrawTile(new ArrayList<Tile>()));
+			ch.sendMessage(Protocol.getInstance().serverDrawTile(new ArrayList<Tile>()));
 		}
 
 		handleTurn(ch);
@@ -317,10 +338,11 @@ public class HandleCommand {
 
 	/**
 	 * Checks whether the game ends, if it does not, pass the turn to the next
-	 * player
+	 * player.
 	 * 
 	 * @param ch
 	 */
+	//@ requires ch != null;
 	public void handleTurn(ClientHandler ch) {
 		ch.getGame().nextTurn();
 		if (ch.getGame().gameEnd()) {
@@ -342,10 +364,11 @@ public class HandleCommand {
 	}
 
 	/**
-	 * End the game and round up the scores
+	 * End the game and round up the scores.
 	 * 
 	 * @param ch
 	 */
+	//@ requires ch != null;
 	public void handleEndGame(ClientHandler ch) {
 		if (ch.getGame().isRunning()) {
 			ch.getGame().setRunning(false);
@@ -374,6 +397,7 @@ public class HandleCommand {
 	 * @param ch
 	 * @return
 	 */
+	//@ requires ch != null;
 	public int[] handleScores(ClientHandler ch) {
 		List<ClientHandler> players = ch.getGame().getPlayers();
 		List<Player> playersPlay = new ArrayList<>();
@@ -389,11 +413,13 @@ public class HandleCommand {
 
 	/**
 	 * Checks to whom the message is concerned and write it to him/her if it is
-	 * a valid channel
+	 * a valid channel.
 	 * 
 	 * @param strAy
 	 * @param ch
 	 */
+	//@ requires ch != null;
+	//@ requires strAy != null;
 	public void handleChat(String[] strAy, ClientHandler ch) {
 		String channel = strAy[1];
 		System.out.println(channel);
@@ -405,29 +431,31 @@ public class HandleCommand {
 		String messa = builder.toString();
 		if (channel.equals("global")) {
 			server.broadcast(ch.getGame().getPlayers(),
-					protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
+					Protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
 			return;
 		} else {
 			for (ClientHandler clienthand : ch.getGame().getPlayers()) {
 				System.out.println("@" + channel);
 				if (("@" + clienthand.getClientName()).equals(channel)) {
-					clienthand.sendMessage(protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
+					clienthand.sendMessage(Protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
 
 					return;
 				}
 			}
 		}
-		protocol.getInstance().serverError(IProtocol.Error.INVALID_CHANNEL);
+		Protocol.getInstance().serverError(IProtocol.Error.INVALID_CHANNEL);
 	}
 
 	/**
 	 * Checks whether there are any valid moves left for the next player,
-	 * otherwise, pass
+	 * otherwise, pass.
 	 * 
 	 * @param play
 	 * @param b
 	 * @return
 	 */
+	//@ requires ch != null;
+	//@ requires strAy != null;
 	public boolean handleMovesLeft(Player play, Board b) {
 		boolean moveIsValid = false;
 		List<Point> emptySpots = b.getEmptySpots();
@@ -450,10 +478,11 @@ public class HandleCommand {
 
 	/**
 	 * Tests whether a <code> Players </code> can do a valid <code> Move </code>
-	 * otherwise pass
+	 * otherwise pass.
 	 * 
 	 * @param ch
 	 */
+	//@ requires ch != null;
 	public void handlePass(ClientHandler ch) {
 		int counter = 0;
 		while (!handleMovesLeft(ch.getGame().getPlayerTurn(), ch.getGame().getBoard())) {

@@ -21,7 +21,7 @@ import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.model.player.strategy.SuperStrategy;
-import nl.utwente.ewi.qwirkle.protocol.protocol;
+import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 
 public class TUIView implements UserInterface, UserInputCallback {

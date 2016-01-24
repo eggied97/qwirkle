@@ -5,14 +5,14 @@ import java.util.List;
 import nl.utwente.ewi.qwirkle.model.*;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 
-public class protocol implements IProtocol {
+public class Protocol implements IProtocol {
 	public final static boolean DEBUG = true;
 	
-	public protocol() {
+	public Protocol() {
 	}
 
-	public static protocol getInstance() {
-		return new protocol();
+	public static Protocol getInstance() {
+		return new Protocol();
 	}
 
 	/*

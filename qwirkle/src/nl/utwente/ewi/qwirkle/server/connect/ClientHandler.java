@@ -14,7 +14,7 @@ import java.util.Map;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.model.player.SocketPlayer;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
-import nl.utwente.ewi.qwirkle.protocol.protocol;
+import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 import nl.utwente.ewi.qwirkle.server.Game;
 
@@ -168,7 +168,7 @@ public class ClientHandler extends Thread {
 			}
 			List<ClientHandler> list = this.getGame().getPlayers();
 			list.remove(this);
-			server.broadcast(list, protocol.getInstance().serverEndGame(players, scores, 0));
+			server.broadcast(list, Protocol.getInstance().serverEndGame(players, scores, 0));
 			return;
 		}
 		try {

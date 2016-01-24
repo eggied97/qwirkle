@@ -18,7 +18,7 @@ import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.model.player.SocketPlayer;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
-import nl.utwente.ewi.qwirkle.protocol.protocol;
+import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
@@ -30,7 +30,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	private Client server;
 
 	private UserInterface UI;
-	private protocol prot;
+	private Protocol prot;
 
 	private Player me;
 
@@ -48,7 +48,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		
 		this.UI.setCallback(this);
 		
-		this.prot = protocol.getInstance();
+		this.prot = Protocol.getInstance();
 		setupConnectionToServer(args);
 
 		this.server.setCallback(this);
@@ -65,7 +65,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		
 		this.UI.setCallback(this);
 
-		prot = protocol.getInstance();
+		prot = Protocol.getInstance();
 		enterQueue();
 	}
 

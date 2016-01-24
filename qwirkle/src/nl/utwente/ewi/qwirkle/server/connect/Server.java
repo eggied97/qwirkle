@@ -13,7 +13,7 @@ import java.util.TreeMap;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
-import nl.utwente.ewi.qwirkle.protocol.protocol;
+import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.server.Game;
 import nl.utwente.ewi.qwirkle.server.HandleCommand;
 
@@ -193,10 +193,10 @@ public class Server {
 		for(ClientHandler ch : list) {
 			ch.setGame(game);;
 		}
-		broadcast(list, protocol.getInstance().serverStartGame(players));
+		broadcast(list, Protocol.getInstance().serverStartGame(players));
 		
 		game.run();
-		broadcast(list, protocol.getInstance().serverTurn(game.getPlayerTurn()));		
+		broadcast(list, Protocol.getInstance().serverTurn(game.getPlayerTurn()));		
 	}
 	
 	/**
@@ -233,7 +233,7 @@ public class Server {
 	public void getCommand(String input, ClientHandler ch) {
 		String[] inputArr = input.split(" ");
 		if (inputArr[0] == null) {
-			ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
+			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
 			return;
 		}
 
@@ -242,7 +242,7 @@ public class Server {
 			case IProtocol.CLIENT_IDENTIFY:
 				if(inputArr.length > 1) {
 					if(ch.getGame() != null) {
-						ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
+						ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
 						break;
 					}
 					
@@ -259,7 +259,7 @@ public class Server {
 					
 					handle.setWentWell(true);
 				} else {
-					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				}
 				break;
 	
@@ -271,7 +271,7 @@ public class Server {
 				if(inputArr.length > 1) {
 					handle.handleMovePut(inputArr, ch);
 				} else {
-					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				}
 				break;
 	
@@ -279,7 +279,7 @@ public class Server {
 				if(inputArr.length > 1) {
 					handle.handleMoveTrade(inputArr, ch);
 				} else {
-					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				}
 				break;
 	
@@ -295,7 +295,7 @@ public class Server {
 					}
 					handle.setWentWell(true);
 				} else {
-					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				}
 				
 				break;
@@ -305,7 +305,7 @@ public class Server {
 						handle.handleChat(inputArr, ch);
 					}
 				} else {
-					ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
+					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				}
 				
 				break;
@@ -315,7 +315,7 @@ public class Server {
 				 * IProtocol.CLIENT_LEADERBOARD: case IProtocol.CLIENT_LOBBY:
 				 */
 			default:
-				ch.sendMessage(protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
+				ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
 				break;
 		}
 	}

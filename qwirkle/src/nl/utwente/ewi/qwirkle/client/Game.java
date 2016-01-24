@@ -25,7 +25,7 @@ import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
-import nl.utwente.ewi.qwirkle.protocol.protocol;
+import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
 import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
@@ -124,7 +124,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	@Override
 	public void resultFromServer(String result) {
 		try {
-			if (protocol.DEBUG) {
+			if (Protocol.DEBUG) {
 				System.out.println("Back from server (game)> " + result.trim());
 			}
 
@@ -413,7 +413,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 			nextDrawNeedToRemoveTiles = true;
 
-			c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
+			c.sendMessage(Protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
 		} else {
 			tilesThatNeedToBeRemoved = new ArrayList<>();
 
@@ -423,7 +423,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 			nextDrawNeedToRemoveTiles = true;
 
-			c.sendMessage(protocol.getInstance().clientPutMove(moves));
+			c.sendMessage(Protocol.getInstance().clientPutMove(moves));
 		}
 	}
 
@@ -590,7 +590,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 			nextDrawNeedToRemoveTiles = true;
 
-			c.sendMessage(protocol.getInstance().clientPutMove(moves));
+			c.sendMessage(Protocol.getInstance().clientPutMove(moves));
 		}
 	}
 	
@@ -611,7 +611,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 		nextDrawNeedToRemoveTiles = true;
 
-		c.sendMessage(protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
+		c.sendMessage(Protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
 	}
 
 	@Override
@@ -632,7 +632,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			builder.append(s + " ");
 		}
 
-		c.sendMessage(protocol.getInstance().clientChat(msgs[0], builder.toString()));
+		c.sendMessage(Protocol.getInstance().clientChat(msgs[0], builder.toString()));
 	}
 
 }

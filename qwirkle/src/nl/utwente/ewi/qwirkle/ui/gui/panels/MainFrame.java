@@ -20,7 +20,7 @@ import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
-import nl.utwente.ewi.qwirkle.protocol.protocol;
+import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.ui.imageGetter;
 import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
 
