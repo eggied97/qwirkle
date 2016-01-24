@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.Style;
@@ -50,7 +51,6 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 	boolean playing = true;
 
-
 	/**
 	 * 
 	 * @param UI
@@ -68,7 +68,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		this.players = players;
 		this.UI = UI;
 		this.c = c;
-		
+
 		if (UI instanceof GUIView) {
 			((GUIView) UI).changeFrame();
 			((GUIView) UI).setUICallback(this);
@@ -90,7 +90,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	public Player getTurnPlayer() {
 		return turnPlayer;
 	}
-	
+
 	public Client getClient() {
 		return this.c;
 	}
@@ -104,11 +104,11 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	}
 
 	private void checkFeatures(List<IProtocol.Feature> usingFeatures) {
-		for(IProtocol.Feature f : IProtocol.Feature.values()){
+		for (IProtocol.Feature f : IProtocol.Feature.values()) {
 			featuresEnabled.put(f, false);
 		}
-		
-		for(IProtocol.Feature f : usingFeatures){
+
+		for (IProtocol.Feature f : usingFeatures) {
 			featuresEnabled.put(f, true);
 		}
 	}
@@ -121,7 +121,16 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			this.UI.printMessage("Current board situation : ");
 			this.UI.printMessage(board.toString());
 		} else {
-			((GUIView) this.UI).showScore(players);
+			Map<Player, Integer> scoreMap = new HashMap<>();
+
+			for (Player p : players) {
+				scoreMap.put(p, p.getScore());
+			}
+			
+
+			((GUIView) this.UI).showScore(scoreMap, false);
+			
+			((GUIView) this.UI).updateBoard(board.getButtonBoard());
 		}
 	}
 
@@ -141,113 +150,113 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			String[] args = Arrays.copyOfRange(results, 1, results.length);
 
 			switch (results[0]) {
-				case IProtocol.SERVER_TURN:
-					if (args.length != 1) {
-						throw new TooFewArgumentsException(args.length);
+			case IProtocol.SERVER_TURN:
+				if (args.length != 1) {
+					throw new TooFewArgumentsException(args.length);
+				}
+
+				handleTurnChange(args[0]);
+				break;
+
+			case IProtocol.SERVER_DRAWTILE:
+
+				if (nextDrawNeedToRemoveTiles) {
+					if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
+						turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
+					} else {
+						// TODO is socket player -> throw error
 					}
-	
-					handleTurnChange(args[0]);
+				}
+
+				handleDrawTile(args);
+				break;
+
+			case IProtocol.SERVER_GAMEEND:
+				if (args.length != players.size()) {
+					throw new TooFewArgumentsException(args.length);
+				}
+
+				handleGameEnd(args);
+				break;
+
+			case IProtocol.SERVER_PASS:
+				if (args.length != 1) {
+					throw new TooFewArgumentsException(args.length);
+				}
+
+				handlePass(args[0]);
+				break;
+
+			case IProtocol.SERVER_MOVE_PUT:
+				if (args.length < 1) {
+					throw new TooFewArgumentsException(args.length);
+				}
+
+				handleMovePut(args);
+				break;
+
+			case IProtocol.SERVER_MOVE_TRADE:
+				if (args.length < 1) {
+					throw new TooFewArgumentsException(args.length);
+				}
+
+				handleMoveTradeFromOpponent(args);
+
+				break;
+
+			case IProtocol.SERVER_CHAT:
+				if (args.length < 3) {
+					throw new TooFewArgumentsException(args.length);
+				}
+
+				handleIncommingChatMessage(args);
+				break;
+				
+			case IProtocol.SERVER_ERROR:
+				// TODO INVALID_CHANNEL wordt niet gestuurt vanuit server :/
+				if (args.length < 1) {
+					throw new TooFewArgumentsException(args.length);
+				}
+
+				switch (IProtocol.Error.valueOf(args[0])) {
+				case MOVE_INVALID:
+					this.UI.showError("The move you made was invalid.");
+					handleProblemWithMove();
 					break;
-	
-				case IProtocol.SERVER_DRAWTILE:
-	
-					if (nextDrawNeedToRemoveTiles) {
-						if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
-							turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
-						} else {
-							// TODO is socket player -> throw error
-						}
-					}
-	
-					handleDrawTile(args);
+
+				case MOVE_TILES_UNOWNED:
+					this.UI.showError("The move you made was using tiles that you did not own.");
+					handleTurn(true);
 					break;
-	
-				case IProtocol.SERVER_GAMEEND:
-					if (args.length - 1 != players.size()) {
-						throw new TooFewArgumentsException(args.length);
-					}
-	
-					handleGameEnd(args);
+
+				case TRADE_FIRST_TURN:
+					this.UI.showError("You wanted to trade on your first turn, you cant do this.");
+					handleTurn(true);
+				
+
+				case INVALID_CHANNEL:
+					this.UI.showError(
+							"You wanted to send a message to a unknow channel. \n Usernames are uppercase specific , or use `global`.");
+					handleTurn(true);
 					break;
-	
-				case IProtocol.SERVER_PASS:
-					if (args.length != 1) {
-						throw new TooFewArgumentsException(args.length);
-					}
-	
-					handlePass(args[0]);
+
+				default:
 					break;
-	
-				case IProtocol.SERVER_MOVE_PUT:
-					if (args.length < 1) {
-						throw new TooFewArgumentsException(args.length);
-					}
-	
-					handleMovePut(args);
-					break;
-	
-				case IProtocol.SERVER_MOVE_TRADE:
-					if (args.length < 1) {
-						throw new TooFewArgumentsException(args.length);
-					}
-	
-					handleMoveTradeFromOpponent(args);
-	
-					break;
-	
-				case IProtocol.SERVER_CHAT:
-					if (args.length < 3) {
-						throw new TooFewArgumentsException(args.length);
-					}
-	
-					handleIncommingChatMessage(args);
-					break;
-	
-				case IProtocol.SERVER_ERROR:
-					//TODO  INVALID_CHANNEL wordt niet gestuurt vanuit server :/
-					if (args.length < 1) {
-						throw new TooFewArgumentsException(args.length);
-					}
-	
-					switch (IProtocol.Error.valueOf(args[0])) {
-						case MOVE_INVALID:
-							this.UI.showError("The move you made was invalid.");
-							handleProblemWithMove();
-							break;
-		
-						case MOVE_TILES_UNOWNED:
-							this.UI.showError("The move you made was using tiles that you did not own.");
-							handleTurn(true);
-							break;
-		
-						case TRADE_FIRST_TURN:
-							this.UI.showError("You wanted to trade on your first turn, you cant do this.");
-							handleTurn(true);
-							break;
-		
-						case INVALID_CHANNEL:
-							this.UI.showError(
-									"You wanted to send a message to a unknow channel. \n Usernames are uppercase specific , or use `global`.");
-							handleTurn(true);
-							break;
-		
-						default:
-							break;
-					}
-	
-					break;
+				}
+
+				break;
 			}
 		} catch (TooFewArgumentsException e) {
 			this.UI.showError("Something went bad with the protocol message : " + e.getMessage());
 		}
 	}
-	
-	private void handleProblemWithMove(){
-		
-		if(this.UI instanceof GUIView){
-			((GUIView)this.UI).handleProblemWithMove();
+
+	private void handleProblemWithMove() {
+
+		if (this.UI instanceof GUIView) {
+			((GUIView) this.UI).handleProblemWithMove();
 		}
-		
+
 		handleTurn(true);
 	}
 
@@ -355,16 +364,6 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		int score = board.putTile(aMoves);
 		turnPlayer.addScore(score);
 		
-		if(this.UI instanceof GUIView) {
-			Map<Player, Integer> scoreMap = new HashMap<>();
-			
-			for(Player p : players) {
-				scoreMap.put(p, p.getScore());
-			}
-			
-			((GUIView)this.UI).showScore(scoreMap, false);
-			((GUIView)this.UI).updateBoard(aMoves);
-		}
 	}
 
 	/**
@@ -390,7 +389,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			if (this.UI instanceof TUIView) {
 				this.UI.printMessage("Turn changed, its your turn now");
 				this.UI.showHand(turnPlayer.getHand());
-				
+
 				this.UI.askForPlayOrExchange();
 			} else {
 				this.UI.printMessage("It's your turn now");
@@ -448,7 +447,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			this.UI.printMessage("You passed because there were no moves for you to be made");
 		}
 	}
-	
+
 	/**
 	 * handles when the user gets new tiles.
 	 * 
@@ -464,7 +463,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 				}
 			}
 		}
-		
+
 		this.UI.askForPlayOrExchange();
 	}
 
@@ -534,10 +533,12 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	}
 
 	@Override
-	public void login(Player p) {} //not called
+	public void login(Player p) {
+	} // not called
 
 	@Override
-	public void queue(int[] queue) {} //not called
+	public void queue(int[] queue) {
+	} // not called
 
 	@Override
 	public void determinedAction(String action) {
@@ -573,7 +574,6 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 				
 			case "c":	
 				this.UI.askForChatMessage();
-	
 				break;
 			default:
 				this.UI.showError("Wrong argument.");
@@ -581,15 +581,13 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 				break;
 		}
 	}
-	
-
 
 	@Override
 	public void putMove(String unparsedString) {
-		if ( turnPlayer instanceof HumanPlayer ){
-			List<Move> moves = ((HumanPlayer)turnPlayer).parseMoveAwnser(unparsedString);
+		if (turnPlayer instanceof HumanPlayer) {
+			List<Move> moves = ((HumanPlayer) turnPlayer).parseMoveAwnser(unparsedString);
 			putMove(moves);
-		}		
+		}
 	}
 
 	@Override
@@ -609,13 +607,11 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			c.sendMessage(Protocol.getInstance().clientPutMove(moves));
 		}
 	}
-	
-
 
 	@Override
 	public void putTrade(String unparsedString) {
-		if ( turnPlayer instanceof HumanPlayer ){
-			List<Tile> trades = ((HumanPlayer)turnPlayer).parseTradeAwnser(unparsedString);
+		if (turnPlayer instanceof HumanPlayer) {
+			List<Tile> trades = ((HumanPlayer) turnPlayer).parseTradeAwnser(unparsedString);
 			putTrade(trades);
 		}
 	}
@@ -632,18 +628,18 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 	@Override
 	public void sendChat(String msg) {
-		
+
 		String[] msgs = msg.split(" ");
-		
-		if(msgs.length < 2){
+
+		if (msgs.length < 2) {
 			this.UI.showError("You did not use the right format");
 			this.UI.askForChatMessage();
 		}
-		
+
 		String[] message = Arrays.copyOfRange(msgs, 1, msgs.length);
 
 		StringBuilder builder = new StringBuilder();
-		
+
 		for (String s : message) {
 			builder.append(s + " ");
 		}

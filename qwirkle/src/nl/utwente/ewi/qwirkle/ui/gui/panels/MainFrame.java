@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -57,7 +58,7 @@ public class MainFrame extends JFrame {
 	
 	private JTextPane textArea;
 	
-	private JLabel scoreboard;
+	private JTextArea scoreboard;
 	private JLabel messageLabel;
 	
 	private List<JToggleButton> handTiles;
@@ -75,6 +76,31 @@ public class MainFrame extends JFrame {
 	private boolean turn = false;
 	
 	private UserInterfaceCallback callback;
+	
+	public void update(Map<Point, Tile> board) {
+		if(!(board.size() == 0)) {
+			buttons.removeAll();
+			butInf.clear();
+			butCord.clear();
+			
+			for(Entry<Point, Tile> e : board.entrySet()) {
+				JButton but = new JButton();
+				but.setPreferredSize(new Dimension(50,50));
+				but.setIcon(new ImageIcon(imgGet.getImageByTile(e.getValue())));
+				GridBagConstraints gbc_but = new GridBagConstraints();
+				gbc_but.gridx = e.getKey().getX();
+				gbc_but.gridy = e.getKey().getY();
+				
+				buttons.add(but, gbc_but);
+				butInf.put(but, gbc_but);
+				butCord.put(but, e.getKey());
+			}
+			for(JButton b : butInf.keySet()) {
+				addButton(b);
+			}
+		}
+		
+	}
 	
 	public void emptyMoveSet() {
 		this.moveSet.clear();
@@ -94,8 +120,18 @@ public class MainFrame extends JFrame {
 		this.callback = callback;
 	}
 	
+	public void reload() {
+		buttons.removeAll();
+		buttons.repaint();
+		for(JButton b : butInf.keySet()) {
+			buttons.add(b, butInf.get(b));
+			b.revalidate();
+		}
+		
+		buttons.revalidate();
+	}
+	
 	public void undoMoves() {
-		System.out.println("undo");
 		
 		for(Move m : moveSet) {
 			for(Entry<JButton, Point> e : butCord.entrySet()) {
@@ -118,8 +154,8 @@ public class MainFrame extends JFrame {
 			b.setSelected(false);
 		}
 		
-		this.revalidate();
 		this.repaint();
+		this.revalidate();
 	}
 	
 	public JLabel getMessageLabel() {
@@ -150,7 +186,7 @@ public class MainFrame extends JFrame {
 		}
 	}
 
-	public JLabel getScoreboard() {
+	public JTextArea getScoreboard() {
 		return scoreboard;
 	}
 
@@ -159,12 +195,11 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void addButton(List<Move> moves) {
-		List<JButton> newBut = new ArrayList<>();
-		
 		for(Move m : moves) {
 			
 			JButton but = new JButton();
 			but.setPreferredSize(new Dimension(50,50));
+			but.setIcon(new ImageIcon(imgGet.getImageByTile(m.getTile())));
 			GridBagConstraints gbc_but = new GridBagConstraints();
 			gbc_but.gridx = m.getPoint().getX() + 144;
 			gbc_but.gridy = m.getPoint().getY() + 144;
@@ -174,19 +209,11 @@ public class MainFrame extends JFrame {
 			
 			Point p = new Point(m.getPoint().getX() + 144, m.getPoint().getY() + 144);
 			butCord.put(but, p);
-			
-			but.setIcon(new ImageIcon(imgGet.getImageByTile(m.getTile())));
-			
-			newBut.add(but);			
+			addButton(but);
 		}
 		
-		for(JButton b : newBut) {
-			addButton(b);
-		}
+		reload();
 		
-
-		this.repaint();
-		this.revalidate();
 	}
 
 	public void addButton(JButton but) {
@@ -250,6 +277,10 @@ public class MainFrame extends JFrame {
 					tils.get(0).setEnabled(false);
 					source.setIcon(new ImageIcon(imgGet.getImageByTile(tiles.get(handTiles.indexOf(tils.get(0))))));
 					moveSet.add(new Move(butCord.get(source), tiles.get(handTiles.indexOf(tils.get(0)))));
+					GridBagConstraints gbc_source = new GridBagConstraints();
+					gbc_source.gridx =  butCord.get(source).getX();
+					gbc_source.gridy =  butCord.get(source).getY();
+					butInf.put(source, gbc_source);
 					addButton(source);
 				}
 				
@@ -260,10 +291,8 @@ public class MainFrame extends JFrame {
 		gbc_but.gridx = p.getX();
 		gbc_but.gridy = p.getY();
 		buttons.add(but, gbc_but);
-		butInf.put(but, gbc_but);
 		butCord.put(but, p);
 		
-
 		this.repaint();
 		this.revalidate();
 	}
@@ -434,7 +463,8 @@ public class MainFrame extends JFrame {
 		gbc_panelScore.gridy = 1;
 		contentPane.add(panelScore, gbc_panelScore);
 
-		scoreboard = new JLabel();
+		scoreboard = new JTextArea();
+		scoreboard.setEditable(false);
 		scoreboard.setMinimumSize(new Dimension(150, 150));
 		scoreboard.setPreferredSize(new Dimension(150, 150));
 		scoreboard.setMaximumSize(new Dimension(150, 150));
@@ -596,7 +626,6 @@ public class MainFrame extends JFrame {
 		gbc_btnUndo.gridy = 3;
 		gbc_btnUndo.anchor = GridBagConstraints.NORTH;
 		panelHand.add(btnUndo, gbc_btnUndo);
-
 	}
 	
 	/*========================

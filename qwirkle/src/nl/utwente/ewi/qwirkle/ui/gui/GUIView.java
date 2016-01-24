@@ -123,8 +123,8 @@ public class GUIView implements UserInterface {
 		mFrame.setTextArea(message, s);
 	}
 
-	public void updateBoard(List<Move> moves) {
-		mFrame.addButton(moves);
+	public void updateBoard(Map<Point, Tile> board) {
+		mFrame.update(board);
 	}
 	
 	public void handleProblemWithMove(){

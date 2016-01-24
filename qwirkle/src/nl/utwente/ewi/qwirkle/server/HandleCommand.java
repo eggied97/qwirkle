@@ -129,8 +129,6 @@ public class HandleCommand {
 						setWentWell(false);
 						return;
 				}
-				//TODO hoort deze i++ hier wel? -Egbert
-				i++;
 			}
 			ch.setFeatures(features);
 			IProtocol.Feature[] featAr = new IProtocol.Feature[features.size()];
@@ -274,7 +272,7 @@ public class HandleCommand {
 	public void handleMovePut(String[] strAy, ClientHandler ch) {
 
 		if (!ch.getGame().hasTurn(ch)) {
-			// TODO may be error? -Egbert
+			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.MOVE_INVALID, "Not your turn!"));
 			return;
 		}
 
@@ -444,7 +442,7 @@ public class HandleCommand {
 				}
 			}
 		}
-		Protocol.getInstance().serverError(IProtocol.Error.INVALID_CHANNEL);
+		ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_CHANNEL));
 	}
 
 	/**
