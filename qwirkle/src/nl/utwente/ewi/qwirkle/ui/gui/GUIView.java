@@ -152,6 +152,11 @@ public class GUIView implements UserInterface {
 		
 	}
 	
+	public void resetAfterMatchDone(){
+		mFrame.setVisible(false);
+		connectPanelFrame.setVisible(true);
+	}
+	
 	@Override
 	public void setCallback(UserInterfaceCallback callback) {
 		this.callback = callback;

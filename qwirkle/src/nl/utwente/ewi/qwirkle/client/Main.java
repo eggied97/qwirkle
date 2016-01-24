@@ -67,6 +67,12 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		this.UI.setCallback(this);
 
 		prot = Protocol.getInstance();
+		
+		
+		if(this.UI instanceof GUIView){
+			((GUIView)this.UI).resetAfterMatchDone();
+		}
+		
 		enterQueue();
 	}
 

@@ -150,101 +150,101 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			String[] args = Arrays.copyOfRange(results, 1, results.length);
 
 			switch (results[0]) {
-			case IProtocol.SERVER_TURN:
-				if (args.length != 1) {
-					throw new TooFewArgumentsException(args.length);
-				}
-
-				handleTurnChange(args[0]);
-				break;
-
-			case IProtocol.SERVER_DRAWTILE:
-
-				if (nextDrawNeedToRemoveTiles) {
-					if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
-						turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
-					} else {
-						// TODO is socket player -> throw error
+				case IProtocol.SERVER_TURN:
+					if (args.length != 1) {
+						throw new TooFewArgumentsException(args.length);
 					}
-				}
-
-				handleDrawTile(args);
-				break;
-
-			case IProtocol.SERVER_GAMEEND:
-				if (args.length != players.size()) {
-					throw new TooFewArgumentsException(args.length);
-				}
-
-				handleGameEnd(args);
-				break;
-
-			case IProtocol.SERVER_PASS:
-				if (args.length != 1) {
-					throw new TooFewArgumentsException(args.length);
-				}
-
-				handlePass(args[0]);
-				break;
-
-			case IProtocol.SERVER_MOVE_PUT:
-				if (args.length < 1) {
-					throw new TooFewArgumentsException(args.length);
-				}
-
-				handleMovePut(args);
-				break;
-
-			case IProtocol.SERVER_MOVE_TRADE:
-				if (args.length < 1) {
-					throw new TooFewArgumentsException(args.length);
-				}
-
-				handleMoveTradeFromOpponent(args);
-
-				break;
-
-			case IProtocol.SERVER_CHAT:
-				if (args.length < 3) {
-					throw new TooFewArgumentsException(args.length);
-				}
-
-				handleIncommingChatMessage(args);
-				break;
-				
-			case IProtocol.SERVER_ERROR:
-				// TODO INVALID_CHANNEL wordt niet gestuurt vanuit server :/
-				if (args.length < 1) {
-					throw new TooFewArgumentsException(args.length);
-				}
-
-				switch (IProtocol.Error.valueOf(args[0])) {
-				case MOVE_INVALID:
-					this.UI.showError("The move you made was invalid.");
-					handleProblemWithMove();
+	
+					handleTurnChange(args[0]);
 					break;
-
-				case MOVE_TILES_UNOWNED:
-					this.UI.showError("The move you made was using tiles that you did not own.");
-					handleTurn(true);
+	
+				case IProtocol.SERVER_DRAWTILE:
+	
+					if (nextDrawNeedToRemoveTiles) {
+						if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
+							turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
+						} else {
+							// TODO is socket player -> throw error
+						}
+					}
+	
+					handleDrawTile(args);
 					break;
-
-				case TRADE_FIRST_TURN:
-					this.UI.showError("You wanted to trade on your first turn, you cant do this.");
-					handleTurn(true);
-				
-
-				case INVALID_CHANNEL:
-					this.UI.showError(
-							"You wanted to send a message to a unknow channel. \n Usernames are uppercase specific , or use `global`.");
-					handleTurn(true);
+	
+				case IProtocol.SERVER_GAMEEND:
+					if (args.length - 1 != players.size()) {
+						throw new TooFewArgumentsException(args.length);
+					}
+	
+					handleGameEnd(args);
 					break;
-
-				default:
+	
+				case IProtocol.SERVER_PASS:
+					if (args.length != 1) {
+						throw new TooFewArgumentsException(args.length);
+					}
+	
+					handlePass(args[0]);
 					break;
-				}
-
-				break;
+	
+				case IProtocol.SERVER_MOVE_PUT:
+					if (args.length < 1) {
+						throw new TooFewArgumentsException(args.length);
+					}
+	
+					handleMovePut(args);
+					break;
+	
+				case IProtocol.SERVER_MOVE_TRADE:
+					if (args.length < 1) {
+						throw new TooFewArgumentsException(args.length);
+					}
+	
+					handleMoveTradeFromOpponent(args);
+	
+					break;
+	
+				case IProtocol.SERVER_CHAT:
+					if (args.length < 3) {
+						throw new TooFewArgumentsException(args.length);
+					}
+	
+					handleIncommingChatMessage(args);
+					break;
+					
+				case IProtocol.SERVER_ERROR:
+					// TODO INVALID_CHANNEL wordt niet gestuurt vanuit server :/
+					if (args.length < 1) {
+						throw new TooFewArgumentsException(args.length);
+					}
+	
+					switch (IProtocol.Error.valueOf(args[0])) {
+						case MOVE_INVALID:
+							this.UI.showError("The move you made was invalid.");
+							handleProblemWithMove();
+							break;
+		
+						case MOVE_TILES_UNOWNED:
+							this.UI.showError("The move you made was using tiles that you did not own.");
+							handleTurn(true);
+							break;
+		
+						case TRADE_FIRST_TURN:
+							this.UI.showError("You wanted to trade on your first turn, you cant do this.");
+							handleTurn(true);
+						
+		
+						case INVALID_CHANNEL:
+							this.UI.showError(
+									"You wanted to send a message to a unknow channel. \n Usernames are uppercase specific , or use `global`.");
+							handleTurn(true);
+							break;
+		
+						default:
+							break;
+					}
+	
+					break;
 			}
 		} catch (TooFewArgumentsException e) {
 			this.UI.showError("Something went bad with the protocol message : " + e.getMessage());
