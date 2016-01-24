@@ -278,6 +278,12 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		
 	}
 
+	@Override
+	public void quit() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }

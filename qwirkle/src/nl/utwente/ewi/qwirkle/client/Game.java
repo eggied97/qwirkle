@@ -575,6 +575,11 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			case "c":	
 				this.UI.askForChatMessage();
 				break;
+				
+			case "q":
+				quit();
+				break;
+				
 			default:
 				this.UI.showError("Wrong argument.");
 				handleTurn(true);
@@ -658,6 +663,24 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		List<Move> hint = new DumbStrategy().determineMove(board, turnPlayer.getHand());
 		
 		this.UI.printMessage(hint.get(0).toString());
+	}
+
+	@Override
+	public void quit() {
+		//send message and go back to the mein menu
+		c.sendMessage(Protocol.getInstance().clientQuit());
+		playing = false;
+		
+		Player me = null;
+		
+		for(Player p : players){
+			if(p instanceof HumanPlayer || p instanceof ComputerPlayer){
+				me = p;
+			}
+		}
+		
+		new Main(me, c, this.UI, this.serverFeatures);
+		
 	}
 
 }

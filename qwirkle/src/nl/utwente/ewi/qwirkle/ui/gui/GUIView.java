@@ -87,10 +87,7 @@ public class GUIView implements UserInterface {
 	
 	
 
-	@Override
-	public void printMessage(String message) {
-		mFrame.setMessageLabel(message);		
-	}
+
 
 	public void showScore(List<Player> players) {
 		String result = "";
@@ -205,6 +202,11 @@ public class GUIView implements UserInterface {
 	@Override
 	public void playerTraded(Player p, int noOfTilesTraded) {
 		// TODO Auto-generated method stub		
+	}
+	
+	@Override
+	public void printMessage(String message) {
+		mFrame.setMessageLabel(message);		
 	}
 
 	@Override

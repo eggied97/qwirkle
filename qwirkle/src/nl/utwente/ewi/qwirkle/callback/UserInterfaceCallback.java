@@ -49,4 +49,6 @@ public interface UserInterfaceCallback {
 	public void sendChat(String msg);
 	
 	public void printHint();
+	
+	public void quit();
 }

@@ -607,6 +607,7 @@ public class MainFrame extends JFrame {
 		JButton btnHelp = new JButton("Hint");
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				askForHint();
 			}
 		});
 		GridBagConstraints gbc_btnHelp = new GridBagConstraints();
@@ -633,7 +634,12 @@ public class MainFrame extends JFrame {
 	 * =======================
 	 * */
 	
-	public void handleChat(String message) {
+	private void askForHint(){
+		this.callback.printHint();
+	}
+	
+	
+	private void handleChat(String message) {
 		String channel = "global";
 		if(message.charAt(0) != '@') {
 			message = channel + " " + message;
@@ -641,7 +647,7 @@ public class MainFrame extends JFrame {
 		this.callback.sendChat(message);
 	}
 	
-	public void handleMove(List<Move> moveSet) {
+	private void handleMove(List<Move> moveSet) {
 		for(Move m : moveSet) {
 			m.getPoint().setX(m.getPoint().getX() - 144);
 			m.getPoint().setY(m.getPoint().getY() - 144);
@@ -650,7 +656,7 @@ public class MainFrame extends JFrame {
 		this.callback.putMove(moveSet);
 	}
 	
-	public void handleTrade(List<Tile> tiles) {
+	private void handleTrade(List<Tile> tiles) {
 		this.callback.putTrade(tiles);
 	}
 }

@@ -46,7 +46,7 @@ public class Move {
 	}
 
 	public String toString() {
-		return String.format(this.tile.toString()+"@%i,%i", this.getPoint().getX(), this.getPoint().getY());
+		return String.format(this.tile.toString()+"@%d,%d", this.getPoint().getX(), this.getPoint().getY());
 	}
 
 }
