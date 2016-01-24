@@ -41,11 +41,11 @@ public class GUIView implements UserInterface {
 
 	private UserInterfaceCallback callback;
 	
-	public GUIView(UserInterfaceCallback callback) { //var needed in callback, because our frame needs it :/
+	public GUIView() { //var needed in callback, because our frame needs it :/
 		img = new imageGetter();
-		
-		setCallback(callback);
-		
+	}
+	
+	public void setup(UserInterfaceCallback callback) {
 		connectPanelFrame = new ConnectPanel(this.callback);
 		connectPanelFrame.setVisible(true);
 		
