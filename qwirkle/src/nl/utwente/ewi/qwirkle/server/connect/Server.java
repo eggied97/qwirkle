@@ -193,6 +193,8 @@ public class Server {
 	public void startGame(List<ClientHandler> list) {
 		List<Player> players = new ArrayList<>();
 		for(ClientHandler ch : list) {
+			ch.getPlayer().newGame(); //So we start of clean
+			
 			players.add(ch.getPlayer());
 		}
 		Game game = new Game(list);

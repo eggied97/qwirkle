@@ -45,6 +45,10 @@ public abstract class Player {
 
 	public abstract String sendChat();
 
+	public void newGame(){
+		this.hand.clear();
+		this.score = 0;
+	}
 
 	/**
 	 * Adds a list of tiles obtained from the bag to the hand of the player.

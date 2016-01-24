@@ -54,11 +54,13 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	}
 
 	// after a match
-	public Main(Player me, Client server, UserInterface ui) {
+	public Main(Player me, Client server, UserInterface ui, List<IProtocol.Feature> usingFeatures) {
 		this.me = me;
 		this.server = server;
 		this.server.setCallback(this);
 		this.UI = ui;
+		
+		this.usingFeatures = usingFeatures;
 		
 		this.UI.setCallback(this);
 
@@ -98,7 +100,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		String[] args = Arrays.copyOfRange(results, 1, results.length);
 
 		switch (command) {
-			case IProtocol.SERVER_IDENITFY:
+			case IProtocol.SERVER_IDENTIFY:
 				handleServerIdentify(args);
 				break;
 	
@@ -169,6 +171,8 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 			}
 		}
 
+		me.newGame(); //so we start clear on a possible new match
+		
 		Game g = new Game(UI, playersInGame, server, usingFeatures);
 		server.setCallback(g);
 		UI.setCallback(g);

@@ -43,6 +43,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	private Player turnPlayer;
 
 	Map<IProtocol.Feature, Boolean> featuresEnabled;
+	List<IProtocol.Feature> serverFeatures;
 
 	boolean isFirstRound = true;
 	int turnCount = 0;
@@ -75,8 +76,10 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			this.UI.askForPlayOrExchange();
 		}
 
-		// TODO check if this is fast enough to get the turn message
-		c.setCallback(this);
+		c.setCallback(this); //set the callback so we receive messages from the server
+		
+		this.serverFeatures = new ArrayList<>();
+		this.serverFeatures.addAll(serverFeatures);
 
 		featuresEnabled = new HashMap<>();
 		checkFeatures(serverFeatures);
@@ -160,7 +163,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 					break;
 	
 				case IProtocol.SERVER_GAMEEND:
-					if (args.length != players.size()) {
+					if (args.length - 1 != players.size()) {
 						throw new TooFewArgumentsException(args.length);
 					}
 	
@@ -510,7 +513,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			}
 		}
 		
-		new Main(me, c, this.UI);
+		new Main(me, c, this.UI, this.serverFeatures);
 	}
 
 	/**
