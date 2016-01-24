@@ -132,7 +132,7 @@ public class GUIView implements UserInterface {
 	}
 
 	@Override
-	public void showScore(Map<Player, Integer> scoreMap) {
+	public void showScore(Map<Player, Integer> scoreMap, boolean fromGameEnd) {
 		StringBuilder result = new StringBuilder();
 		result.append("SCORE" + "\n");
 		TreeMap<Integer, Player> score = new TreeMap<>();
@@ -198,5 +198,11 @@ public class GUIView implements UserInterface {
 	public void showError(String message) {
 		mFrame.setMessageLabel(message);
 		mFrame.emptyMoveSet();
+	}
+
+	@Override
+	public void askForServerInformation() {
+		// TODO Auto-generated method stub
+		
 	}
 }

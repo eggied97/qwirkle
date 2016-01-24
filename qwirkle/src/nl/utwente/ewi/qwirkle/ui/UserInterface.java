@@ -10,6 +10,8 @@ import nl.utwente.ewi.qwirkle.model.player.Player;
 
 public interface UserInterface {
 	// Protocol
+	public void askForServerInformation();
+	
 	public void askForLogin(); // TODO maybe verander deze method name
 
 	public void askQueueWithHowManyPlayers();
@@ -20,7 +22,7 @@ public interface UserInterface {
 
 	public void printMessage(String message);
 
-	public void showScore(Map<Player, Integer> scoreMap);
+	public void showScore(Map<Player, Integer> scoreMap, boolean fromGameEnd);
 
 	public void showHand(List<Tile> tiles);
 

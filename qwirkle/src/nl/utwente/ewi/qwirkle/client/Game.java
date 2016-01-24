@@ -358,7 +358,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 				scoreMap.put(p, p.getScore());
 			}
 			
-			((GUIView)this.UI).showScore(scoreMap);
+			((GUIView)this.UI).showScore(scoreMap, false);
 			((GUIView)this.UI).updateBoard(aMoves);
 		}
 	}
@@ -494,10 +494,12 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		}
 
 		this.UI.printMessage("Win by " + (errorOrWin.equals("WIN") ? "win" : "error") + " :");
-		this.UI.showScore(scoreMap);
+		this.UI.showScore(scoreMap, true);
 
 		playing = false;
 
+		
+		//TODO create new main
 	}
 
 	/**
@@ -552,7 +554,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 				
 				//TODO sort map
 				
-				this.UI.showScore(scoreMap);
+				this.UI.showScore(scoreMap, false);
 				break;
 				
 			case "c":	
@@ -633,6 +635,12 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		}
 
 		c.sendMessage(Protocol.getInstance().clientChat(msgs[0], builder.toString()));
+	}
+
+	@Override
+	public void setupServer(String serverInformation) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

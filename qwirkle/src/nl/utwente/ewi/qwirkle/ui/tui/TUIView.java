@@ -26,6 +26,7 @@ import nl.utwente.ewi.qwirkle.ui.UserInterface;
 
 public class TUIView implements UserInterface, UserInputCallback {
 
+	private static final String QUESTION_FOR_SERVERINFORMATION = "With what server doe you want to connect? (format : ip@port )";
 	private static final String QUESTION_ASK_NAME = "What is your name? ";
 	private static final String QUESTION_QUEUE = "With how many players would you like to play (2-4)? ( format: 2,3 )";
 	private static final String QUESTION_PLAY_OR_EXHANGE = "Do you want to play a Tile, or exhange a Tile, see the score or chat? (p/e/s/c)";
@@ -40,6 +41,12 @@ public class TUIView implements UserInterface, UserInputCallback {
 	public TUIView() {
 		UIT = new UserInputThread(this);
 		UIT.start();
+	}
+	
+	@Override
+	public void askForServerInformation() {
+		this.UIT.setInputState(InputState.FORSERVERINFORMATION);
+		this.printMessage(QUESTION_FOR_SERVERINFORMATION);		
 	}
 
 	@Override
@@ -76,9 +83,12 @@ public class TUIView implements UserInterface, UserInputCallback {
 	}
 
 	@Override
-	public void showScore(Map<Player, Integer> scoreMap) {
-		printMessage("Game was ended, score:");
-
+	public void showScore(Map<Player, Integer> scoreMap, boolean fromGameEnd) {
+		
+		if(fromGameEnd){
+			printMessage("Game was ended, score:");
+		}
+		
 		for (Entry e : scoreMap.entrySet()) {
 			printMessage(((Player) e.getKey()).getName() + " has a score of: " + e.getValue());
 		}
@@ -131,6 +141,10 @@ public class TUIView implements UserInterface, UserInputCallback {
 	@Override
 	public void handlePlayerInput(String input, InputState state) {
 		switch (state) {
+			case FORSERVERINFORMATION:
+				callback.setupServer(input);				
+				break;
+		
 			case FORLOGIN:
 				String name = input;
 				Player p;
@@ -199,6 +213,8 @@ public class TUIView implements UserInterface, UserInputCallback {
 				break;
 		}
 	}
+
+
 	
 	
 }

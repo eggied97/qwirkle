@@ -91,10 +91,12 @@ public class Server {
 	 * Starts looking for <code> Clients </code> that want to connect to the <code> Server </code>
 	 */
 	public void run() {
+		//TODO while notvalid port
 		try {
 			serverSock = new ServerSocket(port);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("this port is already in use, use another one.");
+			determinePort();
 		}
 
 		while (true) {
@@ -109,6 +111,10 @@ public class Server {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private void determinePort(){
+		
 	}
 	
 	/**

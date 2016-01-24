@@ -18,17 +18,13 @@ public class Client extends Thread {
 	private BufferedWriter out;
 	private ResultCallback rc = null;
 
-	public Client(InetAddress host, int port) {
+	public Client(InetAddress host, int port) throws IOException {
 		this.clientName = host.getHostAddress();
 
-		try {
-			this.sock = new Socket(host, port);
-			this.systemIn = new BufferedReader(new InputStreamReader(System.in));
-			this.in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-			this.out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
-		} catch (IOException e) {
-			System.out.println("Could not create a socket on " + host + " and port " + port);
-		}
+		this.sock = new Socket(host, port);
+		this.systemIn = new BufferedReader(new InputStreamReader(System.in));
+		this.in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+		this.out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
 	}
 
 	public void setCallback(ResultCallback aRC) {
@@ -43,7 +39,7 @@ public class Client extends Thread {
 				}
 			}
 		} catch (IOException e) {
-			//server closed
+			// server closed
 			System.out.println("Server disconnected");
 			System.exit(0);
 		}
