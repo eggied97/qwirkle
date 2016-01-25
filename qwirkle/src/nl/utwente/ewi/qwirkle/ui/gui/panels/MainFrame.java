@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollBar;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.Style;
@@ -56,6 +57,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import javax.swing.ScrollPaneConstants;
 import java.awt.CardLayout;
+import java.awt.Color;
 
 public class MainFrame extends JFrame {
 
@@ -115,6 +117,9 @@ public class MainFrame extends JFrame {
 		rp.setDefaultButton(btnSend);
 	}
 
+	/**
+	 * Initialize the lists and maps
+	 */
 	private void init() {
 		butInf = new HashMap<>();
 		moveSet = new ArrayList<>();
@@ -124,6 +129,9 @@ public class MainFrame extends JFrame {
 		handTiles = new ArrayList<>();
 	}
 	
+	/**
+	 * Initialize the board panel
+	 */
 	private void initBoard() {
 		JPanel panelBoard = new JPanel();
 		GridBagConstraints gbc_panelBoard = new GridBagConstraints();
@@ -146,6 +154,9 @@ public class MainFrame extends JFrame {
 
 	}
 	
+	/**
+	 * Initialize the chat panel
+	 */
 	private void initChat() {
 		JPanel panelChat = new JPanel();
 		GridBagConstraints gbc_panelChat = new GridBagConstraints();
@@ -194,6 +205,9 @@ public class MainFrame extends JFrame {
 		panelChat.add(btnSend, gbc_btnSend);
 	}
 	
+	/**
+	 * Initialize the hand panel
+	 */
 	private void initHand() {
 		JPanel panelHand = new JPanel();
 		GridBagConstraints gbc_panelHand = new GridBagConstraints();
@@ -269,6 +283,9 @@ public class MainFrame extends JFrame {
 
 	}
 	
+	/**
+	 * Initialize the score panel
+	 */
 	private void initScore() {
 		JPanel panelScore = new JPanel();
 		GridBagConstraints gbc_panelScore = new GridBagConstraints();
@@ -287,6 +304,9 @@ public class MainFrame extends JFrame {
 		panelScore.add(scoreboard);
 	}
 	
+	/**
+	 * Sets the ActionListeners for the components
+	 */
 	private void setActionListeners() {
 		btnSend.addActionListener(new ActionListener() {
 			@Override
@@ -366,9 +386,20 @@ public class MainFrame extends JFrame {
 		});	
 	}
 	
+	/**
+	 * Update the board panel according to the newest situation
+	 * @param board
+	 */
 	public void update(Map<Point, Tile> board) {
+		List<Point> newPoint = new ArrayList<>();
+		for(Point p: this.board.keySet()) {
+			if(!board.keySet().contains(p)) {
+				newPoint.add(p);
+			}
+		}
 		this.board = board;
 		if (!(board.size() == 0)) {
+			
 			buttons.removeAll();
 			butInf.clear();
 			butCord.clear();
@@ -390,6 +421,13 @@ public class MainFrame extends JFrame {
 			for (JButton b : butInf.keySet()) {
 				checkForEmptyButton(b);
 			}
+			for(Point p : newPoint) {
+				for(Entry<JButton, Point> e : butCord.entrySet()) {
+					if(e.getValue().equals(p)) {
+						e.getKey().setBorder(new LineBorder(Color.RED, 12));
+					}
+				}
+			}
 		} else {
 			buttons.removeAll();
 			butInf.clear();
@@ -403,7 +441,10 @@ public class MainFrame extends JFrame {
 
 	}
 
-
+	/**
+	 * Creates the points next to this button
+	 * @param but
+	 */
 	private void checkForEmptyButton(JButton but) {
 		Point p = butCord.get(but);
 		
@@ -421,6 +462,10 @@ public class MainFrame extends JFrame {
 		checkSide(down);
 	}
 
+	/**
+	 * Checks the point for a button
+	 * @param p
+	 */
 	private void checkSide(Point p) {
 		boolean unoccupied = true;
 		for(JButton b : butCord.keySet()) {
@@ -433,6 +478,10 @@ public class MainFrame extends JFrame {
 		}
 	}
 	
+	/**
+	 * Adds a button on this point
+	 * @param p
+	 */
 	private void addButton(Point p) {
 		but = new JButton();
 		but.addActionListener(new ActionListener() {
@@ -474,6 +523,9 @@ public class MainFrame extends JFrame {
 		this.revalidate();
 	}
 
+	/**
+	 * Add the start button
+	 */
 	private void addStartButton() {
 		start = (new JButton());
 		start.addActionListener(new ActionListener() {
@@ -510,38 +562,58 @@ public class MainFrame extends JFrame {
 
 	}
 	
+	/**
+	 * Empty the move set
+	 */
 	public void emptyMoveSet() {
 		this.moveSet.clear();
 	}
 
-	
+	/**
+	 * Returns true whether or not this player has the turn
+	 * @return
+	 */
 	public boolean hasTurn() {
 		return this.turn;
 	}
 
-	
+	/**
+	 * Sets the current tiles in his hand
+	 * @param tiles
+	 */
 	public void setTiles(List<Tile> tiles) {
 		this.tiles = tiles;
 
 		emptyMoveSet();
 	}
 
-	
+	/**
+	 * Sets the callback
+	 * @param callback
+	 */
 	public void setCallback(UserInterfaceCallback callback) {
 		this.callback = callback;
 	}
 
-	
+	/**
+	 * Undo the last move
+	 */
 	public void undoMoves() {
 		update(board);
 	}
 
-	
+	/**
+	 * Returns the list of tiles in the hand
+	 * @return
+	 */
 	public List<JToggleButton> getHandTiles() {
 		return handTiles;
 	}
 
-	
+	/**
+	 * Sets the message to the label
+	 * @param message
+	 */
 	public void setMessageLabel(String message) {
 		if (message.equals("It's your turn now")) {
 			turn = true;
@@ -549,10 +621,19 @@ public class MainFrame extends JFrame {
 		messageLabel.setText(message);
 	}
 
+	/**
+	 * Returns the text area
+	 * @return
+	 */
 	public JTextPane getTextArea() {
 		return textArea;
 	}
 
+	/**
+	 * Sets the text area and style the text
+	 * @param message
+	 * @param s
+	 */
 	public void setTextArea(String message, Style s) {
 		try {
 			doc.insertString(doc.getLength(), message + "\n", s);
@@ -562,14 +643,25 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Sets the scoreboard
+	 * @param score
+	 */
 	public void setScoreboard(String score) {
 		scoreboard.setText(score);
 	}
 
+	/**
+	 * Ask for a hint
+	 */
 	private void askForHint() {
 		this.callback.printHint();
 	}
 
+	/**
+	 * Handles a chat message
+	 * @param message
+	 */
 	private void handleChat(String message) {
 		String channel = "global";
 		if (message.charAt(0) != '@') {
@@ -578,6 +670,10 @@ public class MainFrame extends JFrame {
 		this.callback.sendChat(message);
 	}
 
+	/**
+	 * Handle a move
+	 * @param moveSet
+	 */
 	private void handleMove(List<Move> moveSet) {
 		for (Move m : moveSet) {
 			m.getPoint().setX(m.getPoint().getX() - 144);
@@ -587,6 +683,10 @@ public class MainFrame extends JFrame {
 		this.callback.putMove(moveSet);
 	}
 
+	/**
+	 * Handle a trade
+	 * @param tiles
+	 */
 	private void handleTrade(List<Tile> tiles) {
 		this.callback.putTrade(tiles);
 	}
