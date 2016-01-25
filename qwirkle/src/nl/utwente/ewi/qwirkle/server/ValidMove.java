@@ -61,7 +61,7 @@ public class ValidMove {
 			if (b.getTile(i, dY) != null) {
 				tileSetXR.add(b.getTile(i, dY));
 			} else {
-				i = dX + 6;
+				i = dX + 7;
 			}
 		}
 		// Horizontal line left of the point
@@ -69,7 +69,7 @@ public class ValidMove {
 			if (b.getTile(i, dY) != null) {
 				tileSetXL.add(b.getTile(i, dY));
 			} else {
-				i = dX - 6;
+				i = dX - 7;
 			}
 		}
 		// Test if the two horizontal rows can be combined
@@ -86,7 +86,7 @@ public class ValidMove {
 			if (b.getTile(dX, i) != null) {
 				tileSetYR.add(b.getTile(dX, i));
 			} else {
-				i = dY - 6;
+				i = dY - 7;
 			}
 		}
 		// Vertical line below of the point
@@ -94,7 +94,7 @@ public class ValidMove {
 			if (b.getTile(dX, i) != null) {
 				tileSetYL.add(b.getTile(dX, i));
 			} else {
-				i = dY + 6;
+				i = dY + 7;
 			}
 		}
 		// Test if the two vertical columns can be combined
@@ -148,6 +148,10 @@ public class ValidMove {
 		if (!(validPointsX(moves) || validPointsY(moves))) {
 			return false;
 		}
+		
+		if(!validRow(moves, b)) {
+			
+		}
 
 		Board boardCopy = b.deepCopy();
 		// Validate every move and put it on the board if it is valid
@@ -156,6 +160,39 @@ public class ValidMove {
 				boardCopy.putTile(m.getPoint().getX(), m.getPoint().getY(), m.getTile());
 			} else {
 				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean validRow(List<Move> moves, Board b) {
+		if(validPointsX(moves) && validPointsY(moves)) {
+			return true;
+		} else if (validPointsX(moves)) {
+			int y = moves.get(0).getPoint().getY();
+			int max = -144;
+			int min = 144;
+			for(Move m : moves) {
+				max = Math.max(m.getPoint().getX(), max);
+				min = Math.min(m.getPoint().getX(), min);
+			}
+			for(int i = min; i < max; i++) {
+				if(b.getTile(i, y) == null) {
+					return false;
+				}
+			}
+		} else if(validPointsY(moves)) {
+			int x = moves.get(0).getPoint().getX();
+			int max = -144;
+			int min = 144;
+			for(Move m : moves) {
+				max = Math.max(m.getPoint().getY(), max);
+				min = Math.min(m.getPoint().getY(), min);
+			}
+			for(int i = min; i < max; i++) {
+				if(b.getTile(x, i) == null) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -170,7 +207,7 @@ public class ValidMove {
 	//@requires moves != null;
 
 	public boolean validPointsX(List<Move> moves) {
-		for (int i = 0; i < moves.size() - 1; i++) {
+		for (int i = 0; i < moves.size(); i++) {
 			if (moves.get(i).getPoint().getX() != moves.get(i + 1).getPoint().getX()) {
 				printDEBUG("Tiles don't fit together");
 				return false;
@@ -186,7 +223,7 @@ public class ValidMove {
 	 * @return
 	 */
 	public boolean validPointsY(List<Move> moves) {
-		for (int i = 0; i < moves.size() - 1; i++) {
+		for (int i = 0; i < moves.size(); i++) {
 			if (moves.get(i).getPoint().getY() != moves.get(i + 1).getPoint().getY()) {
 				printDEBUG("Tiles don't fit together");
 				return false;
