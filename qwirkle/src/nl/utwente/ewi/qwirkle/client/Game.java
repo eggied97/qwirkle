@@ -25,6 +25,7 @@ import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.exceptions.InvalidServerResponseException;
+import nl.utwente.ewi.qwirkle.model.exceptions.PlayerNotInGameException;
 import nl.utwente.ewi.qwirkle.model.exceptions.TooFewArgumentsException;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
@@ -266,13 +267,15 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 				break;
 			}
-		} catch (TooFewArgumentsException | InvalidServerResponseException e) {
+		} catch (TooFewArgumentsException | InvalidServerResponseException | PlayerNotInGameException e) {
 			this.UI.showError("Something went bad with the protocol message : " + e.getMessage());
 		}
 	}
 
+	/**
+	 * Used when there was a invalid move.
+	 */
 	private void handleProblemWithMove() {
-
 		if (this.UI instanceof GUIView) {
 			((GUIView) this.UI).handleProblemWithMove();
 		}
@@ -290,7 +293,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		Boolean isGlobal = args[0].equals("global");
 		String sender = args[1];
 
-		// only handle this if we ddidnt send this
+		// only handle this if we didnt send this
 		if (!(getPlayerByName(sender) instanceof HumanPlayer)) {
 
 			String message = Arrays.copyOfRange(args, 2, args.length).toString();
@@ -419,7 +422,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		} else if (turnPlayer instanceof ComputerPlayer) {
 			handleTurnPcPlayer();
 		} else {
-			if(this.UI instanceof TUIView) {
+			if (this.UI instanceof TUIView) {
 				this.UI.printMessage("Turn changed, its " + turnPlayer.getName() + " turn now");
 			} else {
 				this.UI.printMessage(turnPlayer.getName() + "'s turn");
@@ -428,7 +431,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	}
 
 	/**
-	 * Handles the pc turn, see
+	 * Handles the pc turn, for the timed excecution see
 	 * http://stackoverflow.com/questions/20500003/setting-a-maximum-execution-
 	 * time-for-a-method-thread .
 	 */
@@ -445,9 +448,8 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		executor.shutdown(); // close it so nothing can join it
 
 		try {
-			future.get(((ComputerPlayer) turnPlayer).getTime(), TimeUnit.SECONDS);// set
-																					// waiting
-																					// time
+			// set waiting time
+			future.get(((ComputerPlayer) turnPlayer).getTime(), TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			System.out.println("job was interrupted");
 		} catch (ExecutionException e) {
@@ -455,9 +457,17 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		} catch (TimeoutException e) {
 			future.cancel(true); // interrupt it, because it took too long
 
-			// the AI took too long, now trade its first stone
+			// Player took too long -> we trade the first tile in our hand as
+			// our move
+			tilesThatNeedToBeRemoved = new ArrayList<>();
+			tilesThatNeedToBeRemoved.add(turnPlayer.getHand().get(0));
+			nextDrawNeedToRemoveTiles = true;
+
+			c.sendMessage(Protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
+
 		}
 
+		// TODO check how this works out
 		// wait all unfinished tasks for 2 sec
 		try {
 			if (!executor.awaitTermination(2, TimeUnit.SECONDS)) {
@@ -469,6 +479,9 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		}
 	}
 
+	/**
+	 * determines the move of the Computer player.
+	 */
 	private void doPcTurn() {
 		List<Move> moves = turnPlayer.determinePutMove(board);
 
@@ -537,7 +550,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	 * @param args
 	 *            - name of players with the score
 	 */
-	private void handleGameEnd(String[] args) {
+	private void handleGameEnd(String[] args) throws TooFewArgumentsException, PlayerNotInGameException {
 		Map<Player, Integer> scoreMap = new HashMap<>();
 
 		String errorOrWin = args[0];
@@ -548,7 +561,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			String[] scoreNaam = a.split(",");
 
 			if (scoreNaam.length != 2) {
-				// TODO throw error
+				throw new TooFewArgumentsException(scoreNaam.length);
 			}
 
 			Player p = getPlayerByName(scoreNaam[1]);
@@ -556,16 +569,16 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			if (p != null) {
 				scoreMap.put(p, Integer.parseInt(scoreNaam[0]));
 			} else {
-				// TODO throw error
+				throw new PlayerNotInGameException(scoreNaam[1]);
 			}
 		}
+
+		// TODO order the map
 
 		this.UI.printMessage("Win by " + (errorOrWin.equals("WIN") ? "win" : "error") + " :");
 		this.UI.showScore(scoreMap, true);
 
 		playing = false;
-
-		// TODO create new main
 
 		Player me = null;
 
@@ -595,58 +608,69 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		return null;
 	}
 
+	/*
+	 * ===================
+	 * Callback methods
+	 * ===================
+	 * */
+	
 	@Override
-	public void login(Player p) {
-	} // not called
+	public void login(Player p) {} // not called
+	
+	@Override
+	public void setupServer(String serverInformation) {}// not used
 
 	@Override
-	public void queue(int[] queue) {
-	} // not called
+	public void queue(int[] queue) {} // not called
+	
+
+	@Override
+	public void setAITime(int time) {} // not used
 
 	@Override
 	public void determinedAction(String action) {
 		switch (action) {
-		case "p":
-			if (turnPlayer instanceof HumanPlayer) {
-				this.UI.askForMove();
-			} else {
-				this.UI.showError("Wait for your turn");
-			}
-
-			break;
-		case "e":
-			if (turnPlayer instanceof HumanPlayer) {
-				this.UI.askForTrade();
-			} else {
-				this.UI.showError("Wait for your turn");
-			}
-
-			break;
-
-		case "s":
-			Map<Player, Integer> scoreMap = new HashMap<>();
-
-			for (Player p : players) {
-				scoreMap.put(p, p.getScore());
-			}
-
-			// TODO sort map
-
-			this.UI.showScore(scoreMap, false);
-			break;
-
-		case "c":
-			this.UI.askForChatMessage();
-			break;
-
-		case "q":
-			quit();
-			break;
-
-		default:
-			this.UI.showError("Wrong argument.");
-			handleTurn(true);
-			break;
+			case "p":
+				if (turnPlayer instanceof HumanPlayer) {
+					this.UI.askForMove();
+				} else {
+					this.UI.showError("Wait for your turn");
+				}
+	
+				break;
+			case "e":
+				if (turnPlayer instanceof HumanPlayer) {
+					this.UI.askForTrade();
+				} else {
+					this.UI.showError("Wait for your turn");
+				}
+	
+				break;
+	
+			case "s":
+				Map<Player, Integer> scoreMap = new HashMap<>();
+	
+				for (Player p : players) {
+					scoreMap.put(p, p.getScore());
+				}
+	
+				// TODO sort map
+	
+				this.UI.showScore(scoreMap, false);
+				break;
+	
+			case "c":
+				this.UI.askForChatMessage();
+				break;
+	
+			case "q":
+				quit();
+				break;
+	
+			default:
+				this.UI.showError("Wrong argument.");
+				handleTurn(true);
+				break;
 		}
 	}
 
@@ -715,9 +739,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		c.sendMessage(Protocol.getInstance().clientChat(msgs[0], builder.toString()));
 	}
 
-	@Override
-	public void setupServer(String serverInformation) {
-	}// not used
+	
 
 	@Override
 	public void printHint() {
@@ -728,7 +750,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 	@Override
 	public void quit() {
-		// send message and go back to the mein menu
+		// send message and go back to the main menu
 		c.sendMessage(Protocol.getInstance().clientQuit());
 		playing = false;
 
@@ -744,8 +766,5 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 	}
 
-	@Override
-	public void setAITime(int time) {
-	} // not used
 
 }
