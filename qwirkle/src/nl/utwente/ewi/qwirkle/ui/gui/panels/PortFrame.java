@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,23 +32,12 @@ public class PortFrame extends JFrame {
 	private JPanel contentPane;
 	private BufferedImage qwirkle;
 	private UserInterfaceCallback callback;
+	private JButton connect;
+	private JTextField port;
+	private JTextField ip;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PortFrame frame = new PortFrame(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+	
+	
 	/**
 	 * Create the frame.
 	 */
@@ -72,6 +62,15 @@ public class PortFrame extends JFrame {
 			e.printStackTrace();
 		}
 		
+		initComponents();
+		setActionListeners();
+		
+	}
+
+	/**
+	 * Initialize the components
+	 */
+	private void initComponents() {
 		JPanel panel = new JPanel() {
 			@Override
             protected void paintComponent(Graphics g) {
@@ -97,7 +96,7 @@ public class PortFrame extends JFrame {
 		contentPane.add(insPort, gbc_insPort);
 		
 		
-		final JTextField port = new JTextField();
+		port = new JTextField();
 		port.setColumns(1);
 		port.setPreferredSize(new Dimension(150, 35));
 		GridBagConstraints gbc_port = new GridBagConstraints();
@@ -116,7 +115,7 @@ public class PortFrame extends JFrame {
 		gbc_insIP.gridy = 3;
 		contentPane.add(insIP, gbc_insIP);
 		
-		final JTextField ip = new JTextField();
+		ip = new JTextField();
 		ip.setPreferredSize(new Dimension(150, 35));
 		GridBagConstraints gbc_ip = new GridBagConstraints();
 		gbc_ip.fill = GridBagConstraints.BOTH;
@@ -125,7 +124,26 @@ public class PortFrame extends JFrame {
 		gbc_ip.gridy = 3;
 		contentPane.add(ip, gbc_ip);
 		
-		JButton connect = new JButton("Connect to server!");
+		connect = new JButton("Connect to server!");
+		connect.setPreferredSize(new Dimension(150, 35));
+		GridBagConstraints gbc_connect = new GridBagConstraints();
+		gbc_connect.fill = GridBagConstraints.BOTH;
+		gbc_connect.insets = new Insets(0, 0, 0, 5);
+		gbc_connect.gridheight = 2;
+		gbc_connect.gridx = 0;
+		gbc_connect.gridy = 4;
+		gbc_connect.gridwidth = 2;
+		contentPane.add(connect, gbc_connect);
+		this.getRootPane().setDefaultButton(connect);
+	}
+	
+	/**
+	 * Set the ActionListeners
+	 */
+	private void setActionListeners() {
+		/**
+		 * Reads the input for port and host, and checks whether they're valid
+		 */
 		connect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int portNo = 0;
@@ -146,16 +164,5 @@ public class PortFrame extends JFrame {
 				
 			}
 		});
-		connect.setPreferredSize(new Dimension(150, 35));
-		GridBagConstraints gbc_connect = new GridBagConstraints();
-		gbc_connect.fill = GridBagConstraints.BOTH;
-		gbc_connect.insets = new Insets(0, 0, 0, 5);
-		gbc_connect.gridheight = 2;
-		gbc_connect.gridx = 0;
-		gbc_connect.gridy = 4;
-		gbc_connect.gridwidth = 2;
-		contentPane.add(connect, gbc_connect);
-		this.getRootPane().setDefaultButton(connect);
 	}
-
 }
