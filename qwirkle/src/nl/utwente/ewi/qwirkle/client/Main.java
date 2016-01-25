@@ -53,7 +53,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	public Main(String[] args) {
 		// set up some variables
 		this.usingFeatures = new ArrayList<>();
-		this.UI = new TUIView();
+		this.UI = new GUIView();
 		this.prot = Protocol.getInstance();
 
 		this.UI.setCallback(this); // set the callback for UI changes

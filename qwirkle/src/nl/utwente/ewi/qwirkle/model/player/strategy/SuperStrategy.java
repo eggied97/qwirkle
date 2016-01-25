@@ -229,7 +229,7 @@ public class SuperStrategy implements Strategy {
 	/**
 	 * Generates a <code> Map </code> with
 	 * {@link nl.utwente.ewi.qwirkle.model.Tile} - number of neighboors
-	 * relations.
+	 * relations. 
 	 * 
 	 * @param hand
 	 *            a <code> List </code> of
