@@ -169,6 +169,8 @@ public class ClientHandler extends Thread {
 			List<ClientHandler> list = this.getGame().getPlayers();
 			list.remove(this);
 			server.broadcast(list, Protocol.getInstance().serverEndGame(players, scores, 0));
+			
+			//TODO game instance should close here right?
 			return;
 		}
 		try {
