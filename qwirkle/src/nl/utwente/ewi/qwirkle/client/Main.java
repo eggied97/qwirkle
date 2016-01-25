@@ -71,7 +71,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		
 		
 		if(this.UI instanceof GUIView){
-			((GUIView)this.UI).resetAfterMatchDone();
+			((GUIView)this.UI).changeFrame();
 		}
 		
 		enterQueue();

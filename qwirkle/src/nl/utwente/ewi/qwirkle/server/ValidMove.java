@@ -149,8 +149,8 @@ public class ValidMove {
 			return false;
 		}
 		
-		if(!validRow(moves, b)) {
-			
+		if(!validRow(moves, b.deepCopy())) {
+			return false;
 		}
 
 		Board boardCopy = b.deepCopy();
@@ -166,22 +166,10 @@ public class ValidMove {
 	}
 
 	private boolean validRow(List<Move> moves, Board b) {
+		b.putTile(moves);
 		if(validPointsX(moves) && validPointsY(moves)) {
 			return true;
 		} else if (validPointsX(moves)) {
-			int y = moves.get(0).getPoint().getY();
-			int max = -144;
-			int min = 144;
-			for(Move m : moves) {
-				max = Math.max(m.getPoint().getX(), max);
-				min = Math.min(m.getPoint().getX(), min);
-			}
-			for(int i = min; i < max; i++) {
-				if(b.getTile(i, y) == null) {
-					return false;
-				}
-			}
-		} else if(validPointsY(moves)) {
 			int x = moves.get(0).getPoint().getX();
 			int max = -144;
 			int min = 144;
@@ -191,6 +179,19 @@ public class ValidMove {
 			}
 			for(int i = min; i < max; i++) {
 				if(b.getTile(x, i) == null) {
+					return false;
+				}
+			}
+		} else if(validPointsY(moves)) {
+			int y = moves.get(0).getPoint().getY();
+			int max = -144;
+			int min = 144;
+			for(Move m : moves) {
+				max = Math.max(m.getPoint().getX(), max);
+				min = Math.min(m.getPoint().getX(), min);
+			}
+			for(int i = min; i < max; i++) {
+				if(b.getTile(i, y) == null) {
 					return false;
 				}
 			}
@@ -207,7 +208,7 @@ public class ValidMove {
 	//@requires moves != null;
 
 	public boolean validPointsX(List<Move> moves) {
-		for (int i = 0; i < moves.size(); i++) {
+		for (int i = 0; i < moves.size() - 1; i++) {
 			if (moves.get(i).getPoint().getX() != moves.get(i + 1).getPoint().getX()) {
 				printDEBUG("Tiles don't fit together");
 				return false;
@@ -223,7 +224,7 @@ public class ValidMove {
 	 * @return
 	 */
 	public boolean validPointsY(List<Move> moves) {
-		for (int i = 0; i < moves.size(); i++) {
+		for (int i = 0; i < moves.size() - 1; i++) {
 			if (moves.get(i).getPoint().getY() != moves.get(i + 1).getPoint().getY()) {
 				printDEBUG("Tiles don't fit together");
 				return false;

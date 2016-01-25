@@ -26,13 +26,12 @@ import java.awt.FlowLayout;
 public class ConnectPanel extends JFrame {
 
 	private JPanel contentPane;
-	
+
 	private JButton btnConnect;
 	private JButton btnEnterQueues;
 	private JButton btnQuit;
-	
+
 	private UserInterfaceCallback callback;
-	
 
 	/**
 	 * Create the frame.
@@ -43,55 +42,67 @@ public class ConnectPanel extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		
+
 		this.callback = callback;
 
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		initButtons();
-		
+
+		initComponents();
+
 		setActionListeners();
-			
+
 	}
-	
-	private void initButtons(){
-		btnEnterQueues = new JButton("Enter Queue(s)");		
-		
+
+	/**
+	 * Initialize the buttons
+	 */
+	private void initComponents() {
+		btnEnterQueues = new JButton("Enter Queue(s)");
+
 		btnConnect = new JButton("Connect");
-		
+
 		btnQuit = new JButton("Quit");
-		
+
 		contentPane.add(btnConnect);
 		contentPane.add(btnEnterQueues);
 		contentPane.add(btnQuit);
-		
+
 		btnEnterQueues.setEnabled(false);
 		btnConnect.setEnabled(true);
 	}
-	
-	private void setActionListeners(){
+
+	/**
+	 * Sets the ActionListeners
+	 */
+	private void setActionListeners() {
+		/**
+		 * Bring up a dialog to ask for a name
+		 */
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = (String) JOptionPane.showInputDialog(contentPane, "Enter your name: ", "Name?",
 						JOptionPane.PLAIN_MESSAGE);
-				
+
 				Player p;
-				
-				if(name.equals("COMPUTERMAN")){
-					p = new ComputerPlayer("pcman" + (int)(Math.random() * 4));
-				}else if(name.equals("COMPUTERMANSLIM")){
-					p =  new ComputerPlayer("pcmanslim" + (int)(Math.random() * 4), new SuperStrategy());
-				}else{
+
+				if (name.equals("COMPUTERMAN")) {
+					p = new ComputerPlayer("pcman" + (int) (Math.random() * 4));
+				} else if (name.equals("COMPUTERMANSLIM")) {
+					p = new ComputerPlayer("pcmanslim" + (int) (Math.random() * 4), new SuperStrategy());
+				} else {
 					p = new HumanPlayer(name);
 				}
-				
+
 				callback.login(p);
-				
+
 				btnEnterQueues.setEnabled(true);
 				btnConnect.setEnabled(false);
 			}
 		});
-		
+
+		/**
+		 * Bring up a dialog in which you can specify your queue preferences
+		 */
 		btnEnterQueues.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JCheckBox two = new JCheckBox("Two Players");
@@ -107,53 +118,59 @@ public class ConnectPanel extends JFrame {
 				queues.add(twoSel);
 				queues.add(threeSel);
 				queues.add(fourSel);
-				
+
 				int j = 0;
-				for(int i = 0; i < queues.size(); i++) {
-					if(queues.get(i)) {
+				for (int i = 0; i < queues.size(); i++) {
+					if (queues.get(i)) {
 						j++;
 					}
 				}
-				
-				if(j == 0){
-					//no queues selected
-					JOptionPane.showMessageDialog(contentPane, "You need to select atleast 1 queue");					
-				}else{
-				
-					int[] enteredQueues = new int[j];				
+
+				if (j == 0) {
+					JOptionPane.showMessageDialog(contentPane, "You need to select atleast 1 queue");
+				} else {
+
+					int[] enteredQueues = new int[j];
 					j = 0;
-					
-					for(int i = 0; i < queues.size(); i++) {
-						if(queues.get(i)) {
-							enteredQueues[j] = i+2;
+
+					for (int i = 0; i < queues.size(); i++) {
+						if (queues.get(i)) {
+							enteredQueues[j] = i + 2;
 							j++;
 						}
 					}
-					
+
 					callback.queue(enteredQueues);
-					
+
 					btnEnterQueues.setEnabled(false);
-					JOptionPane.showMessageDialog(contentPane, "You're added to the queue(s)" + "\n" + "Please wait for the game to start");
+					JOptionPane.showMessageDialog(contentPane,
+							"You're added to the queue(s)" + "\n" + "Please wait for the game to start");
 				}
 			}
 		});
-		
+
+		/**
+		 * Terminate the process
+		 */
 		btnQuit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				System.exit(0);
 			}
 		});
 	}
-	
+
 	/**
 	 * Is called when the name that was entered was not valid / unique
-	 * */
-	public void resetName(){
+	 */
+	public void resetName() {
 		btnEnterQueues.setEnabled(false);
 		btnConnect.setEnabled(true);
 	}
-	
-	public void resetQueue(){
+
+	/**
+	 * Is called when the game is finished
+	 */
+	public void resetQueue() {
 		btnEnterQueues.setEnabled(true);
 	}
 }
