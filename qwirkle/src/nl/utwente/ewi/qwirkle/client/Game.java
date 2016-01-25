@@ -406,6 +406,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	private void handleTurnPcPlayer() {
 		// if the moves.size == 0 => do trade.
 
+		//TODO check for time
 		List<Move> moves = turnPlayer.determinePutMove(board);
 
 		if (moves.size() == 0) {
