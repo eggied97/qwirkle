@@ -127,9 +127,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 				scoreMap.put(p, p.getScore());
 			}
 			
-
-			((GUIView) this.UI).showScore(scoreMap, false);
-			
+			((GUIView) this.UI).showBag(144 - board.getMap().size() - players.size() * 6, scoreMap, false);
 			((GUIView) this.UI).updateBoard(board.getButtonBoard());
 		}
 	}

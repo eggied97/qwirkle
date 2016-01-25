@@ -38,7 +38,7 @@ public class GUIView implements UserInterface {
 	private MainFrame mFrame;
 	private imageGetter img;
 	private PortFrame servFrame;
-
+	private String result;
 	private Player play;
 
 	private UserInterfaceCallback callback;
@@ -85,22 +85,6 @@ public class GUIView implements UserInterface {
 		}
 	}
 	
-	
-
-
-
-	public void showScore(List<Player> players) {
-		String result = "";
-		Map<Integer, String> scores = new TreeMap<>();
-		for(Player p : players) {
-			scores.put(p.getScore(), new String(p.getName() + " - " +  p.getScore()));
-		}
-		for(Map.Entry<Integer, String> e : scores.entrySet()) {
-			result += e.getValue();
-			result += "\n";
-		}		
-	}
-	
 
 	@Override
 	public void showHand(List<Tile> tiles) {
@@ -136,13 +120,18 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void showScore(Map<Player, Integer> scoreMap, boolean fromGameEnd) {
-		String result = "";
-		result += ("SCORE" + "\n");
 		for(Player p : scoreMap.keySet()) {
-			result += p.getName() + " - " + scoreMap.get(p) + "\n";
+			result = p.getName() + " : " + scoreMap.get(p) + "\n" + result;
 		}
-		mFrame.setScoreboard(result);
+		result = ("---------------" + "\n") + result;
+		result = ("SCORE" + "\n") + result;
 		
+		mFrame.setScoreboard(result);
+	}
+	
+	public void showBag(int bagSize, Map<Player, Integer> scoreMap, boolean fromGameEnd) {
+		result = "\n" + "Bag: " + bagSize;
+		showScore(scoreMap, fromGameEnd);
 	}
 	
 	public void resetAfterMatchDone(){

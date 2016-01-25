@@ -26,8 +26,8 @@ public class ScoreCalc {
 	 * @return
 	 */
 	public int calculate(Board b, List<Move> moves) {
-		int multiplier = 1;
 		int score = 0;
+		int adder = 0;
 
 		// direction of the moves 0 is horizontal, 1 is vertical, default is 0
 		//TODO enums?
@@ -65,7 +65,7 @@ public class ScoreCalc {
 			
 			// If complete row, multiply
 			if(incounter == 6) {
-				multiplier *= 2;
+				adder += 6;
 			}
 			
 			// Add to score the amount of tiles in the direction of the move
@@ -73,7 +73,7 @@ public class ScoreCalc {
 			
 			// Calculate score in the direction other than the direction of the move
 			for (Move m : moves) {
-				int counter = 0;
+				int counter = 1;
 				int y = m.getPoint().getY();
 				int x = m.getPoint().getX();
 
@@ -95,8 +95,8 @@ public class ScoreCalc {
 				}
 				
 				// If there are 5 tiles in the direction around it, its a full row so multiply by 2
-				if (counter == 5) {
-					multiplier *= 2;
+				if (counter == 6) {
+					adder += 2;
 				}
 
 				score += counter;
@@ -126,14 +126,14 @@ public class ScoreCalc {
 			}
 			
 			if(incounter == 6) {
-				multiplier *= 2;
+				adder += 6;
 			}
 			
 			score += incounter;
 
 			
 			for (Move m : moves) {
-				int counter = 0;
+				int counter = 1;
 
 				int y = m.getPoint().getY();
 				int x = m.getPoint().getX();
@@ -154,8 +154,8 @@ public class ScoreCalc {
 					}
 				}
 
-				if (counter == 5) {
-					multiplier *= 2;
+				if (counter == 6) {
+					adder += 6;
 				}
 
 				score += counter;
@@ -163,7 +163,7 @@ public class ScoreCalc {
 			}
 		}
 
-		return score * multiplier;
+		return score + adder;
 	}
 
 }
