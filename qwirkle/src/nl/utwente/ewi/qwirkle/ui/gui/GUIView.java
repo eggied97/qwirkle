@@ -12,6 +12,7 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 import javax.swing.text.Style;
 
@@ -196,7 +197,16 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void showError(String message) {
-		mFrame.setMessageLabel(message);
+		if(mFrame.isDisplayable()) {
+			JOptionPane.showMessageDialog(mFrame, message, "Error!", JOptionPane.ERROR_MESSAGE);
+		} else if(connectPanelFrame.isDisplayable()) {
+			JOptionPane.showMessageDialog(connectPanelFrame, message, "Error!", JOptionPane.ERROR_MESSAGE);
+		} else if(servFrame.isDisplayable()) {
+			JOptionPane.showMessageDialog(servFrame, message, "Error!", JOptionPane.ERROR_MESSAGE);
+		} else {
+			System.err.println(message);
+		}
+		
 		mFrame.emptyMoveSet();
 	}
 

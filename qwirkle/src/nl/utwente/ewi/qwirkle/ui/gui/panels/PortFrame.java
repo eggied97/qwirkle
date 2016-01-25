@@ -130,16 +130,18 @@ public class PortFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int portNo = 0;
 				String host = "";
-				try {
-					portNo = Integer.parseInt(port.getText());
-				} catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(contentPane, "Enter a valid port number");
-				}
 				if(ip.getText().split(" ").length > 1) {
-					JOptionPane.showMessageDialog(contentPane, "Enter a valid host");
+					JOptionPane.showMessageDialog(contentPane, "Enter a valid host", "Error!", JOptionPane.ERROR_MESSAGE);
+					return;
 				} else {
 					host = ip.getText();
 				}
+				try {
+					portNo = Integer.parseInt(port.getText());
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(contentPane, "Enter a valid port number", "Error!", JOptionPane.ERROR_MESSAGE);
+				}
+				
 				callback.setupServer(host + "@" + portNo);
 				
 			}

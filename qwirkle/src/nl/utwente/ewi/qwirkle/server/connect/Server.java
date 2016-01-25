@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import nl.utwente.ewi.qwirkle.util;
-import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.Protocol;
@@ -53,6 +52,10 @@ public class Server {
 		}
 	}
 	
+	/**
+	 * Returns the <code> ClientHandlers </code> from a game to a queue selection list
+	 * @param list
+	 */
 	public void addIdentified(List<ClientHandler> list) {
 		identified.addAll(list);
 	}
@@ -96,7 +99,6 @@ public class Server {
 		identified = new ArrayList<>();
 		features = new IProtocol.Feature[1];
 		features[0] = IProtocol.Feature.CHAT;
-		// TODO add features when implemented
 	}
 
 	/**
@@ -168,8 +170,6 @@ public class Server {
 			identified.remove(ch);
 			return;
 		}
-		// TODO add lists when created
-		
 		for (List<ClientHandler> l : queues.values()) {
 			if (l.contains(ch)) {
 				l.remove(ch);
@@ -185,7 +185,7 @@ public class Server {
 	public void removeGameHandler(ClientHandler ch) {
 		for (List<ClientHandler> l : games.values()) {
 			if (l.contains(ch)) {
-				l.remove(ch);
+				l.clear();
 			}
 		}
 	}
@@ -197,7 +197,7 @@ public class Server {
 	public void startGame(List<ClientHandler> list) {
 		List<Player> players = new ArrayList<>();
 		for(ClientHandler ch : list) {
-			ch.getPlayer().newGame(); //So we start of clean
+			ch.getPlayer().newGame(); //So we start off clean
 			
 			players.add(ch.getPlayer());
 		}
@@ -216,7 +216,7 @@ public class Server {
 	 */
 	public void checkQueues() {
 
-		for(Entry entry: ((TreeMap<Integer, List<ClientHandler>>)queues).descendingMap().entrySet()) {
+		for(Entry<Integer, List<ClientHandler>> entry: ((TreeMap<Integer, List<ClientHandler>>)queues).descendingMap().entrySet()) {
 			List<ClientHandler> queue = (List<ClientHandler>)entry.getValue();
 			if((int)entry.getKey() == queue.size()) {
 				

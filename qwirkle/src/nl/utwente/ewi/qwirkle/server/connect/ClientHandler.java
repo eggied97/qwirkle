@@ -31,7 +31,7 @@ public class ClientHandler extends Thread {
 	Map<IProtocol.Feature, Boolean> featuresEnabled = new HashMap<>();
 	
 	/**
-	 * Constructor of the ClientHandler which initialises the reader and writer
+	 * Constructor of the ClientHandler which initializes the reader and writer
 	 * @param server
 	 * @param socket
 	 * @throws IOException
@@ -145,7 +145,7 @@ public class ClientHandler extends Thread {
 			out.newLine();
 			out.flush();
 		} catch (IOException e) {
-			System.out.println("Socket connection lost");
+			server.print("Socket connection lost");
 			shutDown();
 		}
 	}
@@ -169,8 +169,6 @@ public class ClientHandler extends Thread {
 			List<ClientHandler> list = this.getGame().getPlayers();
 			list.remove(this);
 			server.broadcast(list, Protocol.getInstance().serverEndGame(players, scores, 0));
-			
-			//TODO game instance should close here right?
 			return;
 		}
 		try {

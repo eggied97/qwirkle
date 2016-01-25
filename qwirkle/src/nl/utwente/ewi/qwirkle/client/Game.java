@@ -397,7 +397,11 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 		} else if (turnPlayer instanceof ComputerPlayer) {
 			handleTurnPcPlayer();
 		} else {
-			this.UI.printMessage("Turn changed, its " + turnPlayer.getName() + " turn now");
+			if(this.UI instanceof TUIView) {
+				this.UI.printMessage("Turn changed, its " + turnPlayer.getName() + " turn now");
+			} else {
+				this.UI.printMessage(turnPlayer.getName() + "'s turn");
+			}
 		}
 	}
 
