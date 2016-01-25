@@ -117,9 +117,7 @@ public class ConnectPanel extends JFrame {
 				
 				if(j == 0){
 					//no queues selected
-					JOptionPane.showMessageDialog(contentPane, "You need to select atleast 1 queue");
-					
-					
+					JOptionPane.showMessageDialog(contentPane, "You need to select atleast 1 queue");					
 				}else{
 				
 					int[] enteredQueues = new int[j];				

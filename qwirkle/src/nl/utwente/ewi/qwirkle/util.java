@@ -43,8 +43,7 @@ public class util {
 		System.out.print(tekst);
 		String antw = null;
 		try {
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					System.in));
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 			antw = in.readLine();
 		} catch (IOException e) {
 		}
@@ -52,6 +51,14 @@ public class util {
 		return (antw == null) ? "" : antw;
 	}
 
+	/**
+	 * checks if Feature is inside the array
+	 * 
+	 * @param s
+	 * @param a
+	 * @return true if {@link nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature}
+	 *         is inside <code>s</code>.
+	 */
 	public static boolean FeatureArrayContains(IProtocol.Feature[] s, IProtocol.Feature a) {
 		for (IProtocol.Feature ftr : s) {
 			if (ftr.equals(a)) {

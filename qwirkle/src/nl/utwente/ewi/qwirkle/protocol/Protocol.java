@@ -133,6 +133,15 @@ public class Protocol implements IProtocol {
 	/*
 	 * Server
 	 */
+	
+	public String serverQueueOk(){
+		String result = "";
+		
+		result += this.SERVER_QUEUE;
+		//TODO implement something
+		
+		return result;
+	}
 
 	public String serverConnectOk(IProtocol.Feature[] features) {
 		String result = "";
