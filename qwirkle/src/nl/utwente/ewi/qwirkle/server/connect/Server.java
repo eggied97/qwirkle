@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import nl.utwente.ewi.qwirkle.util;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
@@ -19,15 +20,7 @@ import nl.utwente.ewi.qwirkle.server.HandleCommand;
 
 public class Server {
 
-	public static void main(String[] args) {
-		if (args.length != 1) {
-			System.out.println(USAGE); 
-			System.exit(0);
-		}
-
-		Server server = new Server(Integer.parseInt(args[0]));
-		server.run();
-	}
+	
 	private final static String USAGE = "Give only the port as input";
 	private int port;
 	private ServerSocket serverSock;
@@ -40,6 +33,25 @@ public class Server {
 	private int gameCounter = 0;
 	private IProtocol.Feature[] features;
 
+	public static void main(String[] args) {
+		
+		Server server = null;
+		
+		while(server == null){
+			String port = util.readString(USAGE);
+			
+			try {
+				server = new Server(Integer.parseInt(port));
+				server.run();
+			} catch (IOException e) {
+				System.err.println("this port is already in use, use another one.");
+				server = null;
+			}catch (NumberFormatException e) {
+				System.err.println("port is not a number");
+				server = null;
+			}
+		}
+	}
 	
 	public void addIdentified(List<ClientHandler> list) {
 		identified.addAll(list);
@@ -90,14 +102,9 @@ public class Server {
 	/**
 	 * Starts looking for <code> Clients </code> that want to connect to the <code> Server </code>
 	 */
-	public void run() {
-		//TODO while notvalid port
-		try {
-			serverSock = new ServerSocket(port);
-		} catch (IOException e) {
-			System.err.println("this port is already in use, use another one.");
-			determinePort();
-		}
+	public void run() throws IOException{
+		
+		serverSock = new ServerSocket(port);		
 
 		while (true) {
 			try {
@@ -113,9 +120,6 @@ public class Server {
 		}
 	}
 	
-	private void determinePort(){
-		
-	}
 	
 	/**
 	 * Prints the message to the standard output
