@@ -179,6 +179,8 @@ public class HandleCommand {
 					return;
 			}
 		}
+		
+		ch.sendMessage(Protocol.getInstance().serverQueueOk(queues));
 
 	}
 

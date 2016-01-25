@@ -7,7 +7,7 @@ import nl.utwente.ewi.qwirkle.model.player.Player;
 
 public class Protocol implements IProtocol {
 	public final static boolean DEBUG = true;
-	
+
 	public Protocol() {
 	}
 
@@ -20,10 +20,10 @@ public class Protocol implements IProtocol {
 	 */
 	public void printDebug(String result) {
 		if (DEBUG) {
-			System.out.println("Protocol > "+result);
+			System.out.println("Protocol > " + result);
 		}
 	}
-	
+
 	public String clientGetConnectString(String name, IProtocol.Feature[] features) {
 		String result = "";
 
@@ -133,13 +133,27 @@ public class Protocol implements IProtocol {
 	/*
 	 * Server
 	 */
-	
-	public String serverQueueOk(){
+
+	public String serverQueueOk(int[] queues) {
 		String result = "";
-		
+
 		result += this.SERVER_QUEUE;
-		//TODO implement something
-		
+		result += " ";
+
+		int count = 0;
+
+		for (int q : queues) {
+
+			result += String.valueOf(q);
+
+			count += 1;
+
+			if (queues.length > 1 && count < queues.length) {
+				result += ",";
+			}
+
+		}
+
 		return result;
 	}
 
@@ -231,16 +245,16 @@ public class Protocol implements IProtocol {
 
 		return result;
 	}
-	
+
 	public String serverPass(Player p) {
 		String result = "";
-		
+
 		result += this.SERVER_PASS;
 		result += " ";
 		result += p.getName();
-		
+
 		printDebug(result);
-		
+
 		return result;
 	}
 
@@ -360,10 +374,10 @@ public class Protocol implements IProtocol {
 
 		return result;
 	}
-	
-	/*================================
-	 * UTILS
+
+	/*
+	 * ================================ UTILS
 	 * 
 	 * 
-	 * */
+	 */
 }
