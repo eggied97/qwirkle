@@ -23,11 +23,22 @@ public class SuperStrategy implements Strategy {
 		return NAME;
 	}
 
-	/*
-	 * Other super smart strategy:
+	/**
+	 * Supersmart strategy : determining move:
 	 * 
-	 * We use the dumb strategy over and over again, and chose the one with the
-	 * most points ant the end :).
+	 * <p>
+	 * We use the same principal as with the
+	 * {@link nl.utwente.ewi.qwirkle.model.player.strategy.DumbStrategy}. But we
+	 * iterate over those mvoes, with the remaining tiles in our hand, over and
+	 * over again.
+	 * </p>
+	 * 
+	 * <p>
+	 * So we create a <code> List </code> of all possible moves. Now we itterate
+	 * over this list and get the score of every move. At the end we return the
+	 * move whoch gains us the most points
+	 * </p>
+	 * 
 	 */
 	@Override
 	public List<Move> determineMove(Board b, List<Tile> hand) {
@@ -35,16 +46,15 @@ public class SuperStrategy implements Strategy {
 
 		int hoogsteScore = 0;
 		List<Move> lijstHoogsteScore = new ArrayList<>();
-		
+
 		ScoreCalc sc = new ScoreCalc();
-		
+
 		for (List<Move> moves : alleMovesMogelijk) {
 			Board bCopy = b.deepCopy();
 			bCopy.putTile(moves);
-			
+
 			int score = sc.calculate(bCopy, moves);
-			
-			
+
 			if (score > hoogsteScore) {
 				hoogsteScore = score;
 				lijstHoogsteScore = new ArrayList<>();
@@ -55,48 +65,22 @@ public class SuperStrategy implements Strategy {
 		return lijstHoogsteScore;
 	}
 
-	private List<List<Move>> checkHandForMoves(Board b, List<Tile> hand, List<Move> eerderGelegd) {
-		List<List<Move>> result = new ArrayList<>();
-
-		boolean moveIsValid = false;
-		
-		Board bCopy = b.deepCopy();
-		
-		if (eerderGelegd != null) {
-			bCopy.putTile(eerderGelegd);
-		}
-		
-		List<Point> emptySpots = bCopy.getEmptySpots();
-		ValidMove vm = new ValidMove();
-
-		for (int i = 0; i < hand.size(); i++) {
-
-			Tile t = hand.get(i);
-
-			// check every empty spot
-			for (Point p : emptySpots) {
-
-				List<Move> eerderGelegdCopy = new ArrayList<>();
-				
-				if (eerderGelegd != null) {
-					eerderGelegdCopy.addAll(eerderGelegd);
-				}
-				
-				Move m = new Move(p, t);
-
-				eerderGelegdCopy.add(m);
-
-				moveIsValid = vm.validMoveSet(eerderGelegdCopy, b);
-
-				if (moveIsValid) {
-					result.add(eerderGelegdCopy);
-				}
-			}
-		}
-
-		return result;
-	}
-
+	/**
+	 * 
+	 * Generate a <code> List </code> of all possible <code> move lists </code>.
+	 * 
+	 * @param b
+	 *            deepcopy of the {@link nl.utwente.ewi.qwirkle.model.Board}
+	 *            instance
+	 * @param hand
+	 *            a <code> List </code> of
+	 *            {@link nl.utwente.ewi.qwirkle.model.Tile}s , which the player
+	 *            holds in his hand.
+	 * 
+	 * @return a <code> List </code> containing <code> List </code> of
+	 *         {@link nl.utwente.ewi.qwirkle.model.Move} .
+	 * 
+	 */
 	public List<List<Move>> getAllMoves(Board b, List<Tile> hand) {
 		Map<Integer, List<List<Move>>> alleLijsten = new HashMap<>();
 
@@ -137,7 +121,68 @@ public class SuperStrategy implements Strategy {
 
 	}
 
-	/*
+	/**
+	 * 
+	 * generates a <code> List </code> of all possible <code> move lists </code>
+	 * when you already did a move (used in getAllMoves()).
+	 * 
+	 * @param b
+	 *            deepcopy of the {@link nl.utwente.ewi.qwirkle.model.Board}
+	 *            instance
+	 * @param hand
+	 *            a <code> List </code> of
+	 *            {@link nl.utwente.ewi.qwirkle.model.Tile}s , which the player
+	 *            holds in his hand.
+	 * 
+	 * @param eerderGelegd
+	 *            a <code> List </code> of
+	 *            {@link nl.utwente.ewi.qwirkle.model.Move}s, which are already
+	 *            laid.
+	 * @return
+	 */
+	private List<List<Move>> checkHandForMoves(Board b, List<Tile> hand, List<Move> eerderGelegd) {
+		List<List<Move>> result = new ArrayList<>();
+
+		boolean moveIsValid = false;
+
+		Board bCopy = b.deepCopy();
+
+		if (eerderGelegd != null) {
+			bCopy.putTile(eerderGelegd);
+		}
+
+		List<Point> emptySpots = bCopy.getEmptySpots();
+		ValidMove vm = new ValidMove();
+
+		for (int i = 0; i < hand.size(); i++) {
+
+			Tile t = hand.get(i);
+
+			// check every empty spot
+			for (Point p : emptySpots) {
+
+				List<Move> eerderGelegdCopy = new ArrayList<>();
+
+				if (eerderGelegd != null) {
+					eerderGelegdCopy.addAll(eerderGelegd);
+				}
+
+				Move m = new Move(p, t);
+
+				eerderGelegdCopy.add(m);
+
+				moveIsValid = vm.validMoveSet(eerderGelegdCopy, b);
+
+				if (moveIsValid) {
+					result.add(eerderGelegdCopy);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	/**
 	 * Smart strategy for trading:
 	 * 
 	 * First we determine the amount of possible neighbours a tile has (more
@@ -179,9 +224,21 @@ public class SuperStrategy implements Strategy {
 		}
 
 		return result;
-
 	}
 
+	/**
+	 * Generates a <code> Map </code> with
+	 * {@link nl.utwente.ewi.qwirkle.model.Tile} - number of neighboors
+	 * relations.
+	 * 
+	 * @param hand
+	 *            a <code> List </code> of
+	 *            {@link nl.utwente.ewi.qwirkle.model.Tile}s , which the player
+	 *            holds in his hand.
+	 * @return A <code> Map </code> with the
+	 *         {@link nl.utwente.ewi.qwirkle.model.Tile} - number of neighboors
+	 *         relations
+	 */
 	private Map<Tile, Integer> getTilesWithNumberOfNeighbours(List<Tile> hand) {
 		Map<Tile, Integer> result = new HashMap<>();
 

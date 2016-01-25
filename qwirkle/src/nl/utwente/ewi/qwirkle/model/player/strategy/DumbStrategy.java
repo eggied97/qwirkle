@@ -18,7 +18,7 @@ public class DumbStrategy implements Strategy {
 		return NAME;
 	}
 
-	/*
+	/**
 	 * Dumb startegy for determining a move
 	 * 
 	 * First we get all of the empty spots, visible on the board
@@ -58,7 +58,7 @@ public class DumbStrategy implements Strategy {
 		return result;
 	}
 
-	/*
+	/**
 	 * Dumb strategy for trading:
 	 * 
 	 * We first get a random number for how many tiles we need to trade.
