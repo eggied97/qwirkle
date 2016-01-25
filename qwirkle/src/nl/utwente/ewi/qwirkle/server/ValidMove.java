@@ -165,6 +165,10 @@ public class ValidMove {
 		return true;
 	}
 
+	//@requires moves != null;
+	//@requires b != null;
+	//@ ensures (validPointsX(moves) && validPointsY(moves)) ==> \result = true;
+	//@ ensures (validPointsX(moves) ==> 
 	private boolean validRow(List<Move> moves, Board b) {
 		b.putTile(moves);
 		if(validPointsX(moves) && validPointsY(moves)) {
@@ -200,14 +204,16 @@ public class ValidMove {
 	}
 
 	/**
-	 * Validate the connection of the move
+	 * Validate the connection of the move.
 	 * 
 	 * @param moves
 	 * @return
 	 */
 	//@requires moves != null;
-
-	public boolean validPointsX(List<Move> moves) {
+	//@ requires moves.size() >= 2;
+	//@ ensures (\forall i = 0; i < moves.size() -1; moves.get(i).getPoint().getX() != moves.get(i + 1).getPoint().getX()) ==> \result = false;
+	//@ ensures (\forall i = 0; i < moves.size() -1; moves.get(i).getPoint().getX() == moves.get(i + 1).getPoint().getX()) ==> \result = true;
+	/*@ pure */public boolean validPointsX(List<Move> moves) {
 		for (int i = 0; i < moves.size() - 1; i++) {
 			if (moves.get(i).getPoint().getX() != moves.get(i + 1).getPoint().getX()) {
 				printDEBUG("Tiles don't fit together");
@@ -223,7 +229,11 @@ public class ValidMove {
 	 * @param moves
 	 * @return
 	 */
-	public boolean validPointsY(List<Move> moves) {
+	//@ requires moves != null;
+	//@ requires moves.size() >= 2;
+	//@ ensures (\forall i = 0; i < moves.size() -1; moves.get(i).getPoint().getY() != moves.get(i + 1).getPoint().getY()) ==> \result = false;
+	//@ ensures (\forall i = 0; i < moves.size() -1; moves.get(i).getPoint().getY() == moves.get(i + 1).getPoint().getY()) ==> \result = true;
+	/*@ pure */public boolean validPointsY(List<Move> moves) {
 		for (int i = 0; i < moves.size() - 1; i++) {
 			if (moves.get(i).getPoint().getY() != moves.get(i + 1).getPoint().getY()) {
 				printDEBUG("Tiles don't fit together");
