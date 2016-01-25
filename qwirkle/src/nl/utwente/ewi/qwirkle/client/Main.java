@@ -12,6 +12,8 @@ import nl.utwente.ewi.qwirkle.callback.UserInterfaceCallback;
 import nl.utwente.ewi.qwirkle.client.connect.Client;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.model.exceptions.InvalidServerResponseException;
+import nl.utwente.ewi.qwirkle.model.exceptions.TooFewArgumentsException;
 import nl.utwente.ewi.qwirkle.model.exceptions.TooFewPlayersException;
 import nl.utwente.ewi.qwirkle.model.exceptions.TooManyPlayersException;
 import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
@@ -42,50 +44,83 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		Main m = new Main(args);
 	}
 
-	// In the start
+	/**
+	 * Constructor if you open this program for the first time.
+	 * 
+	 * @param args
+	 *            of the terminal
+	 */
 	public Main(String[] args) {
-		//set up some variables
+		// set up some variables
 		this.usingFeatures = new ArrayList<>();
 		this.UI = new TUIView();
 		this.prot = Protocol.getInstance();
-		
+
 		this.UI.setCallback(this); // set the callback for UI changes
-		if(this.UI instanceof GUIView) { 
-			((GUIView)this.UI).setup(this);
+		if (this.UI instanceof GUIView) {
+			((GUIView) this.UI).setup(this);
 		}
+
 		this.UI.askForServerInformation();
 	}
 
-	// after a match
+	/**
+	 * Constructor after a game.
+	 * 
+	 * @param me
+	 *            you, the player
+	 * @param server
+	 *            the {@link nl.utwente.ewi.qwirkle.client.connect.Client}
+	 *            instance of the server
+	 * @param ui
+	 *            the {@link nl.utwente.ewi.qwirkle.ui.UserInterface} instance
+	 * @param usingFeatures
+	 *            a <code>List</code> of
+	 *            {@link nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature} that
+	 *            are enabeld>
+	 */
 	public Main(Player me, Client server, UserInterface ui, List<IProtocol.Feature> usingFeatures) {
 		this.me = me;
 		this.server = server;
 		this.server.setCallback(this);
 		this.UI = ui;
-		
+
 		this.usingFeatures = usingFeatures;
-		
+
 		this.UI.setCallback(this);
 
 		prot = Protocol.getInstance();
-		
-		
-		if(this.UI instanceof GUIView){
-			((GUIView)this.UI).changeFrame();
+
+		if (this.UI instanceof GUIView) {
+			((GUIView) this.UI).changeFrame();
 		}
-		
+
 		enterQueue();
 	}
 
+	/**
+	 * Asks the {@link nl.utwente.ewi.qwirkle.ui.UserInterface} instance to
+	 * authenticate the player.
+	 */
 	private void authenticateUser() {
 		this.UI.askForLogin();
 	}
 
+	/**
+	 * asks the {@link nl.utwente.ewi.qwirkle.model.player.Player} to join a
+	 * queue.
+	 */
 	private void enterQueue() {
-		this.UI.askQueueWithHowManyPlayers();		
+		this.UI.askQueueWithHowManyPlayers();
 	}
 
-
+	/**
+	 * sends a given mesage to the server instance. (it exitsts when the server
+	 * is not set, or it is offline)
+	 * 
+	 * @param message
+	 *            the message that needs to be sent
+	 */
 	private void sendMessageToServer(String message) {
 		if (this.server != null && this.server.isAlive()) {
 			this.server.sendMessage(message);
@@ -99,56 +134,60 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	public void resultFromServer(String result) {
 		System.out.println("Back from server (main)> " + result.trim());
 
-		String[] results = result.trim().split(" ");
-
-		if (results.length == 0) {
-			// TODO throw error
-		}
-
-		String command = results[0];
-		String[] args = Arrays.copyOfRange(results, 1, results.length);
-
-		switch (command) {
-			case IProtocol.SERVER_IDENTIFY:
-				handleServerIdentify(args);
-				break;
+		try{
+			String[] results = result.trim().split(" ");
 	
-			case IProtocol.SERVER_GAMESTART:
-				try {
-					handleGameStart(args);
-				} catch (TooManyPlayersException | TooFewPlayersException e) {
-					e.printStackTrace();
-				}
-				break;
+			if (results.length == 0) {
+				throw new InvalidServerResponseException();
+			}
 	
-			case IProtocol.SERVER_ERROR:
-				if (args.length < 1) {
-					// TODO throw error
-				}
+			String command = results[0];
+			String[] args = Arrays.copyOfRange(results, 1, results.length);
 	
-				switch (IProtocol.Error.valueOf(args[0])) {
-					case NAME_USED:
-						UI.showError("Name is already in use, please use another one...");
-						authenticateUser();
-						break;
+			switch (command) {
+				case IProtocol.SERVER_IDENTIFY:
+					handleServerIdentify(args);
+					break;
 		
-					case NAME_INVALID:
-						UI.showError("Name is invalid, please use another one...");
-						authenticateUser();
-						break;
+				case IProtocol.SERVER_GAMESTART:
+					try {
+						handleGameStart(args);
+					} catch (TooManyPlayersException | TooFewPlayersException e) {
+						e.printStackTrace();
+					}
+					break;
 		
-					case QUEUE_INVALID:
-						UI.showError("The queue you wanted to enter is invalid, please choose another one...");
-						enterQueue();
-						break;
+				case IProtocol.SERVER_ERROR:
+					if (args.length < 1) {
+						throw new TooFewArgumentsException(args.length);
+					}
+		
+					switch (IProtocol.Error.valueOf(args[0])) {
+						case NAME_USED:
+							UI.showError("Name is already in use, please use another one...");
+							authenticateUser();
+							break;
+			
+						case NAME_INVALID:
+							UI.showError("Name is invalid, please use another one...");
+							authenticateUser();
+							break;
+			
+						case QUEUE_INVALID:
+							UI.showError("The queue you wanted to enter is invalid, please choose another one...");
+							enterQueue();
+							break;
 		
 					default:
 						break;
-				}
-				break;
-	
-			default:
-				break;
+					}
+					break;
+		
+				default:
+					break;
+			}
+		}catch(InvalidServerResponseException | TooFewArgumentsException e){
+			this.UI.showError("Something went bad with the protocol message : " + e.getMessage());
 		}
 	}
 
@@ -174,14 +213,14 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		playersInGame.add(me);
 
 		for (String name : args) {
-			if(!name.equals(me.getName())){				
+			if (!name.equals(me.getName())) {
 				Player p = new SocketPlayer(name);
 				playersInGame.add(p);
 			}
 		}
 
-		me.newGame(); //so we start clear on a possible new match
-		
+		me.newGame(); // so we start clear on a possible new match
+
 		Game g = new Game(UI, playersInGame, server, usingFeatures);
 		server.setCallback(g);
 		UI.setCallback(g);
@@ -210,14 +249,19 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		enterQueue();
 	}
 
+	/*===========
+	 * Callback methods
+	 * ===========
+	 * */
+	
 	@Override
 	public void setupServer(String serverInformation) {
 		String[] parts = serverInformation.split("@");
-		
-		if(parts.length != 2){
+
+		if (parts.length != 2) {
 			this.UI.showError("Wrong format.");
 			this.UI.askForServerInformation();
-		}else{
+		} else {
 			InetAddress host = null;
 			int port = 0;
 
@@ -226,40 +270,40 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 				port = Integer.parseInt(parts[1]);
 
 				server = new Client(host, port);
-				server.start();	
-				
-				this.server.setCallback(this); //set the callback for incomming server messages
+				server.start();
+
+				this.server.setCallback(this); // set the callback for incomming
+												// server messages
 
 				authenticateUser();
-				
+
 			} catch (NumberFormatException | IOException e) {
 				this.UI.showError("Server doesnt exist, or you entered the wrong port");
 				this.UI.askForServerInformation();
-			}			
+			}
 		}
 	}
-	
+
 	@Override
 	public void login(Player p) {
 		me = p;
-		if(this.UI instanceof GUIView) {
+		if (this.UI instanceof GUIView) {
 			((GUIView) this.UI).setPlayer(p);
 		}
-		
-		if(me instanceof ComputerPlayer){
+
+		if (me instanceof ComputerPlayer) {
 			this.UI.askForAITime();
-		}else{
+		} else {
 			sendMessageToServer(prot.clientGetConnectString(me.getName(), implementedFeatures));
-		}		
+		}
 	}
-	
 
 	@Override
 	public void setAITime(int time) {
-		if ( me != null && me instanceof ComputerPlayer ) {
+		if (me != null && me instanceof ComputerPlayer) {
 			((ComputerPlayer) me).setTime(time);
 		}
-		
+
 		sendMessageToServer(prot.clientGetConnectString(me.getName(), implementedFeatures));
 	}
 
@@ -269,32 +313,27 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	}
 
 	@Override
-	public void determinedAction(String action) {} //not used
+	public void determinedAction(String action) {} // not used
 
 	@Override
-	public void putMove(String unparsedString) {} //not used
+	public void putMove(String unparsedString) {} // not used
 
 	@Override
-	public void putMove(List<Move> moves) {
-	} //not used
-	
+	public void putMove(List<Move> moves) {} // not used
 
 	@Override
-	public void putTrade(String unparsedString) {} //not used
+	public void putTrade(String unparsedString) {} // not used
 
 	@Override
-	public void putTrade(List<Tile> tiles) {} //not used
+	public void putTrade(List<Tile> tiles) {} // not used
 
 	@Override
-	public void sendChat(String msg) {} //not used
+	public void sendChat(String msg) {} // not used
 
 	@Override
 	public void printHint() {} // not used
 
 	@Override
 	public void quit() {} // not used
-
-
-
 
 }
