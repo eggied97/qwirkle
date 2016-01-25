@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.awt.Point;
 import nl.utwente.ewi.qwirkle.model.*;
+import nl.utwente.ewi.qwirkle.model.player.strategy.SuperStrategy;
 
 public abstract class Player {
 
@@ -88,6 +89,12 @@ public abstract class Player {
 		for (Tile t : tiles) {
 			this.hand.remove(t);
 		}
+	}
+	
+	public int getLengthStreak(){
+		List<Move> moves = new SuperStrategy().determineMove(new Board(), hand);
+		
+		return moves.size();
 	}
 
 	/**
