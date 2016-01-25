@@ -55,109 +55,90 @@ public class MainFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JPanel buttons;
-	
 	private JTextPane textArea;
-	
 	private JTextArea scoreboard;
 	private JLabel messageLabel;
 	
 	private List<JToggleButton> handTiles;
 	private List<Tile> tiles;
-
-	private List<Move> moveSet;//temp for the moves made
+	private List<Move> moveSet;// temp for the moves made
 	
 	private StyledDocument doc;
-	
 	private imageGetter imgGet;
 	
 	private Map<JButton, GridBagConstraints> butInf;
 	private Map<JButton, Point> butCord;
 	
+	private Map<Point, Tile> board;
+	
 	private boolean turn = false;
 	
 	private UserInterfaceCallback callback;
 	
+	private Dimension hand = new Dimension(60,60);
+	private Dimension boardButSize = new Dimension(50,50);
+
 	public void update(Map<Point, Tile> board) {
-		if(!(board.size() == 0)) {
+		this.board = board;
+		if (!(board.size() == 0)) {
 			buttons.removeAll();
 			butInf.clear();
 			butCord.clear();
-			
-			for(Entry<Point, Tile> e : board.entrySet()) {
+
+			for (Entry<Point, Tile> e : board.entrySet()) {
 				JButton but = new JButton();
-				but.setPreferredSize(new Dimension(50,50));
+				but.setPreferredSize(boardButSize);
 				but.setIcon(new ImageIcon(imgGet.getImageByTile(e.getValue())));
+				but.setDisabledIcon(new ImageIcon(imgGet.getImageByTile(e.getValue())));
+				but.setEnabled(false);
 				GridBagConstraints gbc_but = new GridBagConstraints();
 				gbc_but.gridx = e.getKey().getX();
 				gbc_but.gridy = e.getKey().getY();
-				
+
 				buttons.add(but, gbc_but);
 				butInf.put(but, gbc_but);
 				butCord.put(but, e.getKey());
 			}
-			for(JButton b : butInf.keySet()) {
+			for (JButton b : butInf.keySet()) {
 				addButton(b);
 			}
+		} else {
+			buttons.removeAll();
+			butInf.clear();
+			butCord.clear();
+			
+			addStartButton();
+			
+			repaint();
+			revalidate();
 		}
-		
+
 	}
-	
+
 	public void emptyMoveSet() {
 		this.moveSet.clear();
 	}
-	
+
 	public boolean hasTurn() {
 		return this.turn;
 	}
 
 	public void setTiles(List<Tile> tiles) {
 		this.tiles = tiles;
-		
-		emptyMoveSet(); //called after a draw tile, so a succesfull movePut
+
+		emptyMoveSet(); // called after a draw tile, so a succesfull movePut
 	}
-	
+
 	public void setCallback(UserInterfaceCallback callback) {
 		this.callback = callback;
 	}
-	
-	public void reload() {
-		buttons.removeAll();
-		buttons.repaint();
-		for(JButton b : butInf.keySet()) {
-			buttons.add(b, butInf.get(b));
-			b.revalidate();
-		}
-		
-		buttons.revalidate();
-	}
-	
+
+
+
 	public void undoMoves() {
-		
-		for(Move m : moveSet) {
-			for(Entry<JButton, Point> e : butCord.entrySet()) {
-				if(e.getValue().equals(m.getPoint())) {
-					e.getKey().setIcon(null);
-				}
-			}
-		}
-		buttons.removeAll();
-		butCord.clear();
-		moveSet.clear();
-		
-		for(JButton b : butInf.keySet()) {
-			buttons.add(b, butInf.get(b));
-			butCord.put(b, new Point(butInf.get(b).gridx + 144, butInf.get(b).gridy + 144));
-		}
-		
-		for(JToggleButton b : handTiles) {
-			b.setEnabled(true);
-			b.setSelected(false);
-		}
-		
-		this.repaint();
-		this.revalidate();
+		update(board);
 	}
-	
+
 	public JLabel getMessageLabel() {
 		return messageLabel;
 	}
@@ -167,7 +148,7 @@ public class MainFrame extends JFrame {
 	}
 
 	public void setMessageLabel(String message) {
-		if(message.equals("It's your turn now")) {
+		if (message.equals("It's your turn now")) {
 			turn = true;
 		}
 		messageLabel.setText(message);
@@ -193,106 +174,86 @@ public class MainFrame extends JFrame {
 	public void setScoreboard(String score) {
 		scoreboard.setText(score);
 	}
-	
-	public void addButton(List<Move> moves) {
-		for(Move m : moves) {
-			
-			JButton but = new JButton();
-			but.setPreferredSize(new Dimension(50,50));
-			but.setIcon(new ImageIcon(imgGet.getImageByTile(m.getTile())));
-			GridBagConstraints gbc_but = new GridBagConstraints();
-			gbc_but.gridx = m.getPoint().getX() + 144;
-			gbc_but.gridy = m.getPoint().getY() + 144;
-			
-			butInf.put(but, gbc_but);
-			buttons.add(but, gbc_but);
-			
-			Point p = new Point(m.getPoint().getX() + 144, m.getPoint().getY() + 144);
-			butCord.put(but, p);
-			addButton(but);
-		}
-		
-		reload();
-		
-	}
 
 	public void addButton(JButton but) {
 		Point p = butCord.get(but);
 		int x = p.getX();
 		int y = p.getY();
-		
+
 		Point left = new Point(x + 1, y);
 		Point right = new Point(x - 1, y);
 		Point up = new Point(x, y - 1);
 		Point down = new Point(x, y + 1);
-		
+
 		boolean lft = true;
-		boolean rght= true;
+		boolean rght = true;
 		boolean Up = true;
 		boolean dwn = true;
-		
+
 		for (JButton b : butCord.keySet()) {
 			if (butCord.get(b).equals(left)) {
 				lft = false;
-			}else if (butCord.get(b).equals(right)) {
+			} else if (butCord.get(b).equals(right)) {
 				rght = false;
-			}else if (butCord.get(b).equals(up)) {
+			} else if (butCord.get(b).equals(up)) {
 				Up = false;
-			}else if (butCord.get(b).equals(down)) {
+			} else if (butCord.get(b).equals(down)) {
 				dwn = false;
 			}
 		}
-		
-		if(lft) {
+
+		if (lft) {
 			addButton(left);
 		}
-		if(rght) {
+		if (rght) {
 			addButton(right);
 		}
-		if(Up) {
+		if (Up) {
 			addButton(up);
 		}
-		if(dwn) {
+		if (dwn) {
 			addButton(down);
 		}
 
 	}
-	
+
 	public void addButton(Point p) {
 		JButton but = new JButton();
 		but.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				List<JToggleButton> tils = new ArrayList<>();
-				for(JToggleButton b : handTiles) {
-					if(b.isSelected()) {
+				for (JToggleButton b : handTiles) {
+					if (b.isSelected()) {
 						tils.add(b);
 					}
 				}
-				if(tils.size() != 1) {
+				if (tils.size() != 1) {
 					// do nothing
 				} else {
-					JButton source = (JButton)e.getSource();
+					JButton source = (JButton) e.getSource();
 					tils.get(0).setSelected(false);
 					tils.get(0).setEnabled(false);
 					source.setIcon(new ImageIcon(imgGet.getImageByTile(tiles.get(handTiles.indexOf(tils.get(0))))));
+					source.setDisabledIcon(new ImageIcon(imgGet.getImageByTile(tiles.get(handTiles.indexOf(tils.get(0))))));
+					source.setEnabled(false);
 					moveSet.add(new Move(butCord.get(source), tiles.get(handTiles.indexOf(tils.get(0)))));
 					GridBagConstraints gbc_source = new GridBagConstraints();
-					gbc_source.gridx =  butCord.get(source).getX();
-					gbc_source.gridy =  butCord.get(source).getY();
+					gbc_source.gridx = butCord.get(source).getX();
+					gbc_source.gridy = butCord.get(source).getY();
 					butInf.put(source, gbc_source);
 					addButton(source);
 				}
-				
+
 			}
 		});
-		but.setPreferredSize(new Dimension(50,50));
+		but.setPreferredSize(boardButSize);
 		GridBagConstraints gbc_but = new GridBagConstraints();
 		gbc_but.gridx = p.getX();
 		gbc_but.gridy = p.getY();
 		buttons.add(but, gbc_but);
 		butCord.put(but, p);
-		
+
 		this.repaint();
 		this.revalidate();
 	}
@@ -300,18 +261,12 @@ public class MainFrame extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainFrame frame = new MainFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
+	/*
+	 * public static void main(String[] args) { EventQueue.invokeLater(new
+	 * Runnable() { public void run() { try { MainFrame frame = new MainFrame();
+	 * frame.setVisible(true); } catch (Exception e) { e.printStackTrace(); } }
+	 * }); }
+	 */
 
 	/**
 	 * Create the frame.
@@ -323,7 +278,7 @@ public class MainFrame extends JFrame {
 		imgGet = new imageGetter();
 		butCord = new HashMap<>();
 		handTiles = new ArrayList<>();
-		
+
 		this.callback = callback;
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -350,37 +305,11 @@ public class MainFrame extends JFrame {
 		JScrollPane boardScroll = new JScrollPane(buttons);
 		GridBagLayout gbl_buttons = new GridBagLayout();
 		buttons.setLayout(gbl_buttons);
+
+		addStartButton();
 		
-		JButton start = (new JButton());
-		start.setPreferredSize(new Dimension(50,50));
-		GridBagConstraints gbc_start = new GridBagConstraints();
-		gbc_start.gridx = 144;
-		gbc_start.gridy = 144;
-		butCord.put(start, new Point(gbc_start.gridx, gbc_start.gridy));
-		buttons.add(start, gbc_start);
-		butInf.put(start, gbc_start);
-		start.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				List<JToggleButton> tils = new ArrayList<>();
-				for(JToggleButton b : handTiles) {
-					if(b.isSelected()) {
-						tils.add(b);
-					}
-				}
-				if(tils.size() != 1) {
-					// do nothing
-				} else {
-					JButton source = (JButton)e.getSource();
-					tils.get(0).setSelected(false);
-					tils.get(0).setEnabled(false);					
-					source.setIcon(new ImageIcon(imgGet.getImageByTile(tiles.get(handTiles.indexOf(tils.get(0))))));
-					moveSet.add(new Move(butCord.get(source), tiles.get(handTiles.indexOf(tils.get(0)))));
-					addButton((JButton)e.getSource());
-				}
-			}
-		});
 		
+
 		boardScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		boardScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		boardScroll.setPreferredSize(new Dimension(750, 550));
@@ -442,9 +371,9 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (!textField_1.getText().equals("")) {
 					Style s = textArea.addStyle("Style", null);
-					StyleConstants.setForeground((MutableAttributeSet)s, java.awt.Color.BLACK);
+					StyleConstants.setForeground((MutableAttributeSet) s, java.awt.Color.BLACK);
 					setTextArea("You > " + textField_1.getText(), s);
-					
+
 					handleChat(textField_1.getText());
 				}
 				textField_1.setText("");
@@ -499,46 +428,46 @@ public class MainFrame extends JFrame {
 
 		JToggleButton btnTile1 = new JToggleButton("");
 		btnTile1.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile1.setMinimumSize(new Dimension(60, 60));
-		btnTile1.setPreferredSize(new Dimension(60, 60));
-		btnTile1.setMaximumSize(new Dimension(60, 60));
+		btnTile1.setMinimumSize(hand);
+		btnTile1.setPreferredSize(hand);
+		btnTile1.setMaximumSize(hand);
 		panelTiles.add(btnTile1);
 
 		JToggleButton btnTile2 = new JToggleButton("");
 		btnTile2.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile2.setMinimumSize(new Dimension(60, 60));
-		btnTile2.setPreferredSize(new Dimension(60, 60));
-		btnTile2.setMaximumSize(new Dimension(60, 60));
+		btnTile2.setMinimumSize(hand);
+		btnTile2.setPreferredSize(hand);
+		btnTile2.setMaximumSize(hand);
 		panelTiles.add(btnTile2);
 
 		JToggleButton btnTile3 = new JToggleButton("");
 		btnTile3.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile3.setMinimumSize(new Dimension(60, 60));
-		btnTile3.setPreferredSize(new Dimension(60, 60));
-		btnTile3.setMaximumSize(new Dimension(60, 60));
+		btnTile3.setMinimumSize(hand);
+		btnTile3.setPreferredSize(hand);
+		btnTile3.setMaximumSize(hand);
 		panelTiles.add(btnTile3);
 
 		JToggleButton btnTile4 = new JToggleButton("");
 		btnTile4.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile4.setMinimumSize(new Dimension(60, 60));
-		btnTile4.setPreferredSize(new Dimension(60, 60));
-		btnTile4.setMaximumSize(new Dimension(60, 60));
+		btnTile4.setMinimumSize(hand);
+		btnTile4.setPreferredSize(hand);
+		btnTile4.setMaximumSize(hand);
 		panelTiles.add(btnTile4);
 
 		JToggleButton btnTile5 = new JToggleButton("");
 		btnTile5.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile5.setMinimumSize(new Dimension(60, 60));
-		btnTile5.setPreferredSize(new Dimension(60, 60));
-		btnTile5.setMaximumSize(new Dimension(60, 60));
+		btnTile5.setMinimumSize(hand);
+		btnTile5.setPreferredSize(hand);
+		btnTile5.setMaximumSize(hand);
 		panelTiles.add(btnTile5);
 
 		JToggleButton btnTile6 = new JToggleButton("");
 		btnTile6.setAlignmentX(CENTER_ALIGNMENT);
-		btnTile6.setMinimumSize(new Dimension(60, 60));
-		btnTile6.setPreferredSize(new Dimension(60, 60));
-		btnTile6.setMaximumSize(new Dimension(60, 60));
+		btnTile6.setMinimumSize(hand);
+		btnTile6.setPreferredSize(hand);
+		btnTile6.setMaximumSize(hand);
 		panelTiles.add(btnTile6);
-
+		
 		handTiles.add(btnTile1);
 		handTiles.add(btnTile2);
 		handTiles.add(btnTile3);
@@ -557,28 +486,32 @@ public class MainFrame extends JFrame {
 		JButton btnTrade = new JButton("Trade");
 		btnTrade.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(hasTurn()) {
+				if (hasTurn()) {
 					List<Tile> toTrade = new ArrayList<>();
 					Map<JToggleButton, Integer> trade = new HashMap<>();
-					for(JToggleButton b : handTiles) {
-						if(b.isSelected()) {
+					for (JToggleButton b : handTiles) {
+						if (b.isSelected()) {
 							trade.put(b, handTiles.indexOf(b));
 						}
 					}
-					if(!trade.isEmpty()) {				
-						for(JToggleButton b : trade.keySet()) {
+					if (!trade.isEmpty()) {
+						for (JToggleButton b : trade.keySet()) {
 							toTrade.add(tiles.get(trade.get(b)));
 						}
 					}
 					
-					handleTrade(toTrade);		
+					for (JToggleButton b : handTiles) {
+						b.setSelected(false);
+					}
+
+					handleTrade(toTrade);
 				} else {
 					setMessageLabel("Not your turn!");
-					for(JToggleButton b : handTiles) {
+					for (JToggleButton b : handTiles) {
 						b.setSelected(false);
 					}
 				}
-						
+
 			}
 		});
 		GridBagConstraints gbc_btnTrade = new GridBagConstraints();
@@ -590,7 +523,7 @@ public class MainFrame extends JFrame {
 		JButton btnMove = new JButton("Move");
 		btnMove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(hasTurn()) { 
+				if (hasTurn()) {
 					handleMove(moveSet);
 				} else {
 					setMessageLabel("Not your turn!");
@@ -603,7 +536,7 @@ public class MainFrame extends JFrame {
 		gbc_btnMove.gridy = 2;
 		gbc_btnMove.anchor = GridBagConstraints.NORTH;
 		panelHand.add(btnMove, gbc_btnMove);
-		
+
 		JButton btnHelp = new JButton("Hint");
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -615,11 +548,15 @@ public class MainFrame extends JFrame {
 		gbc_btnHelp.gridy = 3;
 		gbc_btnHelp.anchor = GridBagConstraints.NORTH;
 		panelHand.add(btnHelp, gbc_btnHelp);
-		
+
 		JButton btnUndo = new JButton("Undo");
 		btnUndo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				undoMoves();
+				for(JToggleButton b : handTiles) {
+					b.setSelected(false);
+					b.setEnabled(true);
+				}
 			}
 		});
 		GridBagConstraints gbc_btnUndo = new GridBagConstraints();
@@ -628,34 +565,66 @@ public class MainFrame extends JFrame {
 		gbc_btnUndo.anchor = GridBagConstraints.NORTH;
 		panelHand.add(btnUndo, gbc_btnUndo);
 	}
-	
-	/*========================
-	 * omvormers
-	 * =======================
-	 * */
-	
-	private void askForHint(){
+
+	private void addStartButton() {
+		JButton start = (new JButton());
+		start.setPreferredSize(boardButSize);
+		GridBagConstraints gbc_start = new GridBagConstraints();
+		gbc_start.gridx = 144;
+		gbc_start.gridy = 144;
+		butCord.put(start, new Point(gbc_start.gridx, gbc_start.gridy));
+		buttons.add(start, gbc_start);
+		butInf.put(start, gbc_start);
+		start.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<JToggleButton> tils = new ArrayList<>();
+				for (JToggleButton b : handTiles) {
+					if (b.isSelected()) {
+						tils.add(b);
+					}
+				}
+				if (tils.size() != 1) {
+					// do nothing
+				} else {
+					JButton source = (JButton) e.getSource();
+					tils.get(0).setSelected(false);
+					tils.get(0).setEnabled(false);
+					source.setIcon(new ImageIcon(imgGet.getImageByTile(tiles.get(handTiles.indexOf(tils.get(0))))));
+					source.setDisabledIcon(new ImageIcon(imgGet.getImageByTile(tiles.get(handTiles.indexOf(tils.get(0))))));
+					source.setEnabled(false);
+					moveSet.add(new Move(butCord.get(source), tiles.get(handTiles.indexOf(tils.get(0)))));
+					addButton((JButton) e.getSource());
+				}
+			}
+		});
+	}
+
+	/*
+	 * ======================== omvormers =======================
+	 */
+
+	private void askForHint() {
 		this.callback.printHint();
 	}
-	
-	
+
 	private void handleChat(String message) {
 		String channel = "global";
-		if(message.charAt(0) != '@') {
+		if (message.charAt(0) != '@') {
 			message = channel + " " + message;
 		}
 		this.callback.sendChat(message);
 	}
-	
+
 	private void handleMove(List<Move> moveSet) {
-		for(Move m : moveSet) {
+		for (Move m : moveSet) {
 			m.getPoint().setX(m.getPoint().getX() - 144);
 			m.getPoint().setY(m.getPoint().getY() - 144);
 		}
-		
+
 		this.callback.putMove(moveSet);
 	}
-	
+
 	private void handleTrade(List<Tile> tiles) {
 		this.callback.putTrade(tiles);
 	}

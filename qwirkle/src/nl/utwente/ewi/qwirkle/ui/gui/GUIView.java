@@ -136,16 +136,12 @@ public class GUIView implements UserInterface {
 
 	@Override
 	public void showScore(Map<Player, Integer> scoreMap, boolean fromGameEnd) {
-		StringBuilder result = new StringBuilder();
-		result.append("SCORE" + "\n");
-		TreeMap<Integer, Player> score = new TreeMap<>();
-		for(Entry<Player, Integer> e : scoreMap.entrySet()) {
-			score.put(e.getValue(), e.getKey());
+		String result = "";
+		result += ("SCORE" + "\n");
+		for(Player p : scoreMap.keySet()) {
+			result += p.getName() + " - " + scoreMap.get(p) + "\n";
 		}
-		for(Entry<Integer, Player> e : score.entrySet()) {
-			result.append(e.getValue().getName() + " - " + e.getValue() + "\n");
-		}
-		mFrame.setScoreboard(result.toString());
+		mFrame.setScoreboard(result);
 		
 	}
 	
