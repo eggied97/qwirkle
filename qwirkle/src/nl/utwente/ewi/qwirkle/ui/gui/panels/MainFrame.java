@@ -359,18 +359,22 @@ public class MainFrame extends JFrame {
 					handleMove(moveSet);
 				} else {
 					setMessageLabel("Not your turn!");
-					for(JToggleButton b : handTiles) {
-						b.setSelected(false);
-						b.setEnabled(true);
-					}
 					undoMoves();
+				}
+				for(JToggleButton b : handTiles) {
+					b.setSelected(false);
+					b.setEnabled(true);
 				}
 			}
 		});
 		
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				askForHint();
+				if(turn) {
+					askForHint();
+				} else {
+					
+				}
 			}
 		});
 		
@@ -392,13 +396,15 @@ public class MainFrame extends JFrame {
 	 */
 	public void update(Map<Point, Tile> board) {
 		List<Point> newPoint = new ArrayList<>();
-		for(Point p: this.board.keySet()) {
-			if(!board.keySet().contains(p)) {
-				newPoint.add(p);
-			}
-		}
-		this.board = board;
+		
 		if (!(board.size() == 0)) {
+			for(Point p: board.keySet()) {
+				if(!this.board.keySet().contains(p)) {
+					newPoint.add(p);
+				}
+			}
+			
+			this.board = board;
 			
 			buttons.removeAll();
 			butInf.clear();
@@ -410,6 +416,9 @@ public class MainFrame extends JFrame {
 				but.setIcon(new ImageIcon(imgGet.getImageByTile(e.getValue())));
 				but.setDisabledIcon(new ImageIcon(imgGet.getImageByTile(e.getValue())));
 				but.setEnabled(false);
+				if(newPoint.contains(e.getKey())) {
+					but.setBorder(new LineBorder(Color.RED, 3));
+				}
 				GridBagConstraints gbc_but = new GridBagConstraints();
 				gbc_but.gridx = e.getKey().getX();
 				gbc_but.gridy = e.getKey().getY();
@@ -421,14 +430,9 @@ public class MainFrame extends JFrame {
 			for (JButton b : butInf.keySet()) {
 				checkForEmptyButton(b);
 			}
-			for(Point p : newPoint) {
-				for(Entry<JButton, Point> e : butCord.entrySet()) {
-					if(e.getValue().equals(p)) {
-						e.getKey().setBorder(new LineBorder(Color.RED, 12));
-					}
-				}
-			}
 		} else {
+			this.board = board;
+			
 			buttons.removeAll();
 			butInf.clear();
 			butCord.clear();
@@ -617,6 +621,8 @@ public class MainFrame extends JFrame {
 	public void setMessageLabel(String message) {
 		if (message.equals("It's your turn now")) {
 			turn = true;
+		} else {
+			turn = false;
 		}
 		messageLabel.setText(message);
 	}
@@ -689,6 +695,21 @@ public class MainFrame extends JFrame {
 	 */
 	private void handleTrade(List<Tile> tiles) {
 		this.callback.putTrade(tiles);
+	}
+	
+	public void handleHint(Move m) {
+		for(Tile t : tiles) {
+			if(t.equals(m.getTile())) {
+				handTiles.get(tiles.indexOf(t)).setBorder(new LineBorder(Color.BLUE, 3));
+			}
+		}
+		for(Entry<JButton, Point> e : butCord.entrySet()) {
+			if(e.getValue().equals(m.getPoint())) {
+				e.getKey().setBorder(new LineBorder(Color.BLUE, 3));
+			}
+		}
+		revalidate();
+		m.getPoint();
 	}
 
 }

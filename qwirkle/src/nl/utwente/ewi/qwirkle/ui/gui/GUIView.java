@@ -246,6 +246,10 @@ public class GUIView implements UserInterface {
 		mFrame.emptyMoveSet();
 	}
 
+	public void printHint(Move m) {
+		mFrame.handleHint(m);
+	}
+	
 	@Override
 	public void askForServerInformation() {
 		// TODO Auto-generated method stub

@@ -26,6 +26,11 @@ public class imageGetter {
 		}
 	}
 
+	/**
+	 * Returns a partition of the total image
+	 * @param t
+	 * @return
+	 */
 	public BufferedImage getImageByTile(Tile t) {
 		int x = 0;
 		int y = 0;

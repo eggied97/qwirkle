@@ -94,22 +94,25 @@ public class ConnectPanel extends JFrame {
 				}
 
 				callback.login(p);
-				
-				String AITime = (String) JOptionPane.showInputDialog(contentPane, "How long should the PC be able to think?", "Computer time?",
-						JOptionPane.PLAIN_MESSAGE);
-				
-				try{
-					int time = Integer.parseInt(AITime);
-					
-					callback.setAITime(time);	
-					
-					btnEnterQueues.setEnabled(true);
-					btnConnect.setEnabled(false);
-				}catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(contentPane, "You need to select a integer as a value");
-				}
 
+				if (p instanceof ComputerPlayer) {
+					String AITime = (String) JOptionPane.showInputDialog(contentPane,
+							"How long should the PC be able to think?", "Computer time?", JOptionPane.PLAIN_MESSAGE);
+
+					try {
+						int time = Integer.parseInt(AITime);
+
+						callback.setAITime(time);
+
+						
+					} catch (NumberFormatException ex) {
+						JOptionPane.showMessageDialog(contentPane, "You need to select a integer as a value");
+					}
+				}
 				
+				btnEnterQueues.setEnabled(true);
+				btnConnect.setEnabled(false);
+
 			}
 		});
 
