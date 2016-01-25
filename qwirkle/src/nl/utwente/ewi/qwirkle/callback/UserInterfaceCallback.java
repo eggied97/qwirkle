@@ -20,6 +20,8 @@ public interface UserInterfaceCallback {
 	 *            the generated <code> Player </code> instance
 	 */
 	public void login(Player p);
+	
+	public void setAITime(int time);
 
 	/**
 	 * is called when the GUI wants to join a queue.

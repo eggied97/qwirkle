@@ -11,10 +11,31 @@ import nl.utwente.ewi.qwirkle.model.player.strategy.Strategy;
 public class ComputerPlayer extends Player {
 
 	private Strategy strat;
+	private int time;
 
 	public ComputerPlayer(String name) {
 		this(name, new DumbStrategy());
 	}
+	
+	
+
+	/**
+	 * @return the time
+	 */
+	public int getTime() {
+		return time;
+	}
+
+
+
+	/**
+	 * @param time the time to set
+	 */
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+
 
 	public ComputerPlayer(String name, Strategy strat) {
 		super(name);

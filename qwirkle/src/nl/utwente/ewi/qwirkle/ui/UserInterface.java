@@ -34,6 +34,8 @@ public interface UserInterface {
 	
 	public void askForChatMessage();
 	
+	public void askForAITime();
+	
 	public void setCallback(UserInterfaceCallback callback);
 	
 	

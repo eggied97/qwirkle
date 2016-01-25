@@ -138,22 +138,6 @@ public class SuperStrategy implements Strategy {
 	}
 
 	/*
-	 * Smart strategy determine move:
-	 * 
-	 * First off we make a list of all the possible pairs we can create iwith
-	 * the tiles in our hand.
-	 * 
-	 * Then we are going to loop through this list, and if it is a valid move on
-	 * the board, determine how many points we get out of that. Finally we place
-	 * the move wich gains us the most points -> INSTA WIN.
-	 * 
-	 * 
-	 * @Override public List<Move> determineMove(Board b, List<Tile> hand) {
-	 * 
-	 * return null; }
-	 */
-
-	/*
 	 * Smart strategy for trading:
 	 * 
 	 * First we determine the amount of possible neighbours a tile has (more

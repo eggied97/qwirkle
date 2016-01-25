@@ -18,6 +18,16 @@ public class Client extends Thread {
 	private BufferedWriter out;
 	private ResultCallback rc = null;
 
+	/**
+	 * creates a <code> Client </code> instance, to talk to server.
+	 * 
+	 * @param host
+	 *            the <code> InetAddress </code> of the server
+	 * @param port
+	 *            the port of the server
+	 * @throws IOException
+	 *             if there is no server on the given host & port
+	 */
 	public Client(InetAddress host, int port) throws IOException {
 		this.clientName = host.getHostAddress();
 
@@ -27,10 +37,20 @@ public class Client extends Thread {
 		this.out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
 	}
 
+	/**
+	 * sets the callback.
+	 * 
+	 * @param aRC
+	 *            the class that implements
+	 *            {@link nl.utwente.ewi.qwirkle.callback.ResultCallback}
+	 */
 	public void setCallback(ResultCallback aRC) {
 		this.rc = aRC;
 	}
 
+	/**
+	 * needs to be called in order to receive messages.
+	 */
 	public void run() {
 		try {
 			while (true) {
@@ -45,6 +65,12 @@ public class Client extends Thread {
 		}
 	}
 
+	/**
+	 * writes a given message to the connected server.
+	 * 
+	 * @param msg
+	 *            the message to be send
+	 */
 	public void sendMessage(String msg) {
 		try {
 			out.write(msg);

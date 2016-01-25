@@ -14,6 +14,7 @@ import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.exceptions.TooFewPlayersException;
 import nl.utwente.ewi.qwirkle.model.exceptions.TooManyPlayersException;
+import nl.utwente.ewi.qwirkle.model.player.ComputerPlayer;
 import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.model.player.SocketPlayer;
@@ -45,7 +46,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	public Main(String[] args) {
 		//set up some variables
 		this.usingFeatures = new ArrayList<>();
-		this.UI = new GUIView();
+		this.UI = new TUIView();
 		this.prot = Protocol.getInstance();
 		
 		this.UI.setCallback(this); // set the callback for UI changes
@@ -244,6 +245,21 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		if(this.UI instanceof GUIView) {
 			((GUIView) this.UI).setPlayer(p);
 		}
+		
+		if(me instanceof ComputerPlayer){
+			this.UI.askForAITime();
+		}else{
+			sendMessageToServer(prot.clientGetConnectString(me.getName(), implementedFeatures));
+		}		
+	}
+	
+
+	@Override
+	public void setAITime(int time) {
+		if ( me != null && me instanceof ComputerPlayer ) {
+			((ComputerPlayer) me).setTime(time);
+		}
+		
 		sendMessageToServer(prot.clientGetConnectString(me.getName(), implementedFeatures));
 	}
 
@@ -273,16 +289,11 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	public void sendChat(String msg) {} //not used
 
 	@Override
-	public void printHint() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void printHint() {} // not used
 
 	@Override
-	public void quit() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void quit() {} // not used
+
 
 
 

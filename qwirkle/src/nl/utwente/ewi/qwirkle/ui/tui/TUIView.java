@@ -33,6 +33,7 @@ public class TUIView implements UserInterface, UserInputCallback {
 	private static final String QUESTION_ASK_FOR_MOVE = "Which Tiles do you want to lay down?(h for a hint, or b to go back) \n format: [no_tile@x,y] :";
 	private static final String QUESTION_ASK_FOR_TRADE = "Which Tiles do you want to trade?(or b to go back) \n format: [no_tile] :";
 	private static final String QUESTION_ASK_FOR_CHAT = "The format for a chat message is as follow: \n global/@username message";
+	private static final String QUESTION_ASK_FORAI_TIME = "How long should the AI be able to think (in seconds)? ";
 
 	private UserInterfaceCallback callback;	
 
@@ -161,6 +162,19 @@ public class TUIView implements UserInterface, UserInputCallback {
 				
 				break;
 				
+			case FORASKINGAITIME:
+				
+				try{
+					int time = Integer.parseInt(input);
+					
+					callback.setAITime(time);					
+				}catch (NumberFormatException e) {
+					this.showError("Input should be an integer.");
+					this.askForAITime();
+				}
+				
+				break;
+				
 			case FORQUEUE:
 				String[] queues = input.split(",");
 				
@@ -214,6 +228,12 @@ public class TUIView implements UserInterface, UserInputCallback {
 				}
 				break;
 		}
+	}
+
+	@Override
+	public void askForAITime() {
+		UIT.setInputState(InputState.FORASKINGAITIME);
+		this.printMessage(QUESTION_ASK_FORAI_TIME);		
 	}
 
 
