@@ -557,6 +557,7 @@ public class MainFrame extends JFrame {
 					b.setSelected(false);
 					b.setEnabled(true);
 				}
+				emptyMoveSet();
 			}
 		});
 		GridBagConstraints gbc_btnUndo = new GridBagConstraints();
