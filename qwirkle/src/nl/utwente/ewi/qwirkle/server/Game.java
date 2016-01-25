@@ -67,6 +67,10 @@ public class Game {
 		turn = (turn + 1) % players.size();
 	}
 	
+	public void setTurn(int turnToSet){
+		this.turn = turnToSet;
+	}
+	
 	/**
 	 * Returns true when the <code> ClientHandler </code> holds the turn
 	 * @param ch

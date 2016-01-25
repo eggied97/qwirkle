@@ -203,12 +203,36 @@ public class Server {
 		}
 		Game game = new Game(list);
 		for(ClientHandler ch : list) {
-			ch.setGame(game);;
+			ch.setGame(game);
 		}
 		broadcast(list, Protocol.getInstance().serverStartGame(players));
 		
+		
+		
 		game.run();
+		
+		Player p = playerWithHighestScorePossible(players);
+		
+		game.setTurn(players.indexOf(p));
+		
 		broadcast(list, Protocol.getInstance().serverTurn(game.getPlayerTurn()));		
+	}
+	
+	private Player playerWithHighestScorePossible(List<Player> players){
+		Player result = null;
+		
+		int lengthStreak = 0;
+		
+		for(Player p : players){
+			int tussenLengthStreak = p.getLengthStreak();
+			
+			if(tussenLengthStreak > lengthStreak){
+				lengthStreak = tussenLengthStreak;
+				result = p;
+			}
+		}
+		
+		return result;
 	}
 	
 	/**
