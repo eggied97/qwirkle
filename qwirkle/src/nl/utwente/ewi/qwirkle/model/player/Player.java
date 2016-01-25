@@ -40,10 +40,30 @@ public abstract class Player {
 	 */
 	public abstract String determineAction();
 
+	/**
+	 * called to determine which tiles a user wants to trade.
+	 * 
+	 * @return a <code> List </code> of
+	 *         {@link nl.utwente.ewi.qwirkle.model.Tile}s which the player wants
+	 *         to trade.
+	 */
 	public abstract List<Tile> determineTradeMove();
 
+	/**
+	 * called to determine which {@link nl.utwente.ewi.qwirkle.model.Move}s a
+	 * player wants to do.
+	 * 
+	 * @return a <code> List </code> of
+	 *         {@link nl.utwente.ewi.qwirkle.model.Move}s which the player wants
+	 *         to do.
+	 */
 	public abstract List<Move> determinePutMove(Board board);
 
+	/**
+	 * determines what message the user wants to send.
+	 * 
+	 * @return the chatmessage
+	 */
 	public abstract String sendChat();
 
 	/**
@@ -90,10 +110,10 @@ public abstract class Player {
 			this.hand.remove(t);
 		}
 	}
-	
-	public int getLengthStreak(){
+
+	public int getLengthStreak() {
 		List<Move> moves = new SuperStrategy().determineMove(new Board(), hand);
-		
+
 		return moves.size();
 	}
 

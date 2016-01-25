@@ -16,8 +16,11 @@ public class ComputerPlayer extends Player {
 	public ComputerPlayer(String name) {
 		this(name, new DumbStrategy());
 	}
-	
-	
+
+	public ComputerPlayer(String name, Strategy strat) {
+		super(name);
+		this.strat = strat;
+	}
 
 	/**
 	 * @return the time
@@ -34,14 +37,7 @@ public class ComputerPlayer extends Player {
 	public void setTime(int time) {
 		this.time = time;
 	}
-
-
-
-	public ComputerPlayer(String name, Strategy strat) {
-		super(name);
-		this.strat = strat;
-	}
-
+	
 	@Override
 	public String determineAction() {
 		return null;
