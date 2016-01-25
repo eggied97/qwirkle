@@ -57,19 +57,19 @@ public class ValidMove {
 		}
 
 		// Horizontal line right of the point
-		for (int i = dX + 1; i < dX + 6; i++) {
+		for (int i = dX + 1; i < dX + 7; i++) {
 			if (b.getTile(i, dY) != null) {
 				tileSetXR.add(b.getTile(i, dY));
 			} else {
-				i = dX + 5;
+				i = dX + 6;
 			}
 		}
 		// Horizontal line left of the point
-		for (int i = dX - 1; i > dX - 6; i--) {
+		for (int i = dX - 1; i > dX - 7; i--) {
 			if (b.getTile(i, dY) != null) {
 				tileSetXL.add(b.getTile(i, dY));
 			} else {
-				i = dX - 5;
+				i = dX - 6;
 			}
 		}
 		// Test if the two horizontal rows can be combined
@@ -82,19 +82,19 @@ public class ValidMove {
 			}
 		}
 		// Vertical line above the point
-		for (int i = dY - 1; i > dY - 6; i--) {
+		for (int i = dY - 1; i > dY - 7; i--) {
 			if (b.getTile(dX, i) != null) {
 				tileSetYR.add(b.getTile(dX, i));
 			} else {
-				i = dY - 5;
+				i = dY - 6;
 			}
 		}
 		// Vertical line below of the point
-		for (int i = dY + 1; i < dY + 6; i++) {
+		for (int i = dY + 1; i < dY + 7; i++) {
 			if (b.getTile(dX, i) != null) {
 				tileSetYL.add(b.getTile(dX, i));
 			} else {
-				i = dY + 5;
+				i = dY + 6;
 			}
 		}
 		// Test if the two vertical columns can be combined
