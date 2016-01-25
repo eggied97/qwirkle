@@ -588,7 +588,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			}
 		}
 
-		new Main(me, c, this.UI, this.serverFeatures);
+		new QwirkleClient(me, c, this.UI, this.serverFeatures);
 	}
 
 	/**
@@ -762,7 +762,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			}
 		}
 
-		new Main(me, c, this.UI, this.serverFeatures);
+		new QwirkleClient(me, c, this.UI, this.serverFeatures);
 
 	}
 

@@ -27,7 +27,7 @@ import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
 import nl.utwente.ewi.qwirkle.ui.tui.TUIView;
 
-public class Main implements ResultCallback, UserInterfaceCallback {
+public class QwirkleClient implements ResultCallback, UserInterfaceCallback {
 
 	private final String USAGE_SERVER = "Requires 2 arguments: <host> <port>";
 	private Client server;
@@ -41,7 +41,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	private List<IProtocol.Feature> usingFeatures;
 
 	public static void main(String[] args) {
-		Main m = new Main(args);
+		QwirkleClient qc = new QwirkleClient(args);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	 * @param args
 	 *            of the terminal
 	 */
-	public Main(String[] args) {
+	public QwirkleClient(String[] args) {
 		// set up some variables
 		this.usingFeatures = new ArrayList<>();
 		this.UI = new GUIView();
@@ -62,6 +62,25 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 		}
 
 		this.UI.askForServerInformation();
+	}
+	
+	/**
+	 * Constructor that is called from the main menu.
+	 * 
+	 * @param port
+	 */
+	public QwirkleClient(int port){
+		this.usingFeatures = new ArrayList<>();
+		this.UI = new GUIView();
+		this.prot = Protocol.getInstance();
+
+		this.UI.setCallback(this); // set the callback for UI changes
+		if (this.UI instanceof GUIView) {
+			((GUIView) this.UI).setup(this);
+		}
+
+		setupServer("localhost@"+port);
+		
 	}
 
 	/**
@@ -79,7 +98,7 @@ public class Main implements ResultCallback, UserInterfaceCallback {
 	 *            {@link nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature} that
 	 *            are enabeld>
 	 */
-	public Main(Player me, Client server, UserInterface ui, List<IProtocol.Feature> usingFeatures) {
+	public QwirkleClient(Player me, Client server, UserInterface ui, List<IProtocol.Feature> usingFeatures) {
 		this.me = me;
 		this.server = server;
 		this.server.setCallback(this);

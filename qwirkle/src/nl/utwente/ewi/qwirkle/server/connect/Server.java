@@ -19,7 +19,6 @@ import nl.utwente.ewi.qwirkle.server.HandleCommand;
 
 public class Server {
 
-	
 	private final static String USAGE = "Give only the port as input";
 	private int port;
 	private ServerSocket serverSock;
@@ -33,33 +32,35 @@ public class Server {
 	private IProtocol.Feature[] features;
 
 	public static void main(String[] args) {
-		
+
 		Server server = null;
-		
-		while(server == null){
+
+		while (server == null) {
 			String port = util.readString(USAGE);
-			
+
 			try {
-				server = new Server(Integer.parseInt(port));
+				server = new Server(Integer.parseInt(port), false);
 				server.run();
 			} catch (IOException e) {
 				System.err.println("this port is already in use, use another one.");
 				server = null;
-			}catch (NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				System.err.println("port is not a number");
 				server = null;
 			}
 		}
 	}
-	
+
 	/**
-	 * Returns the <code> ClientHandlers </code> from a game to a queue selection list
+	 * Returns the <code> ClientHandlers </code> from a game to a queue
+	 * selection list
+	 * 
 	 * @param list
 	 */
 	public void addIdentified(List<ClientHandler> list) {
 		identified.addAll(list);
 	}
-	
+
 	/**
 	 * 
 	 * @return returns the features of the <code> Server </code>
@@ -67,7 +68,7 @@ public class Server {
 	public IProtocol.Feature[] getFeatures() {
 		return features;
 	}
-	
+
 	/**
 	 * 
 	 * @return returns the queues of the <code> Server </code>
@@ -75,16 +76,30 @@ public class Server {
 	public Map<Integer, List<ClientHandler>> getQueues() {
 		return this.queues;
 	}
+	
+	public Server(){
+		this.main(null);
+	}
 
 	/**
 	 * Create a new instance of <code> Server </code>
+	 * 
 	 * @param port
 	 */
-	public Server(int port) {
-		this.port = port;
-		init();
+	public Server(int port, boolean fromMainMenu) {
+		
+		try{
+			this.port = port;
+			init();
+			
+			if(fromMainMenu){
+				run();
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 	}
-	
+
 	/**
 	 * Initialize the <code> Server </code>
 	 */
@@ -102,11 +117,12 @@ public class Server {
 	}
 
 	/**
-	 * Starts looking for <code> Clients </code> that want to connect to the <code> Server </code>
+	 * Starts looking for <code> Clients </code> that want to connect to the
+	 * <code> Server </code>
 	 */
-	public void run() throws IOException{
-		
-		serverSock = new ServerSocket(port);		
+	public void run() throws IOException {
+
+		serverSock = new ServerSocket(port);
 
 		while (true) {
 			try {
@@ -121,37 +137,41 @@ public class Server {
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * Prints the message to the standard output
+	 * 
 	 * @param message
 	 */
 	public void print(String message) {
 		System.out.println(message);
 	}
-	
+
 	/**
 	 * 
-	 * @return returns the <code> List </code> with all <code> ClientHandlers </code>
+	 * @return returns the <code> List </code> with all
+	 *         <code> ClientHandlers </code>
 	 */
 	public List<ClientHandler> getAll() {
 		return this.all;
 	}
-	
+
 	/**
-	 * Sends a message to all <code> ClientHandlers </code> of the <code> List </code>
+	 * Sends a message to all <code> ClientHandlers </code> of the
+	 * <code> List </code>
+	 * 
 	 * @param list
 	 * @param msg
 	 */
 	public void broadcast(List<ClientHandler> list, String msg) {
-		for(ClientHandler ch : list) {
+		for (ClientHandler ch : list) {
 			ch.sendMessage(msg);
 		}
 	}
-	
+
 	/**
 	 * Removes the <code> CliendHandler </code> from the all <code> List </code>
+	 * 
 	 * @param ch
 	 */
 	public void removeFromAll(ClientHandler ch) {
@@ -160,6 +180,7 @@ public class Server {
 
 	/**
 	 * Removes the <code> ClientHandler </code> from his current state
+	 * 
 	 * @param ch
 	 */
 	public void removeHandler(ClientHandler ch) {
@@ -177,9 +198,10 @@ public class Server {
 		}
 
 	}
-	
+
 	/**
 	 * If the <code> ClientHandler </code> is in a game, remove him from it
+	 * 
 	 * @param ch
 	 */
 	public void removeGameHandler(ClientHandler ch) {
@@ -189,73 +211,75 @@ public class Server {
 			}
 		}
 	}
-	
+
 	/**
-	 * Starts a game with the given <code> List </code> of <code> ClientHandlers </code>
+	 * Starts a game with the given <code> List </code> of
+	 * <code> ClientHandlers </code>
+	 * 
 	 * @param list
 	 */
 	public void startGame(List<ClientHandler> list) {
 		List<Player> players = new ArrayList<>();
-		for(ClientHandler ch : list) {
-			ch.getPlayer().newGame(); //So we start off clean
-			
+		for (ClientHandler ch : list) {
+			ch.getPlayer().newGame(); // So we start off clean
+
 			players.add(ch.getPlayer());
 		}
 		Game game = new Game(list);
-		for(ClientHandler ch : list) {
+		for (ClientHandler ch : list) {
 			ch.setGame(game);
 		}
 		broadcast(list, Protocol.getInstance().serverStartGame(players));
-		
-		
-		
+
 		game.run();
-		
+
 		Player p = playerWithHighestScorePossible(players);
-		
+
 		game.setTurn(players.indexOf(p));
-		
-		broadcast(list, Protocol.getInstance().serverTurn(game.getPlayerTurn()));		
+
+		broadcast(list, Protocol.getInstance().serverTurn(game.getPlayerTurn()));
 	}
-	
-	private Player playerWithHighestScorePossible(List<Player> players){
+
+	private Player playerWithHighestScorePossible(List<Player> players) {
 		Player result = null;
-		
+
 		int lengthStreak = 0;
-		
-		for(Player p : players){
+
+		for (Player p : players) {
 			int tussenLengthStreak = p.getLengthStreak();
-			
-			if(tussenLengthStreak > lengthStreak){
+
+			if (tussenLengthStreak > lengthStreak) {
 				lengthStreak = tussenLengthStreak;
 				result = p;
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
-	 * Checks whether one of the queues has the set amount of players required to start a <code> Game </code>
+	 * Checks whether one of the queues has the set amount of players required
+	 * to start a <code> Game </code>
 	 */
 	public void checkQueues() {
 
-		for(Entry<Integer, List<ClientHandler>> entry: ((TreeMap<Integer, List<ClientHandler>>)queues).descendingMap().entrySet()) {
-			List<ClientHandler> queue = (List<ClientHandler>)entry.getValue();
-			if((int)entry.getKey() == queue.size()) {
-				
+		for (Entry<Integer, List<ClientHandler>> entry : ((TreeMap<Integer, List<ClientHandler>>) queues)
+				.descendingMap().entrySet()) {
+			List<ClientHandler> queue = (List<ClientHandler>) entry.getValue();
+			if ((int) entry.getKey() == queue.size()) {
+
 				gameCounter++;
-				
-				games.put(gameCounter, queues.get((int)entry.getKey()));
-				
-				startGame(queues.get((int)entry.getKey()));
-				
-				queues.get((int)entry.getKey()).clear();
-				
-				for(ClientHandler ch : queue) {
+
+				games.put(gameCounter, queues.get((int) entry.getKey()));
+
+				startGame(queues.get((int) entry.getKey()));
+
+				queues.get((int) entry.getKey()).clear();
+
+				for (ClientHandler ch : queue) {
 					removeHandler(ch);
 				}
-				
+
 				return;
 			}
 		}
@@ -263,6 +287,7 @@ public class Server {
 
 	/**
 	 * Analyze the input from the <code> Client </code> and act accordingly
+	 * 
 	 * @param input
 	 * @param ch
 	 */
@@ -276,23 +301,23 @@ public class Server {
 		switch (inputArr[0]) {
 
 			case IProtocol.CLIENT_IDENTIFY:
-				if(inputArr.length > 1) {
-					if(ch.getGame() != null) {
+				if (inputArr.length > 1) {
+					if (ch.getGame() != null) {
 						ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
 						break;
 					}
-					
-					handle.handleIdentifyName(inputArr,ch);
-					if(handle.getWentWell()) {
+	
+					handle.handleIdentifyName(inputArr, ch);
+					if (handle.getWentWell()) {
 						handle.setWentWell(true);
-						handle.handleIdentifyFeatures(inputArr,ch);
+						handle.handleIdentifyFeatures(inputArr, ch);
 					}
-					
-					if(handle.getWentWell()) {
+	
+					if (handle.getWentWell()) {
 						removeHandler(ch);
-						identified.add(ch);	
+						identified.add(ch);
 					}
-					
+	
 					handle.setWentWell(true);
 				} else {
 					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
@@ -304,7 +329,7 @@ public class Server {
 				break;
 	
 			case IProtocol.CLIENT_MOVE_PUT:
-				if(inputArr.length > 1) {
+				if (inputArr.length > 1) {
 					handle.handleMovePut(inputArr, ch);
 				} else {
 					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
@@ -312,7 +337,7 @@ public class Server {
 				break;
 	
 			case IProtocol.CLIENT_MOVE_TRADE:
-				if(inputArr.length > 1) {
+				if (inputArr.length > 1) {
 					handle.handleMoveTrade(inputArr, ch);
 				} else {
 					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
@@ -320,10 +345,10 @@ public class Server {
 				break;
 	
 			case IProtocol.CLIENT_QUEUE:
-				if(inputArr.length > 1) {
+				if (inputArr.length > 1) {
 					removeHandler(ch);
 					handle.handleQueue(inputArr, ch);
-					if(handle.getWentWell()) {
+					if (handle.getWentWell()) {
 						checkQueues();
 					} else {
 						removeHandler(ch);
@@ -333,23 +358,24 @@ public class Server {
 				} else {
 					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				}
-				
+	
 				break;
 			case IProtocol.CLIENT_CHAT:
-				if(inputArr.length > 1) {
-					if(ch.isEnabled(IProtocol.Feature.CHAT)) {
+				if (inputArr.length > 1) {
+					if (ch.isEnabled(IProtocol.Feature.CHAT)) {
 						handle.handleChat(inputArr, ch);
 					}
 				} else {
 					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				}
-				
+	
 				break;
-				/*case IProtocol.CLIENT_CHALLENGE: case
-				 * IProtocol.CLIENT_CHALLENGE_ACCEPT: case
-				 * IProtocol.CLIENT_CHALLENGE_DECLINE: case
-				 * IProtocol.CLIENT_LEADERBOARD: case IProtocol.CLIENT_LOBBY:
-				 */
+			/*
+			 * case IProtocol.CLIENT_CHALLENGE: case
+			 * IProtocol.CLIENT_CHALLENGE_ACCEPT: case
+			 * IProtocol.CLIENT_CHALLENGE_DECLINE: case
+			 * IProtocol.CLIENT_LEADERBOARD: case IProtocol.CLIENT_LOBBY:
+			 */
 			default:
 				ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_COMMAND));
 				break;

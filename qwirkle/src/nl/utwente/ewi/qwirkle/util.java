@@ -17,7 +17,7 @@ public class util {
 	 *            the question to prompt the user
 	 * @return the first int value which is entered by the user
 	 */
-	public int readInt(String prompt) {
+	public static int readInt(String prompt) {
 		int value = 0;
 		boolean intRead = false;
 		do {
