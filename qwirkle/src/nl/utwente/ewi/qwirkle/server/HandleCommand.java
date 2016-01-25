@@ -180,7 +180,14 @@ public class HandleCommand {
 			}
 		}
 		
-		ch.sendMessage(Protocol.getInstance().serverQueueOk(queues));
+		int[] result = new int[queueSpl.length];
+		int i = 0;
+		
+		for(String r : queueSpl){
+			result[i] = Integer.parseInt(r);
+		}
+		
+		ch.sendMessage(Protocol.getInstance().serverQueueOk(result));
 
 	}
 
