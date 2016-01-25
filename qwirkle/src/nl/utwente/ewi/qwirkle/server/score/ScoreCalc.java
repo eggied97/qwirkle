@@ -47,11 +47,11 @@ public class ScoreCalc {
 			int incounter = 1;
 			
 			// Count the tiles in the direction of the first move
-			for (int i = px - 1; i > px - 6; i--) {
+			for (int i = px-1; i > px - 6; i--) {
 				if (b.getTile(i, py) != null) {
 					incounter++;
 				} else {
-					i = px - 5;
+					i = px - 6;
 				}
 			}
 			// To the left as well as to the right
@@ -59,7 +59,7 @@ public class ScoreCalc {
 				if (b.getTile(i, py) != null) {
 					incounter++;
 				} else {
-					i = px + 5;
+					i = px + 6;
 				}
 			}
 			
@@ -73,7 +73,7 @@ public class ScoreCalc {
 			
 			// Calculate score in the direction other than the direction of the move
 			for (Move m : moves) {
-				int counter = 1;
+				int counter = 0;
 				int y = m.getPoint().getY();
 				int x = m.getPoint().getX();
 
@@ -82,7 +82,7 @@ public class ScoreCalc {
 					if (b.getTile(x, i) != null) {
 						counter++;
 					} else {
-						i = y - 5;
+						i = y - 6;
 					}
 				}
 
@@ -90,13 +90,16 @@ public class ScoreCalc {
 					if (b.getTile(x, i) != null) {
 						counter++;
 					} else {
-						i = y + 5;
+						i = y + 6;
 					}
 				}
 				
 				// If there are 5 tiles in the direction around it, its a full row so multiply by 2
-				if (counter == 6) {
-					adder += 2;
+				if (counter == 5) {
+					adder += 6;
+				}
+				if(counter > 0) {
+					counter++;
 				}
 
 				score += counter;
@@ -113,7 +116,7 @@ public class ScoreCalc {
 				if (b.getTile(px, i) != null) {
 					incounter++;
 				} else {
-					i = py - 5;
+					i = py - 6;
 				}
 			}
 
@@ -121,7 +124,7 @@ public class ScoreCalc {
 				if (b.getTile(px, i) != null) {
 					incounter++;
 				} else {
-					i = py + 5;
+					i = py + 6;
 				}
 			}
 			
@@ -133,7 +136,7 @@ public class ScoreCalc {
 
 			
 			for (Move m : moves) {
-				int counter = 1;
+				int counter = 0;
 
 				int y = m.getPoint().getY();
 				int x = m.getPoint().getX();
@@ -142,7 +145,7 @@ public class ScoreCalc {
 					if (b.getTile(i, y) != null) {
 						counter++;
 					} else {
-						i = x - 5;
+						i = x - 6;
 					}
 				}
 
@@ -150,12 +153,15 @@ public class ScoreCalc {
 					if (b.getTile(i, y) != null) {
 						counter++;
 					} else {
-						i = x + 5;
+						i = x + 6;
 					}
 				}
 
-				if (counter == 6) {
+				if (counter == 5) {
 					adder += 6;
+				}
+				if(counter > 0) {
+					counter++;
 				}
 
 				score += counter;

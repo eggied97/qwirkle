@@ -660,7 +660,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	public void printHint() {
 		List<Move> hint = new DumbStrategy().determineMove(board, turnPlayer.getHand());
 		
-		this.UI.printMessage(hint.get(0).toString());
+		this.UI.printMessage(hint.get(0).toHumanString());
 	}
 
 	@Override

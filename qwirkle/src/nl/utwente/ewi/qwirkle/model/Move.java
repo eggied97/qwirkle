@@ -44,6 +44,10 @@ public class Move {
 	public Tile getTile() {
 		return tile;
 	}
+	
+	public String toHumanString() {
+		return String.format(this.tile.getHumanReadableString() +"@%d,%d", this.getPoint().getX(), this.getPoint().getY());
+	}
 
 	public String toString() {
 		return String.format(this.tile.toString()+"@%d,%d", this.getPoint().getX(), this.getPoint().getY());
