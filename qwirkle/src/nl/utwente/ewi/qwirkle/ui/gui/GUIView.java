@@ -150,7 +150,6 @@ public class GUIView implements UserInterface {
 				i++;
 				b.setEnabled(true);
 			}else{
-				i++;
 				b.setIcon(null);
 				b.setEnabled(false);
 			}

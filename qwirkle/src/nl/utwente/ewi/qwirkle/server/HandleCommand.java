@@ -260,6 +260,10 @@ public class HandleCommand {
 			}
 		}
 		
+		for(int i = 0; i < newTiles.size(); i++) {
+			ch.getPlayer().removeTilesFromHand(tiles);
+		}
+		
 		for (Tile t : newTiles) {
 			newTilesInt.add(t.getIntOfTile());
 		}
@@ -284,6 +288,7 @@ public class HandleCommand {
 	// (ch.getPlayer().getHand().contains(tiles.get(i)))));
 	public boolean checkTiles(List<Tile> tiles, ClientHandler ch) {
 		List<Tile> playerTiles = ch.getPlayer().getHand();
+		server.print(playerTiles.size()+"");
 		for (Tile t : tiles) {
 			if (!playerTiles.contains(t)) {
 				return false;
@@ -325,7 +330,6 @@ public class HandleCommand {
 				ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				return;
 			}
-
 		}
 		if (ch.getGame().getBoard().isEmpty()) {
 			boolean startPoint = false;
@@ -348,6 +352,8 @@ public class HandleCommand {
 			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.MOVE_INVALID));
 			return;
 		}
+		ch.getPlayer().removeTilesFromHand(tiles);
+		
 		ch.getGame().getBoard().putTile(moves);
 
 		ch.getPlayer().addScore(ScoreCalc.getInstance().calculate(ch.getGame().getBoard(), moves));
