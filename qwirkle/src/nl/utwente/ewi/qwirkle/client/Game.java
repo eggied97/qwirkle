@@ -279,7 +279,19 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 									"You wanted to send a message to a unknow channel. \n Usernames are uppercase specific , or use `global`.");
 							handleTurn(true);
 							break;
+							
+						case INVALID_PARAMETER:
+							this.UI.showError(
+									"you have send an invalid parameter, try again.");
+							handleTurn(true);
+							break;
 		
+						case INVALID_COMMAND:
+							this.UI.showError(
+									"you have send an invalid command, try again.");
+							handleTurn(true);
+							break;
+							
 						default:
 							break;
 					}
