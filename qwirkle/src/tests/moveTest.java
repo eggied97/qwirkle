@@ -36,4 +36,12 @@ public class moveTest {
 		assertTrue(m.getTile().equals(new Tile(0)));
 	}
 
+	@Test
+	public void toHumanStringTest() {
+		assertTrue(m.toHumanString().equals(m.getTile().getHumanReadableString() + "@0,0"));
+
+		Move m2 = new Move(new Point(123, 456), new Tile(21));
+		assertTrue(m2.toHumanString().equals(m2.getTile().getHumanReadableString() + "@123,456"));
+	}
+
 }

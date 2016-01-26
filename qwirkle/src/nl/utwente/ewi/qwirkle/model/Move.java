@@ -18,16 +18,6 @@ public class Move {
 	/**
 	 * 
 	 * @return returns the <code> 
-	 *         {@link nl.utwente.ewi.qwirkle.model.Model} </code> corresponding
-	 *         to the tile and Point
-	 */
-	public Move getMove() {
-		return this;
-	}
-
-	/**
-	 * 
-	 * @return returns the <code> 
 	 *         {@link nl.utwente.ewi.qwirkle.model.Point} </code> belonging to
 	 *         this move
 	 */

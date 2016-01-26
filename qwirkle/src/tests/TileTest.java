@@ -11,12 +11,13 @@ import nl.utwente.ewi.qwirkle.model.enums.Shape;
 
 public class TileTest {
 	
-	Tile t1, t2;
+	Tile t1, t2, t28;
 
 	@Before
 	public void setUp() throws Exception {
 		t1 = new Tile(Color.BLUE, Shape.CIRCLE);
 		t2 = new Tile(Color.GREEN, Shape.CLUBS);
+		t28 = new Tile(28);
 	}
 	
 	@Test
@@ -43,7 +44,7 @@ public class TileTest {
 	
 	@Test
 	public void tileToHumanReadableStringTest(){
-		String tussenstap = Color.BLUE.toString() + "_" + Shape.CIRCLE.toString();
+		String tussenstap = Color.BLUE.getChar() + "_" + Shape.CIRCLE.getChar();
 		
 		assertTrue(tussenstap.equals(t1.getHumanReadableString()));
 		assertFalse(tussenstap.equals(t2.getHumanReadableString()));		
@@ -61,6 +62,16 @@ public class TileTest {
 		assertTrue(t1.getIntOfTile() == 30);
 		assertTrue(new Tile(12).getIntOfTile() == 12);
 		assertTrue(new Tile(35).getIntOfTile() == 35);
+	}
+	
+	@Test
+	public void hashCodeTest(){
+		assertTrue(28 == t28.hashCode());
+	}
+	
+	@Test
+	public void toStringTest(){
+		assertTrue("28".equals(t28.toString()));
 	}
 	
 
