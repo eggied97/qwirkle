@@ -82,17 +82,33 @@ public class Game {
 	
 	/**
 	 * Returns true when one of the factors of game end has been met
+	 * 
+	 * Game end if:
+	 * 	- no more possible moves with tiles on the board and in the players hand & deck
+	 * 	- board is in perfect square
+	 *  - one players hand is empty 
+	 * 
 	 * @return
 	 */
 	public boolean gameEnd() {
+		
+		System.err.println("game end check ");
+		
 		if(board.isSquare()) {
+			System.err.println("board is square ");
 			return true;
 		}
+		
 		for(ClientHandler ch : players) {
-			if(ch.getPlayer().getHand().isEmpty()) {
+			
+			System.err.println("tiles in hand : " + ch.getPlayer().getHand().size());
+			
+			if(ch.getPlayer().getHand().size() == 0 ) {
 				return true;
 			}
 		}
+		
+		
 		return false;
 	}
 	

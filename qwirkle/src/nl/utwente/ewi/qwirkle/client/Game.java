@@ -187,14 +187,6 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	
 				case IProtocol.SERVER_DRAWTILE:
 	
-					if (nextDrawNeedToRemoveTiles) {
-						if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
-							turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
-						} else {
-							// TODO is socket player -> throw error
-						}
-					}
-	
 					handleDrawTile(args);
 					break;
 	
@@ -222,6 +214,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 					if (nextDrawNeedToRemoveTiles) {
 						if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
 							turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
+							nextDrawNeedToRemoveTiles = false;
 						} else {
 							// TODO is socket player -> throw error
 						}
@@ -238,6 +231,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 					if (nextDrawNeedToRemoveTiles) {
 						if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
 							turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
+							nextDrawNeedToRemoveTiles = false;
 						} else {
 							// TODO is socket player -> throw error
 						}
@@ -489,13 +483,6 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			future.cancel(true); // interrupt it, because it took too long
 
 			// Player took too long -> we trade the first tile in our hand as
-			// our move
-			tilesThatNeedToBeRemoved = new ArrayList<>();
-			tilesThatNeedToBeRemoved.add(turnPlayer.getHand().get(0));
-			nextDrawNeedToRemoveTiles = true;
-
-			c.sendMessage(Protocol.getInstance().clientTradeMove(tilesThatNeedToBeRemoved));
-
 		}
 
 		// TODO check how this works out

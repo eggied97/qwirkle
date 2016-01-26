@@ -379,7 +379,9 @@ public class HandleCommand {
 	 */
 	// @ requires ch != null;
 	public void handleTurn(ClientHandler ch) {
+		
 		ch.getGame().nextTurn();
+		
 		if (ch.getGame().gameEnd()) {
 			handleEndGame(ch);
 			return;

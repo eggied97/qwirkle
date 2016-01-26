@@ -196,6 +196,8 @@ public class SuperStrategy implements Strategy {
 	 */
 	@Override
 	public List<Tile> determineTrade(List<Tile> hand) {
+		System.out.println("Trade with no of tiles" + hand.size());
+		
 		Map<Tile, Integer> possibleTrade = getTilesWithNumberOfNeighbours(hand);
 
 		boolean done = false;
