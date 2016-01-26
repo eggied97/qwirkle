@@ -153,6 +153,9 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 			for (Player p : players) {
 				scoreMap.put(p, p.getScore());
+				if(p instanceof HumanPlayer || p instanceof ComputerPlayer) {
+					((GUIView)this.UI).showHand(p.getHand());
+				}
 			}
 
 			((GUIView) this.UI).showBag(Math.max(0, 108 - board.getMap().size() - players.size() * 6), scoreMap, false);
