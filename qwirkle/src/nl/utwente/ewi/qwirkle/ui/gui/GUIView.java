@@ -262,4 +262,9 @@ public class GUIView implements UserInterface {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void disableChat() {
+		mFrame.disableChat();
+	}
 }

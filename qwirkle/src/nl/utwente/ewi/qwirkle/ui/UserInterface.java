@@ -77,7 +77,16 @@ public interface UserInterface {
 	 */
 	public void askForChatMessage();
 	
+	/**
+	 * Asks the user to enter the AI time
+	 */
 	public void askForAITime();
+	
+	/**
+	 * disables the chat, if the server doesnt support it.
+	 */
+	public void disableChat();
+	
 	
 	/**
 	 * Set the callback
