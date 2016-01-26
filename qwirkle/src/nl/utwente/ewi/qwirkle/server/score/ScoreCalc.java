@@ -4,6 +4,7 @@ import java.util.List;
 
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
+import nl.utwente.ewi.qwirkle.model.enums.Direction;
 
 public class ScoreCalc {
 
