@@ -11,6 +11,7 @@ import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
+import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.server.connect.ClientHandler;
 import nl.utwente.ewi.qwirkle.server.connect.Server;
@@ -38,7 +39,7 @@ public class HandleCommand {
 	 * 
 	 * @return
 	 */
-	
+	//@ ensures \result != null;
 	/*@ pure */ public boolean getWentWell() {
 		return wentWell;
 	}
@@ -79,7 +80,7 @@ public class HandleCommand {
 		String name = strAy[1];
 		if (name.matches(REGEX) && !name.equals(null)) {
 			for (ClientHandler handler : server.getAll()) {
-				// Check if youre not trying to get the name of the object whose
+				// Check if you're not trying to get the name of the object whose
 				// name you want to set
 				if (handler.equals(ch)) {
 				} else if (handler.getClientName().equals(name)) {
@@ -204,6 +205,7 @@ public class HandleCommand {
 	public void handleMoveTrade(String[] strAy, ClientHandler ch) {
 
 		if (!ch.getGame().hasTurn(ch)) {
+			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.ILLEGAL_STATE));
 			return;
 		}
 
@@ -281,7 +283,7 @@ public class HandleCommand {
 	public void handleMovePut(String[] strAy, ClientHandler ch) {
 
 		if (!ch.getGame().hasTurn(ch)) {
-			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.MOVE_INVALID, "Not your turn!"));
+			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.ILLEGAL_STATE));
 			return;
 		}
 
@@ -438,15 +440,26 @@ public class HandleCommand {
 		}
 		String messa = builder.toString();
 		if (channel.equals("global")) {
-			server.broadcast(ch.getGame().getPlayers(),
+			List<ClientHandler> receivers = new ArrayList<>();
+			for(ClientHandler c : ch.getGame().getPlayers()) {
+				for(Feature f : c.getFeatures()) {
+					if(f.equals(Feature.CHAT)) {
+						receivers.add(c);
+					}
+				}
+			}
+			server.broadcast(receivers,
 					Protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
 			return;
 		} else {
 			for (ClientHandler clienthand : ch.getGame().getPlayers()) {
 				System.out.println("@" + channel);
 				if (("@" + clienthand.getClientName()).equals(channel)) {
-					clienthand.sendMessage(Protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
-
+					for(Feature f : clienthand.getFeatures()) {
+						if(f.equals(Feature.CHAT)) {
+							clienthand.sendMessage(Protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
+						}
+					}
 					return;
 				}
 			}
