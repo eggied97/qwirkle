@@ -237,6 +237,7 @@ public class Server {
 	 * @param list
 	 */
 	//@ requires list != null;
+	//TODO remove players from the other QUEUS?????? - Egbert
 	public void startGame(List<ClientHandler> list) {
 		List<Player> players = new ArrayList<>();
 		for (ClientHandler ch : list) {
