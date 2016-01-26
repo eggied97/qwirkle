@@ -165,10 +165,9 @@ public class ValidMove {
 		return true;
 	}
 
-	//@requires moves != null;
-	//@requires b != null;
-	//@ ensures (validPointsX(moves) && validPointsY(moves)) ==> \result = true;
-	//@ ensures (validPointsX(moves) ==> 
+	//@ requires moves != null;
+	//@ requires b != null;
+	//@ ensures (validPointsX(moves) & validPointsY(moves));
 	private boolean validRow(List<Move> moves, Board b) {
 		b.putTile(moves);
 		if(validPointsX(moves) && validPointsY(moves)) {
@@ -211,8 +210,8 @@ public class ValidMove {
 	 */
 	//@requires moves != null;
 	//@ requires moves.size() >= 2;
-	//@ ensures (\forall i = 0; i < moves.size() -1; moves.get(i).getPoint().getX() != moves.get(i + 1).getPoint().getX()) ==> \result = false;
-	//@ ensures (\forall i = 0; i < moves.size() -1; moves.get(i).getPoint().getX() == moves.get(i + 1).getPoint().getX()) ==> \result = true;
+	//@ ensures (\forall int i; i < (moves.size() - 1); moves.get(i).getPoint().getX() != moves.get(i + 1).getPoint().getX());
+	//@ ensures (\forall int i; i < (moves.size() - 1); moves.get(i).getPoint().getX() == moves.get(i + 1).getPoint().getX());
 	/*@ pure */public boolean validPointsX(List<Move> moves) {
 		for (int i = 0; i < moves.size() - 1; i++) {
 			if (moves.get(i).getPoint().getX() != moves.get(i + 1).getPoint().getX()) {
@@ -231,8 +230,8 @@ public class ValidMove {
 	 */
 	//@ requires moves != null;
 	//@ requires moves.size() >= 2;
-	//@ ensures (\forall i = 0; i < moves.size() -1; moves.get(i).getPoint().getY() != moves.get(i + 1).getPoint().getY()) ==> \result = false;
-	//@ ensures (\forall i = 0; i < moves.size() -1; moves.get(i).getPoint().getY() == moves.get(i + 1).getPoint().getY()) ==> \result = true;
+	//@ ensures (\forall int i; i < (moves.size() - 1); moves.get(i).getPoint().getY() != moves.get(i + 1).getPoint().getY());
+	//@ ensures (\forall int i; i < (moves.size() - 1); moves.get(i).getPoint().getY() == moves.get(i + 1).getPoint().getY());
 	/*@ pure */public boolean validPointsY(List<Move> moves) {
 		for (int i = 0; i < moves.size() - 1; i++) {
 			if (moves.get(i).getPoint().getY() != moves.get(i + 1).getPoint().getY()) {

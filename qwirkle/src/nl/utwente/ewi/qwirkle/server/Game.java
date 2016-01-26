@@ -85,7 +85,7 @@ public class Game {
 	 * @return
 	 */
 	public boolean gameEnd() {
-		if(getBag().isEmpty() || board.isSquare()) {
+		if(board.isSquare()) {
 			return true;
 		}
 		for(ClientHandler ch : players) {

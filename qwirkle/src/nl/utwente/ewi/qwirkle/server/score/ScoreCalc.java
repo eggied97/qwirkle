@@ -25,9 +25,9 @@ public class ScoreCalc {
 	 * @param moves
 	 * @return
 	 */
-	//@ requires b != null
-	//@ requires moves != null
-	//@ ensures \result >= 0
+	//@ requires b != null;
+	//@ requires moves != null;
+	//@ ensures \result >= 0;
 	public int calculate(Board b, List<Move> moves) {
 		int score = 0;
 		int adder = 0;

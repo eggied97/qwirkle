@@ -31,6 +31,7 @@ public class Server {
 	private int gameCounter = 0;
 	private IProtocol.Feature[] features;
 
+	
 	public static void main(String[] args) {
 		Server server = null;
 		ServerGUI gui = new ServerGUI(server);
@@ -64,6 +65,7 @@ public class Server {
 	 * 
 	 * @param list
 	 */
+	//@ requires list != null;
 	public void addIdentified(List<ClientHandler> list) {
 		identified.addAll(list);
 	}
@@ -72,7 +74,7 @@ public class Server {
 	 * 
 	 * @return returns the features of the <code> Server </code>
 	 */
-	public IProtocol.Feature[] getFeatures() {
+	/*@ pure */public IProtocol.Feature[] getFeatures() {
 		return features;
 	}
 
@@ -80,7 +82,8 @@ public class Server {
 	 * 
 	 * @return returns the queues of the <code> Server </code>
 	 */
-	public Map<Integer, List<ClientHandler>> getQueues() {
+	
+	/*@ pure */public Map<Integer, List<ClientHandler>> getQueues() {
 		return this.queues;
 	}
 	
@@ -93,6 +96,8 @@ public class Server {
 	 * 
 	 * @param port
 	 */
+	//@ requires port != null;
+	//@ requires fromMainMenu != null;
 	public Server(int port, boolean fromMainMenu) {
 		
 		try{
@@ -150,6 +155,7 @@ public class Server {
 	 * 
 	 * @param message
 	 */
+	//@ requires message != null;
 	public void print(String message) {
 		System.out.println(message);
 	}
@@ -170,6 +176,8 @@ public class Server {
 	 * @param list
 	 * @param msg
 	 */
+	//@ requires list != null;
+	//@ requires msg != null;
 	public void broadcast(List<ClientHandler> list, String msg) {
 		for (ClientHandler ch : list) {
 			ch.sendMessage(msg);
@@ -181,6 +189,7 @@ public class Server {
 	 * 
 	 * @param ch
 	 */
+	//@ requires ch != null;
 	public void removeFromAll(ClientHandler ch) {
 		all.remove(ch);
 	}
@@ -190,6 +199,7 @@ public class Server {
 	 * 
 	 * @param ch
 	 */
+	//@ requires ch != null;
 	public void removeHandler(ClientHandler ch) {
 		if (start.contains(ch)) {
 			start.remove(ch);
@@ -211,6 +221,7 @@ public class Server {
 	 * 
 	 * @param ch
 	 */
+	//@ requires ch != null;
 	public void removeGameHandler(ClientHandler ch) {
 		for (List<ClientHandler> l : games.values()) {
 			if (l.contains(ch)) {
@@ -225,6 +236,7 @@ public class Server {
 	 * 
 	 * @param list
 	 */
+	//@ requires list != null;
 	public void startGame(List<ClientHandler> list) {
 		List<Player> players = new ArrayList<>();
 		for (ClientHandler ch : list) {
@@ -247,6 +259,12 @@ public class Server {
 		broadcast(list, Protocol.getInstance().serverTurn(game.getPlayerTurn()));
 	}
 
+	/**
+	 * Determines which <code> Player </code> should start
+	 * @param players
+	 * @return
+	 */
+	//@ requires players != null;
 	private Player playerWithHighestScorePossible(List<Player> players) {
 		Player result = null;
 
@@ -268,8 +286,8 @@ public class Server {
 	 * Checks whether one of the queues has the set amount of players required
 	 * to start a <code> Game </code>
 	 */
+	
 	public void checkQueues() {
-
 		for (Entry<Integer, List<ClientHandler>> entry : ((TreeMap<Integer, List<ClientHandler>>) queues)
 				.descendingMap().entrySet()) {
 			List<ClientHandler> queue = (List<ClientHandler>) entry.getValue();
@@ -298,6 +316,8 @@ public class Server {
 	 * @param input
 	 * @param ch
 	 */
+	//@ requires input != null;
+	//@ requires ch != null;
 	public void getCommand(String input, ClientHandler ch) {
 		String[] inputArr = input.split(" ");
 		if (inputArr[0] == null) {

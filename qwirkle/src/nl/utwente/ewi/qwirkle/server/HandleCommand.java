@@ -39,7 +39,6 @@ public class HandleCommand {
 	 * 
 	 * @return
 	 */
-	//@ ensures \result != null;
 	/*@ pure */ public boolean getWentWell() {
 		return wentWell;
 	}
@@ -266,7 +265,7 @@ public class HandleCommand {
 	 */
 	//@ requires ch != null;
 	//@ requires tiles != null;
-	//@ ensures ((\forall int i; (i >= 0 && i < tiles.size()) ==> (ch.getPlayer().getHand().contains(tiles.get(i))) ) ==> \result = true;
+	//@ ensures ((\forall int i; (i >= 0 && i < tiles.size()) ==> (ch.getPlayer().getHand().contains(tiles.get(i)))));
 	public boolean checkTiles(List<Tile> tiles, ClientHandler ch) {
 		List<Tile> playerTiles = ch.getPlayer().getHand();
 		for (Tile t : tiles) {
