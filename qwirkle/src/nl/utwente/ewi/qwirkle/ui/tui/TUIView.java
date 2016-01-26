@@ -236,6 +236,12 @@ public class TUIView implements UserInterface, UserInputCallback {
 		this.printMessage(QUESTION_ASK_FORAI_TIME);		
 	}
 
+	@Override
+	public void disableChat() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	
 	
