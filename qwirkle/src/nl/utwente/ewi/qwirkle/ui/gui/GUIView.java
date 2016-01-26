@@ -145,9 +145,14 @@ public class GUIView implements UserInterface {
 		List<JToggleButton> buttons =  mFrame.getHandTiles();
 		int i = 0;
 		for(JToggleButton b : buttons) {
-			b.setIcon(new ImageIcon(tileImg.get(i)));
-			i++;
-			b.setEnabled(true);
+			if(tileImg.size() > i){
+				b.setIcon(new ImageIcon(tileImg.get(i)));
+				i++;
+				b.setEnabled(true);
+			}else{
+				b.setIcon(null);
+				b.setEnabled(false);
+			}
 		}
 		
 	}
