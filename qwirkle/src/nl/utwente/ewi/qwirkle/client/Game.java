@@ -219,6 +219,14 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 						throw new TooFewArgumentsException(args.length);
 					}
 	
+					if (nextDrawNeedToRemoveTiles) {
+						if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
+							turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
+						} else {
+							// TODO is socket player -> throw error
+						}
+					}
+					
 					handleMovePut(args);
 					break;
 	
@@ -226,7 +234,14 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 					if (args.length < 1) {
 						throw new TooFewArgumentsException(args.length);
 					}
-	
+					
+					if (nextDrawNeedToRemoveTiles) {
+						if (turnPlayer instanceof HumanPlayer || turnPlayer instanceof ComputerPlayer) {
+							turnPlayer.removeTilesFromHand(tilesThatNeedToBeRemoved);
+						} else {
+							// TODO is socket player -> throw error
+						}
+					}
 					handleMoveTradeFromOpponent(args);
 	
 					break;
@@ -240,7 +255,6 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 					break;
 	
 				case IProtocol.SERVER_ERROR:
-					// TODO INVALID_CHANNEL wordt niet gestuurt vanuit server :/
 					if (args.length < 1) {
 						throw new TooFewArgumentsException(args.length);
 					}

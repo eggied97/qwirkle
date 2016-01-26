@@ -247,6 +247,7 @@ public class Server {
 		Game game = new Game(list);
 		for (ClientHandler ch : list) {
 			ch.setGame(game);
+			ch.getGame().setRunning(true);
 		}
 		broadcast(list, Protocol.getInstance().serverStartGame(players));
 

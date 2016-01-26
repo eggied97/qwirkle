@@ -29,7 +29,7 @@ public class HandleCommand {
 	 * 
 	 * @param server
 	 */
-	//@requires server != null;
+	// @requires server != null;
 	public HandleCommand(Server server) {
 		this.server = server;
 	}
@@ -39,7 +39,7 @@ public class HandleCommand {
 	 * 
 	 * @return
 	 */
-	/*@ pure */ public boolean getWentWell() {
+	/* @ pure */ public boolean getWentWell() {
 		return wentWell;
 	}
 
@@ -48,8 +48,8 @@ public class HandleCommand {
 	 * 
 	 * @param t
 	 */
-	//@ ensures getWentWell() == t;
-	/*@ pure */public void setWentWell(boolean t) {
+	// @ ensures getWentWell() == t;
+	/* @ pure */public void setWentWell(boolean t) {
 		wentWell = t;
 	}
 
@@ -59,7 +59,7 @@ public class HandleCommand {
 	 * @param server
 	 * @return
 	 */
-	//@ requires server != null;
+	// @ requires server != null;
 	public static HandleCommand getInstance(Server server) {
 		return new HandleCommand(server);
 	}
@@ -71,15 +71,16 @@ public class HandleCommand {
 	 * @param strAy
 	 * @param ch
 	 */
-	//@ requires strAy != null;
-	//@ requires strAy.length() > 2;
-	//@ requires ch != null;
-	
+	// @ requires strAy != null;
+	// @ requires strAy.length() > 2;
+	// @ requires ch != null;
+
 	public void handleIdentifyName(String[] strAy, ClientHandler ch) {
 		String name = strAy[1];
 		if (name.matches(REGEX) && !name.equals(null)) {
 			for (ClientHandler handler : server.getAll()) {
-				// Check if you're not trying to get the name of the object whose
+				// Check if you're not trying to get the name of the object
+				// whose
 				// name you want to set
 				if (handler.equals(ch)) {
 				} else if (handler.getClientName().equals(name)) {
@@ -105,11 +106,11 @@ public class HandleCommand {
 	 * @param strAy
 	 * @param ch
 	 */
-	//@ requires ch != null;
-	//@ requires strAy != null;
+	// @ requires ch != null;
+	// @ requires strAy != null;
 	public void handleIdentifyFeatures(String[] strAy, ClientHandler ch) {
 		List<IProtocol.Feature> features = new ArrayList<>();
-		
+
 		if (strAy.length > 2) {
 			for (int i = 2; i < strAy.length; i++) {
 				try {
@@ -129,11 +130,11 @@ public class HandleCommand {
 					default:
 						setWentWell(false);
 						return;
-				}
+					}
 				} catch (IllegalArgumentException ex) {
 					setWentWell(false);
 				}
-				
+
 			}
 			ch.setFeatures(features);
 			IProtocol.Feature[] featAr = new IProtocol.Feature[features.size()];
@@ -153,8 +154,8 @@ public class HandleCommand {
 	 * @param strAy
 	 * @param ch
 	 */
-	//@ requires ch != null;
-	//@ requires strAy != null;
+	// @ requires ch != null;
+	// @ requires strAy != null;
 	public void handleQueue(String[] strAy, ClientHandler ch) {
 		String queue = strAy[1];
 		String[] queueSpl = queue.split(",");
@@ -169,30 +170,30 @@ public class HandleCommand {
 				return;
 			}
 			switch (q) {
-				case 2:
-					map.get(2).add(ch);
-					break;
-				case 3:
-					map.get(3).add(ch);
-					break;
-				case 4:
-					map.get(4).add(ch);
-					break;
-				default:
-					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.QUEUE_INVALID));
-					setWentWell(false);
-					return;
+			case 2:
+				map.get(2).add(ch);
+				break;
+			case 3:
+				map.get(3).add(ch);
+				break;
+			case 4:
+				map.get(4).add(ch);
+				break;
+			default:
+				ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.QUEUE_INVALID));
+				setWentWell(false);
+				return;
 			}
 		}
-		
+
 		int[] result = new int[queueSpl.length];
 		int i = 0;
-		
-		for(String r : queueSpl){
+
+		for (String r : queueSpl) {
 			result[i] = Integer.parseInt(r);
 			i++;
 		}
-		
+
 		ch.sendMessage(Protocol.getInstance().serverQueueOk(result));
 
 	}
@@ -205,8 +206,8 @@ public class HandleCommand {
 	 * @param strAy
 	 * @param ch
 	 */
-	//@ requires ch != null;
-	//@ requires strAy != null;
+	// @ requires ch != null;
+	// @ requires strAy != null;
 	public void handleMoveTrade(String[] strAy, ClientHandler ch) {
 
 		if (!ch.getGame().hasTurn(ch)) {
@@ -229,8 +230,7 @@ public class HandleCommand {
 			tilesInt.add(t.getIntOfTile());
 		}
 
-		if (ch.getGame().getBag().isEmpty() || 
-						ch.getGame().getBag().getAmountOfTiles() - tiles.size() < 0) {
+		if (ch.getGame().getBag().isEmpty() || ch.getGame().getBag().getAmountOfTiles() - tiles.size() < 0) {
 			ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.DECK_EMPTY));
 			return;
 		} else if (ch.getGame().getBoard().isEmpty()) {
@@ -241,17 +241,32 @@ public class HandleCommand {
 			return;
 		}
 
-		List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
+		List<Tile> newTiles = new ArrayList<>();
 		List<Integer> newTilesInt = new ArrayList<>();
 
+		
+
+		
+		if (ch.getGame().getBag().getAmountOfTiles() - tiles.size() >= 0) {
+			newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
+			ch.getPlayer().bagToHand(newTiles);
+			ch.sendMessage(Protocol.getInstance().serverDrawTile(newTiles));
+		} else {
+			if(ch.getGame().getBag().getAmountOfTiles() > 0) {
+				newTiles = ch.getGame().getBag()
+						.getRandomTile(ch.getGame().getBag().getAmountOfTiles());
+				ch.getPlayer().bagToHand(newTiles);
+				ch.sendMessage(Protocol.getInstance().serverDrawTile(newTiles));
+			}
+		}
+		
 		for (Tile t : newTiles) {
 			newTilesInt.add(t.getIntOfTile());
 		}
 		ch.getGame().getBag().addTiles(tilesInt);
 		ch.getPlayer().bagToHand(newTiles);
-
+		
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverMoveTrade(tilesInt.size()));
-		ch.sendMessage(protocol.serverDrawTile(newTiles));
 
 		handleTurn(ch);
 	}
@@ -263,9 +278,10 @@ public class HandleCommand {
 	 * @param ch
 	 * @return
 	 */
-	//@ requires ch != null;
-	//@ requires tiles != null;
-	//@ ensures ((\forall int i; (i >= 0 && i < tiles.size()) ==> (ch.getPlayer().getHand().contains(tiles.get(i)))));
+	// @ requires ch != null;
+	// @ requires tiles != null;
+	// @ ensures ((\forall int i; (i >= 0 && i < tiles.size()) ==>
+	// (ch.getPlayer().getHand().contains(tiles.get(i)))));
 	public boolean checkTiles(List<Tile> tiles, ClientHandler ch) {
 		List<Tile> playerTiles = ch.getPlayer().getHand();
 		for (Tile t : tiles) {
@@ -283,8 +299,8 @@ public class HandleCommand {
 	 * @param strAy
 	 * @param ch
 	 */
-	//@ requires ch != null;
-	//@ requires strAy != null;
+	// @ requires ch != null;
+	// @ requires strAy != null;
 	public void handleMovePut(String[] strAy, ClientHandler ch) {
 
 		if (!ch.getGame().hasTurn(ch)) {
@@ -339,12 +355,17 @@ public class HandleCommand {
 		server.broadcast(ch.getGame().getPlayers(), Protocol.getInstance().serverMovePut(moves));
 
 		// TODO what to do when list.size() > bag.size() || bag.isEMpty()?
-		if (!ch.getGame().getBag().isEmpty()) {
+		if (ch.getGame().getBag().getAmountOfTiles() - tiles.size() >= 0) {
 			List<Tile> newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
 			ch.getPlayer().bagToHand(newTiles);
 			ch.sendMessage(Protocol.getInstance().serverDrawTile(newTiles));
 		} else {
-			ch.sendMessage(Protocol.getInstance().serverDrawTile(new ArrayList<Tile>()));
+			if(ch.getGame().getBag().getAmountOfTiles() > 0) {
+				List<Tile> newTiles = ch.getGame().getBag()
+						.getRandomTile(ch.getGame().getBag().getAmountOfTiles());
+				ch.getPlayer().bagToHand(newTiles);
+				ch.sendMessage(Protocol.getInstance().serverDrawTile(newTiles));
+			}
 		}
 
 		handleTurn(ch);
@@ -356,14 +377,11 @@ public class HandleCommand {
 	 * 
 	 * @param ch
 	 */
-	//@ requires ch != null;
+	// @ requires ch != null;
 	public void handleTurn(ClientHandler ch) {
 		ch.getGame().nextTurn();
 		if (ch.getGame().gameEnd()) {
 			handleEndGame(ch);
-			return;
-		} else if (ch.getGame().getBag().isEmpty()) {
-			handlePass(ch);
 			return;
 		}
 
@@ -383,36 +401,34 @@ public class HandleCommand {
 	 * 
 	 * @param ch
 	 */
-	//@ requires ch != null;
+	// @ requires ch != null;
 	public void handleEndGame(ClientHandler ch) {
-		if (ch.getGame().isRunning()) {
 			ch.getGame().setRunning(false);
-			
+
 			List<ClientHandler> players = ch.getGame().getPlayers();
 			List<Player> playersPlay = new ArrayList<>();
 			int[] scores = new int[players.size()];
 			int i = 0;
-			
+
 			for (ClientHandler player : players) {
+				player.setGame(null);
 				playersPlay.add(player.getPlayer());
 				scores[i] = player.getPlayer().getScore();
 				i++;
 			}
-			
+
 			server.broadcast(players, protocol.serverEndGame(playersPlay, scores, 1));
 			server.addIdentified(players);
-			
-		}
 	}
 
 	/**
-	 * Present a score array with the scores in order of the players in the game.
-	 * array
+	 * Present a score array with the scores in order of the players in the
+	 * game. array
 	 * 
 	 * @param ch
 	 * @return
 	 */
-	//@ requires ch != null;
+	// @ requires ch != null;
 	public int[] handleScores(ClientHandler ch) {
 		List<ClientHandler> players = ch.getGame().getPlayers();
 		List<Player> playersPlay = new ArrayList<>();
@@ -433,8 +449,8 @@ public class HandleCommand {
 	 * @param strAy
 	 * @param ch
 	 */
-	//@ requires ch != null;
-	//@ requires strAy != null;
+	// @ requires ch != null;
+	// @ requires strAy != null;
 	public void handleChat(String[] strAy, ClientHandler ch) {
 		String channel = strAy[1];
 		System.out.println(channel);
@@ -446,23 +462,23 @@ public class HandleCommand {
 		String messa = builder.toString();
 		if (channel.equals("global")) {
 			List<ClientHandler> receivers = new ArrayList<>();
-			for(ClientHandler c : ch.getGame().getPlayers()) {
-				for(Feature f : c.getFeatures()) {
-					if(f.equals(Feature.CHAT)) {
+			for (ClientHandler c : ch.getGame().getPlayers()) {
+				for (Feature f : c.getFeatures()) {
+					if (f.equals(Feature.CHAT)) {
 						receivers.add(c);
 					}
 				}
 			}
-			server.broadcast(receivers,
-					Protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
+			server.broadcast(receivers, Protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
 			return;
 		} else {
 			for (ClientHandler clienthand : ch.getGame().getPlayers()) {
 				System.out.println("@" + channel);
 				if (("@" + clienthand.getClientName()).equals(channel)) {
-					for(Feature f : clienthand.getFeatures()) {
-						if(f.equals(Feature.CHAT)) {
-							clienthand.sendMessage(Protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
+					for (Feature f : clienthand.getFeatures()) {
+						if (f.equals(Feature.CHAT)) {
+							clienthand
+									.sendMessage(Protocol.getInstance().serverChat(channel, ch.getClientName(), messa));
 						}
 					}
 					return;
@@ -480,8 +496,8 @@ public class HandleCommand {
 	 * @param b
 	 * @return
 	 */
-	//@ requires ch != null;
-	//@ requires strAy != null;
+	// @ requires ch != null;
+	// @ requires strAy != null;
 	public boolean handleMovesLeft(Player play, Board b) {
 		boolean moveIsValid = false;
 		List<Point> emptySpots = b.getEmptySpots();
@@ -508,7 +524,7 @@ public class HandleCommand {
 	 * 
 	 * @param ch
 	 */
-	//@ requires ch != null;
+	// @ requires ch != null;
 	public void handlePass(ClientHandler ch) {
 		int counter = 0;
 		while (!handleMovesLeft(ch.getGame().getPlayerTurn(), ch.getGame().getBoard())) {

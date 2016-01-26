@@ -41,6 +41,8 @@ public class ServerGUI extends JFrame {
 		contentPane.add(textField, BorderLayout.CENTER);
 		textField.setColumns(1);
 		
+		getRootPane().setDefaultButton(btnStart);
+		
 		btnStart = new JButton("Start server");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
