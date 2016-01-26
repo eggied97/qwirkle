@@ -1,4 +1,4 @@
-package nl.utwente.ewi.qwirkle.server.model;
+package nl.utwente.ewi.qwirkle.ui.gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;

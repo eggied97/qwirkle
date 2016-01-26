@@ -3,12 +3,12 @@ package nl.utwente.ewi.qwirkle.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.utwente.ewi.qwirkle.model.Bag;
 import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.server.connect.ClientHandler;
-import nl.utwente.ewi.qwirkle.server.model.Bag;
 
 public class Game {
 	

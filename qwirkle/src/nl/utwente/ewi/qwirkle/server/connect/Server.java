@@ -16,7 +16,7 @@ import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.server.Game;
 import nl.utwente.ewi.qwirkle.server.HandleCommand;
-import nl.utwente.ewi.qwirkle.server.model.ServerGUI;
+import nl.utwente.ewi.qwirkle.ui.gui.ServerGUI;
 
 public class Server {
 

@@ -1,10 +1,9 @@
-package nl.utwente.ewi.qwirkle.server.model;
+package nl.utwente.ewi.qwirkle.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.enums.Color;
 import nl.utwente.ewi.qwirkle.model.enums.Shape;
 
