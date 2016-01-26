@@ -50,7 +50,7 @@ public class HandleCommand {
 	 * @param t
 	 */
 	//@ ensures getWentWell() == t;
-	public void setWentWell(boolean t) {
+	/*@ pure */public void setWentWell(boolean t) {
 		wentWell = t;
 	}
 

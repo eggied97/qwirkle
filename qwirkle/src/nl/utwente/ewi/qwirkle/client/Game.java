@@ -32,6 +32,7 @@ import nl.utwente.ewi.qwirkle.model.player.HumanPlayer;
 import nl.utwente.ewi.qwirkle.model.player.Player;
 import nl.utwente.ewi.qwirkle.model.player.strategy.DumbStrategy;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
+import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.ui.UserInterface;
 import nl.utwente.ewi.qwirkle.ui.gui.GUIView;
@@ -133,6 +134,10 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 		for (IProtocol.Feature f : usingFeatures) {
 			featuresEnabled.put(f, true);
+		}
+		
+		if(!featuresEnabled.get(Feature.CHAT)){
+			this.UI.disableChat();
 		}
 	}
 

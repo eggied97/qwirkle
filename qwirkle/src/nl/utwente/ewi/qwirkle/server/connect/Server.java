@@ -40,6 +40,8 @@ public class Server {
 
 			try {
 				server = new Server(Integer.parseInt(port), false);
+				
+				
 				server.run();
 			} catch (IOException e) {
 				System.err.println("this port is already in use, use another one.");

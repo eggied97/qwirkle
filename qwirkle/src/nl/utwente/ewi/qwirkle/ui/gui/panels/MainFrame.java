@@ -723,5 +723,15 @@ public class MainFrame extends JFrame {
 		}
 		revalidate();
 	}
+	
+	public void disableChat(){
+		btnSend.setEnabled(false);
+		textField.setEditable(false);
+	}
+	
+	public void enableChat(){
+		btnSend.setEnabled(true);
+		textField.setEditable(true);
+	}
 
 }
