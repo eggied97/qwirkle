@@ -340,6 +340,8 @@ public class MainFrame extends JFrame {
 					
 					for (JToggleButton b : handTiles) {
 						b.setSelected(false);
+						b.setEnabled(true);
+						b.setBorder(null);
 					}
 
 					handleTrade(toTrade);
@@ -347,6 +349,8 @@ public class MainFrame extends JFrame {
 					setMessageLabel("Not your turn!");
 					for (JToggleButton b : handTiles) {
 						b.setSelected(false);
+						b.setEnabled(true);
+						b.setBorder(null);
 					}
 				}
 
@@ -364,6 +368,7 @@ public class MainFrame extends JFrame {
 				for(JToggleButton b : handTiles) {
 					b.setSelected(false);
 					b.setEnabled(true);
+					b.setBorder(null);
 				}
 			}
 		});
@@ -373,7 +378,12 @@ public class MainFrame extends JFrame {
 				if(turn) {
 					askForHint();
 				} else {
-					
+					setMessageLabel("Not your turn!");
+					for(JToggleButton b : handTiles) {
+						b.setSelected(false);
+						b.setEnabled(true);
+						b.setBorder(null);
+					}
 				}
 			}
 		});
@@ -697,19 +707,17 @@ public class MainFrame extends JFrame {
 		this.callback.putTrade(tiles);
 	}
 	
+	/**
+	 * Handles the hint
+	 * @param m
+	 */
 	public void handleHint(Move m) {
 		for(Tile t : tiles) {
 			if(t.equals(m.getTile())) {
 				handTiles.get(tiles.indexOf(t)).setBorder(new LineBorder(Color.BLUE, 3));
 			}
 		}
-		for(Entry<JButton, Point> e : butCord.entrySet()) {
-			if(e.getValue().equals(m.getPoint())) {
-				e.getKey().setBorder(new LineBorder(Color.BLUE, 3));
-			}
-		}
 		revalidate();
-		m.getPoint();
 	}
 
 }
