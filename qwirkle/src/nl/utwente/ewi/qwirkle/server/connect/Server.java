@@ -16,11 +16,11 @@ import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.Protocol;
 import nl.utwente.ewi.qwirkle.server.Game;
 import nl.utwente.ewi.qwirkle.server.HandleCommand;
+import nl.utwente.ewi.qwirkle.server.model.ServerGUI;
 
 public class Server {
 
-	private final static String USAGE = "Give only the port as input";
-	private int port;
+	private static int port = 0;
 	private ServerSocket serverSock;
 	private List<ClientHandler> all;
 	private List<ClientHandler> start;
@@ -32,16 +32,19 @@ public class Server {
 	private IProtocol.Feature[] features;
 
 	public static void main(String[] args) {
-
 		Server server = null;
+		ServerGUI gui = new ServerGUI(server);
+		gui.setVisible(true);
 
 		while (server == null) {
-			String port = util.readString(USAGE);
 
 			try {
-				server = new Server(Integer.parseInt(port), false);
-				
-				
+				while(port == 0) {
+					port = gui.getPort();
+					System.out.println(port);
+				}
+				server = new Server(port, false);
+				gui.showRunning();
 				server.run();
 			} catch (IOException e) {
 				System.err.println("this port is already in use, use another one.");
@@ -49,10 +52,12 @@ public class Server {
 			} catch (NumberFormatException e) {
 				System.err.println("port is not a number");
 				server = null;
+				port = 0;
 			}
 		}
 	}
 
+	
 	/**
 	 * Returns the <code> ClientHandlers </code> from a game to a queue
 	 * selection list
@@ -80,7 +85,7 @@ public class Server {
 	}
 	
 	public Server(){
-		this.main(null);
+		//this.main(null);
 	}
 
 	/**

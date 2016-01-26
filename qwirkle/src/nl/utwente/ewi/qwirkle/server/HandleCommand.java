@@ -186,6 +186,7 @@ public class HandleCommand {
 		
 		for(String r : queueSpl){
 			result[i] = Integer.parseInt(r);
+			i++;
 		}
 		
 		ch.sendMessage(Protocol.getInstance().serverQueueOk(result));
