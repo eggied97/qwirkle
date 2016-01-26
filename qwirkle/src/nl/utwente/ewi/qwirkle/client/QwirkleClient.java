@@ -256,8 +256,16 @@ public class QwirkleClient implements ResultCallback, UserInterfaceCallback {
 	 *            of the server
 	 */
 	private void handleServerIdentify(String[] args) {
+		String s = "";
+		
+		for(String g : args){
+			s += g;
+		}
+		
+		String[] wots = s.split(",");
+		
 		if (args.length >= 1) {
-			for (String r : args) {
+			for (String r : wots) {
 				if (util.FeatureArrayContains(implementedFeatures, IProtocol.Feature.valueOf(r))) {
 					usingFeatures.add(IProtocol.Feature.valueOf(r));
 				}

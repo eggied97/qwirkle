@@ -11,7 +11,7 @@ public class Bag {
 	/**
 	 * Number of color-shape combinations
 	 * */
-	private final static int NUMBER_OF_EACH_COMBO = 4;
+	private final static int NUMBER_OF_EACH_COMBO = 3;
 
 	List<Tile> tiles;
 
@@ -76,9 +76,13 @@ public class Bag {
 	 * @return <code> List<Tile> </code> of random tiles
 	 **/
 	public List<Tile> getRandomTile(int amount) {
+		System.out.println(getBag().size() + " | "+amount);
+		
 		if(amount > getBag().size()){
 			amount = getBag().size();
 		}
+		
+		
 		
 		if(isEmpty()){
 			//TODO throw exception?
