@@ -15,7 +15,7 @@ public class ScoreCalc {
 	 * Returns an instance of ScoreCalc
 	 * @return
 	 */
-	public static ScoreCalc getInstance() {
+	/*@ pure */ public static ScoreCalc getInstance() {
 		return new ScoreCalc();
 	}
 
@@ -25,22 +25,23 @@ public class ScoreCalc {
 	 * @param moves
 	 * @return
 	 */
+	//@ requires b != null
+	//@ requires moves != null
+	//@ ensures \result >= 0
 	public int calculate(Board b, List<Move> moves) {
 		int score = 0;
 		int adder = 0;
 
-		// direction of the moves 0 is horizontal, 1 is vertical, default is 0
-		//TODO enums?
-		int direction = 0;
+		Direction direction = Direction.HORIZONTAL;
 		if (moves.size() > 1) {
 			if (moves.get(0).getPoint().getX() == moves.get(1).getPoint().getX()) {
-				direction = 1;
+				direction = Direction.VERTICAL;
 			}
 		}
 
 		
 		
-		if (direction == 0) {
+		if (direction.equals(Direction.HORIZONTAL)) {
 			// Obtain first move
 			int py = moves.get(0).getPoint().getY();
 			int px = moves.get(0).getPoint().getX();
