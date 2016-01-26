@@ -323,6 +323,8 @@ public class Server {
 					if (handle.getWentWell()) {
 						removeHandler(ch);
 						identified.add(ch);
+					} else {
+						ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 					}
 	
 					handle.setWentWell(true);
