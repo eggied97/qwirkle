@@ -113,7 +113,8 @@ public class HandleCommand {
 		
 		if (strAy.length > 2) {
 			for (int i = 2; i < strAy.length; i++) {
-				switch (IProtocol.Feature.valueOf(strAy[i])) {
+				try {
+					switch (IProtocol.Feature.valueOf(strAy[i])) {
 					case CHAT:
 						features.add(IProtocol.Feature.CHAT);
 						break;
@@ -130,6 +131,10 @@ public class HandleCommand {
 						setWentWell(false);
 						return;
 				}
+				} catch (IllegalArgumentException ex) {
+					setWentWell(false);
+				}
+				
 			}
 			ch.setFeatures(features);
 			IProtocol.Feature[] featAr = new IProtocol.Feature[features.size()];
