@@ -270,7 +270,7 @@ public class Server {
 
 				gameCounter++;
 
-				games.put(gameCounter, queues.get((int) entry.getKey()));
+				games.put(gameCounter, queue);
 
 				startGame(queues.get((int) entry.getKey()));
 

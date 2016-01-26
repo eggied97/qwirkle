@@ -100,11 +100,11 @@ public class GUIView implements UserInterface {
 	 */
 	public void changeFrame() {
 		if(connectPanelFrame.isVisible()) {
-			connectPanelFrame.setVisible(false);
+			connectPanelFrame.dispose();
 			mFrame.setVisible(true);
 		} else {
 			connectPanelFrame.setVisible(true);
-			mFrame.setVisible(false);
+			mFrame.setClose();
 		}
 	}
 
@@ -163,6 +163,7 @@ public class GUIView implements UserInterface {
 		result = ("SCORE" + "\n") + result;
 		
 		mFrame.setScoreboard(result);
+		result = "";
 	}
 	
 	/**

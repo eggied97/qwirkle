@@ -117,6 +117,10 @@ public class MainFrame extends JFrame {
 		rp.setDefaultButton(btnSend);
 	}
 
+	public void setClose() {
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+	
 	/**
 	 * Initialize the lists and maps
 	 */

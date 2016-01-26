@@ -169,6 +169,9 @@ public class ClientHandler extends Thread {
 			List<ClientHandler> list = this.getGame().getPlayers();
 			list.remove(this);
 			server.broadcast(list, Protocol.getInstance().serverEndGame(players, scores, 0));
+			for(ClientHandler c : list) {
+				c.setGame(null);
+			}
 			return;
 		}
 		try {
