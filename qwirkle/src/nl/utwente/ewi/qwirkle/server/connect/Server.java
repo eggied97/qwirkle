@@ -252,6 +252,7 @@ public class Server {
 		for (ClientHandler ch : list) {
 			ch.setGame(game);
 			ch.getGame().setRunning(true);
+			removeHandler(ch);
 			
 		}
 		broadcast(list, Protocol.getInstance().serverStartGame(players));
@@ -311,7 +312,6 @@ public class Server {
 				for (ClientHandler ch : queue) {
 					removeHandler(ch);
 				}
-
 				return;
 			}
 		}
