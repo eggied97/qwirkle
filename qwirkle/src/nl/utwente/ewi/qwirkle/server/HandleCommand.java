@@ -111,10 +111,18 @@ public class HandleCommand {
 	public void handleIdentifyFeatures(String[] strAy, ClientHandler ch) {
 		List<IProtocol.Feature> features = new ArrayList<>();
 
+		//IDENTITY NAME asd,asd
+		
+		
+		
 		if (strAy.length > 2) {
-			for (int i = 2; i < strAy.length; i++) {
+			
+			String stringFeatures = strAy[2];
+			String[] stringsFeature = stringFeatures.split(",");
+			
+			for (int i = 0; i < stringsFeature.length; i++) {
 				try {
-					switch (IProtocol.Feature.valueOf(strAy[i])) {
+					switch (IProtocol.Feature.valueOf(stringsFeature[i])) {
 					case CHAT:
 						features.add(IProtocol.Feature.CHAT);
 						break;
@@ -133,6 +141,7 @@ public class HandleCommand {
 					}
 				} catch (IllegalArgumentException ex) {
 					setWentWell(false);
+					ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 				}
 
 			}

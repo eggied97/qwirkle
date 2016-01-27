@@ -344,6 +344,7 @@ public class Server {
 					}
 	
 					handle.handleIdentifyName(inputArr, ch);
+					
 					if (handle.getWentWell()) {
 						handle.setWentWell(true);
 						handle.handleIdentifyFeatures(inputArr, ch);
@@ -352,8 +353,6 @@ public class Server {
 					if (handle.getWentWell()) {
 						removeHandler(ch);
 						identified.add(ch);
-					} else {
-						ch.sendMessage(Protocol.getInstance().serverError(IProtocol.Error.INVALID_PARAMETER));
 					}
 	
 					handle.setWentWell(true);
@@ -384,8 +383,11 @@ public class Server {
 	
 			case IProtocol.CLIENT_QUEUE:
 				if (inputArr.length > 1) {
+					//TODO check if user has entered name .
+					
 					removeHandler(ch);
 					handle.handleQueue(inputArr, ch);
+					
 					if (handle.getWentWell()) {
 						checkQueues();
 					} else {
