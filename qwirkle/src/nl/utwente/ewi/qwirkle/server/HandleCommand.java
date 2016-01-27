@@ -235,6 +235,7 @@ public class HandleCommand {
 		}
 
 		List<Integer> tilesInt = new ArrayList<>();
+		
 		for (Tile t : tiles) {
 			tilesInt.add(t.getIntOfTile());
 		}
