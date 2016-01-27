@@ -235,6 +235,7 @@ public class HandleCommand {
 		}
 
 		List<Integer> tilesInt = new ArrayList<>();
+		
 		for (Tile t : tiles) {
 			tilesInt.add(t.getIntOfTile());
 		}
@@ -276,6 +277,7 @@ public class HandleCommand {
 		for (Tile t : newTiles) {
 			newTilesInt.add(t.getIntOfTile());
 		}
+		
 		ch.getGame().getBag().addTiles(tilesInt);
 		ch.getPlayer().bagToHand(newTiles);
 		
