@@ -379,6 +379,10 @@ public class HandleCommand {
 		
 		ch.getGame().nextTurn();
 		
+		if(!handleMovesLeft(ch.getGame().getPlayerTurn(), ch.getGame().getBoard())) {
+			handlePass(ch);
+		}
+		
 		if (ch.getGame().gameEnd()) {
 			handleEndGame(ch);
 			return;
