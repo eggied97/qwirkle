@@ -439,7 +439,11 @@ public class HandleCommand {
 		int i = 0;
 		for (ClientHandler player : players) {
 			playersPlay.add(player.getPlayer());
-			scores[i] = player.getPlayer().getScore();
+			if(player.getPlayer().getHand().size() == 0) {
+				scores[i] = player.getPlayer().getScore() + 6;
+			} else {
+				scores[i] = player.getPlayer().getScore();
+			}
 			i++;
 		}
 		return scores;
