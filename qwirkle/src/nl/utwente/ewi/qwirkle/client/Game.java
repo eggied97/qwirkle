@@ -585,12 +585,12 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 				throw new TooFewArgumentsException(scoreNaam.length);
 			}
 
-			Player p = getPlayerByName(scoreNaam[0]);
+			Player p = getPlayerByName(scoreNaam[1]);
 
 			if (p != null) {
-				scoreMap.put(p, Integer.parseInt(scoreNaam[1]));
+				scoreMap.put(p, Integer.parseInt(scoreNaam[0]));
 			} else {
-				throw new PlayerNotInGameException(scoreNaam[0]);
+				throw new PlayerNotInGameException(scoreNaam[1]);
 			}
 		}
 

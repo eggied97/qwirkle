@@ -218,9 +218,9 @@ public class Protocol implements IProtocol {
 		int count = 0;
 
 		for (Player p : players) {
-			result += p.getName();
-			result += ",";
 			result += scores[count];
+			result += ",";
+			result += p.getName();
 
 			count += 1;
 
