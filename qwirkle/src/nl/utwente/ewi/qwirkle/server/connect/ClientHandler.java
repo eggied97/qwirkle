@@ -59,6 +59,17 @@ public class ClientHandler extends Thread {
 			}
 		}
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(!(o instanceof ClientHandler)){
+			return false;
+		} else if(((ClientHandler)o).getClientName().equals(this.getClientName())) {
+			return true;
+		} else {
+			return false;
+		}
+	} 
 
 	/**
 	 * 

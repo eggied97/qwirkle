@@ -205,10 +205,8 @@ public class Server {
 	public void removeHandler(ClientHandler ch) {
 		if (start.contains(ch)) {
 			start.remove(ch);
-			return;
 		} else if (identified.contains(ch)) {
 			identified.remove(ch);
-			return;
 		}
 		for (List<ClientHandler> l : queues.values()) {
 			if (l.contains(ch)) {
@@ -242,6 +240,7 @@ public class Server {
 	//TODO remove players from the other QUEUS?????? - Egbert
 	public void startGame(List<ClientHandler> list) {
 		List<Player> players = new ArrayList<>();
+		List<ClientHandler> list1 = new ArrayList<>(list);
 		for (ClientHandler ch : list) {
 			ch.getPlayer().newGame(); // So we start off clean
 
@@ -254,7 +253,6 @@ public class Server {
 		for (ClientHandler ch : list) {
 			ch.setGame(game);
 			ch.getGame().setRunning(true);
-			
 		}
 		broadcast(list, Protocol.getInstance().serverStartGame(players));
 
@@ -265,6 +263,12 @@ public class Server {
 		game.setTurn(players.indexOf(p));
 
 		broadcast(list, Protocol.getInstance().serverTurn(game.getPlayerTurn()));
+		
+		for(List<ClientHandler> l : queues.values()) {
+			for(ClientHandler c : list1) {
+				l.remove(c);
+			}
+		}
 	}
 
 	/**
@@ -295,15 +299,11 @@ public class Server {
 	 * to start a <code> Game </code>
 	 */
 	
-	public void checkQueues() throws ConcurrentModificationException {
+	public void checkQueues() {
 		for (Entry<Integer, List<ClientHandler>> entry : ((TreeMap<Integer, List<ClientHandler>>) queues)
 				.descendingMap().entrySet()) {
 			List<ClientHandler> queue = (List<ClientHandler>) entry.getValue();
-			for(ClientHandler ch : queue) {
-				if(ch.getGame() != null) {
-					removeHandler(ch);
-				}
-			}
+
 			if ((int) entry.getKey() == queue.size()) {
 
 				gameCounter++;
