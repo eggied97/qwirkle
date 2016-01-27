@@ -10,6 +10,7 @@ import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
 import nl.utwente.ewi.qwirkle.model.player.Player;
+import nl.utwente.ewi.qwirkle.model.player.strategy.DumbStrategy;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol;
 import nl.utwente.ewi.qwirkle.protocol.IProtocol.Feature;
 import nl.utwente.ewi.qwirkle.protocol.Protocol;
@@ -377,9 +378,14 @@ public class HandleCommand {
 	// @ requires ch != null;
 	public void handleTurn(ClientHandler ch) {
 		
-		ch.getGame().nextTurn();
+		Game game = ch.getGame();
 		
-		if(!handleMovesLeft(ch.getGame().getPlayerTurn(), ch.getGame().getBoard())) {
+		game.nextTurn();
+		
+		List<Move> availableMoves = new DumbStrategy().determineMove(game.getBoard(), game.getPlayerTurn().getHand());
+			
+		
+		if(availableMoves.size() == 0 && game.getBag().isEmpty()) {
 			handlePass(ch);
 		}
 		
@@ -503,8 +509,10 @@ public class HandleCommand {
 	// @ requires strAy != null;
 	public boolean handleMovesLeft(Player play, Board b) {
 		boolean moveIsValid = false;
+		
 		List<Point> emptySpots = b.getEmptySpots();
 		List<Tile> hand = play.getHand();
+		
 		for (int i = 0; i < hand.size() && !moveIsValid; i++) {
 			Tile t = hand.get(i);
 			for (Point p : emptySpots) {
@@ -517,6 +525,7 @@ public class HandleCommand {
 				}
 			}
 		}
+		
 		return false;
 
 	}

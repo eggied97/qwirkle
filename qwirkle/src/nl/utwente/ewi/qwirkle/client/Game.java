@@ -449,6 +449,7 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 		} else if (turnPlayer instanceof ComputerPlayer) {
 			handleTurnPcPlayer();
+			//doPcTurn();
 		} else {
 			if (this.UI instanceof TUIView) {
 				this.UI.printMessage("Turn changed, its " + turnPlayer.getName() + " turn now");
@@ -464,20 +465,22 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	 * time-for-a-method-thread .
 	 */
 	private void handleTurnPcPlayer() {
-		//ExecutorService executor = Executors.newSingleThreadExecutor();
-
-		//Future<?> future = executor.submit(new Runnable() {
-			//@Override
-			//public void run() {
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		
+		
+		
+		Future<?> future = executor.submit(new Runnable() {
+			@Override
+			public void run() {
 				doPcTurn();
-			//}
-		//});
+			}
+		});
 
-		//executor.shutdown(); // close it so nothing can join it
+		executor.shutdown(); // close it so nothing can join it
 
-		/*try {
+		try {
 			// set waiting time
-			future.get(((ComputerPlayer) turnPlayer).getTime(), TimeUnit.SECONDS);
+			future.get(((ComputerPlayer) turnPlayer).getTime(), TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			System.out.println("job was interrupted");
 		} catch (ExecutionException e) {
@@ -486,24 +489,17 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			future.cancel(true); // interrupt it, because it took too long
 
 			// Player took too long -> we trade the first tile in our hand as
-		}*/
+		}
 
-		// TODO check how this works out
-		// wait all unfinished tasks for 2 sec
-		/*try {
-			if (!executor.awaitTermination(2, TimeUnit.SECONDS)) {
-				// force them to quit by interrupting
-				executor.shutdownNow();
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}*/
+		
 	}
 
 	/**
 	 * determines the move of the Computer player.
 	 */
 	private void doPcTurn() {
+		double start = System.nanoTime();
+		
 		List<Move> moves = turnPlayer.determinePutMove(board);
 
 		if (moves.size() == 0) {
@@ -526,6 +522,10 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 
 			c.sendMessage(Protocol.getInstance().clientPutMove(moves));
 		}
+		
+		 float taken = (float)(System.nanoTime() - start) / 1000000000;
+	     System.err.println("The AI took " + taken + " seconds.");
+		
 	}
 
 	/**
