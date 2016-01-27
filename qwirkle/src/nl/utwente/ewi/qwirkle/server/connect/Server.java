@@ -203,10 +203,8 @@ public class Server {
 	public void removeHandler(ClientHandler ch) {
 		if (start.contains(ch)) {
 			start.remove(ch);
-			return;
 		} else if (identified.contains(ch)) {
 			identified.remove(ch);
-			return;
 		}
 		for (List<ClientHandler> l : queues.values()) {
 			if (l.contains(ch)) {
