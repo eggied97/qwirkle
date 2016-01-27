@@ -285,7 +285,7 @@ public class Server {
 		for (Player p : players) {
 			int tussenLengthStreak = p.getLengthStreak();
 
-			if (tussenLengthStreak > lengthStreak) {
+			if (tussenLengthStreak >= lengthStreak) {
 				lengthStreak = tussenLengthStreak;
 				result = p;
 			}

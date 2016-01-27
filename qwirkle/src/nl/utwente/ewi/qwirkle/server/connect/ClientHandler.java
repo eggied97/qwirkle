@@ -52,7 +52,11 @@ public class ClientHandler extends Thread {
 			try {
 				String input = in.readLine();
 				System.out.println("From " + getClientName() + " to server: " + input);
-				server.getCommand(input, this);
+				if(input != null) {
+					server.getCommand(input, this);
+				} else {
+					isActive = false;
+				}
 			} catch (IOException e) {
 				shutDown();
 				isActive = false;

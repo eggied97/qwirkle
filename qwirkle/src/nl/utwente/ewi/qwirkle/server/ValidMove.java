@@ -20,13 +20,15 @@ public class ValidMove {
 
 	private static final boolean DEBUG = false;
 	private List<Move> moveSet;
+	private Board original;
 
 	private void printDEBUG(String msg) {
 		if (DEBUG) {
 			System.out.println(msg);
 		}
 	}
-
+	
+	
 	/**
 	 * Tests whether a single <code> Move </code> is valid on the current state
 	 * of the <code> Board </code>
@@ -35,9 +37,10 @@ public class ValidMove {
 	 * @param b
 	 * @return
 	 */
-	//@ requires m != null;
-	//@ requires b != null;
-	//@ ensures \result == (b.getTile(m.getPoint().getX(), m.getPoint().getY()) == null);
+	// @ requires m != null;
+	// @ requires b != null;
+	// @ ensures \result == (b.getTile(m.getPoint().getX(), m.getPoint().getY())
+	// == null);
 	public boolean isValidMove(Move m, Board b) {
 		List<Tile> tileSetXR = new ArrayList<>();
 		List<Tile> tileSetXL = new ArrayList<>();
@@ -50,12 +53,6 @@ public class ValidMove {
 
 		int dX = p.getX();
 		int dY = p.getY();
-
-		// Check whether the position is empty
-		if (b.getTile(dX, dY) != null) {
-			printDEBUG("Non empty position");
-			return false;
-		}
 
 		// Horizontal line right of the point
 		for (int i = dX + 1; i < dX + 7; i++) {
@@ -117,7 +114,7 @@ public class ValidMove {
 
 		// Check whether it connects with tiles
 		if (tileSetX.isEmpty() && tileSetY.isEmpty()) {
-			if (!b.isEmpty()) {
+			if (!b.isEmpty() && !original.isEmpty()) {
 				printDEBUG("No connection with other tiles");
 				return false;
 			}
@@ -146,67 +143,68 @@ public class ValidMove {
 	 * @return
 	 */
 	public boolean validMoveSet(List<Move> moves, Board b) {
-		Direction direction = Direction.HORIZONTAL;
-		if (moves.size() > 1) {
-			if (moves.get(0).getPoint().getX() == moves.get(1).getPoint().getX()) {
-				direction = Direction.VERTICAL;
-			}
-		}
-		List<Move> sortMoves = new ArrayList<>();
-		if(direction.equals(Direction.HORIZONTAL)) {
-			
-		}
-		
+		this.original = b;
+
 		if (!(validPointsX(moves) || validPointsY(moves))) {
 			return false;
 		}
-		
-		if(!validRow(moves, b.deepCopy())) {
+
+		if (!validRow(moves, b.deepCopy())) {
 			return false;
 		}
 
 		Board boardCopy = b.deepCopy();
-		// Validate every move and put it on the board if it is valid
-		for (Move m : moves) {
-			if (isValidMove(m, boardCopy)) {
-				boardCopy.putTile(m.getPoint().getX(), m.getPoint().getY(), m.getTile());
-			} else {
+		
+		// Check whether the position is empty
+		for(Move m : moves) {
+			if(b.getTile(m.getPoint().getX(), m.getPoint().getY()) != null) {
+				printDEBUG("Non empty position");
 				return false;
+			} else {
+				boardCopy.putTile(m.getPoint().getX(), m.getPoint().getY(), m.getTile());
 			}
+		}
+
+		
+		// Validate every move
+		for (Move m : moves) {
+			if (!isValidMove(m, boardCopy)) {
+				return false;
+			} 
 		}
 		return true;
 	}
 
-	//@ requires moves != null;
-	//@ requires b != null;
-	//@ ensures (validPointsX(moves) & validPointsY(moves));
+	// @ requires moves != null;
+	// @ requires b != null;
+	// @ ensures (validPointsX(moves) & validPointsY(moves));
 	private boolean validRow(List<Move> moves, Board b) {
 		b.putTile(moves);
-		if(validPointsX(moves) && validPointsY(moves)) {
+		if (validPointsX(moves) && validPointsY(moves)) {
 			return true;
 		} else if (validPointsX(moves)) {
 			int x = moves.get(0).getPoint().getX();
 			int max = -144;
 			int min = 144;
-			for(Move m : moves) {
+			for (Move m : moves) {
 				max = Math.max(m.getPoint().getY(), max);
 				min = Math.min(m.getPoint().getY(), min);
 			}
-			for(int i = min; i < max; i++) {
-				if(b.getTile(x, i) == null) {
+			for (int i = min; i < max; i++) {
+				if (b.getTile(x, i) == null) {
 					return false;
 				}
 			}
-		} else if(validPointsY(moves)) {
+		} else if (validPointsY(moves)) {
 			int y = moves.get(0).getPoint().getY();
 			int max = -144;
 			int min = 144;
-			for(Move m : moves) {
+			for (Move m : moves) {
 				max = Math.max(m.getPoint().getX(), max);
 				min = Math.min(m.getPoint().getX(), min);
 			}
-			for(int i = min; i < max; i++) {
-				if(b.getTile(i, y) == null) {
+			for (int i = min; i < max; i++) {
+				if (b.getTile(i, y) == null) {
 					return false;
 				}
 			}
@@ -220,11 +218,13 @@ public class ValidMove {
 	 * @param moves
 	 * @return
 	 */
-	//@requires moves != null;
-	//@ requires moves.size() >= 2;
-	//@ ensures (\forall int i; i < (moves.size() - 1); moves.get(i).getPoint().getX() != moves.get(i + 1).getPoint().getX());
-	//@ ensures (\forall int i; i < (moves.size() - 1); moves.get(i).getPoint().getX() == moves.get(i + 1).getPoint().getX());
-	/*@ pure */public boolean validPointsX(List<Move> moves) {
+	// @requires moves != null;
+	// @ requires moves.size() >= 2;
+	// @ ensures (\forall int i; i < (moves.size() - 1);
+	// moves.get(i).getPoint().getX() != moves.get(i + 1).getPoint().getX());
+	// @ ensures (\forall int i; i < (moves.size() - 1);
+	// moves.get(i).getPoint().getX() == moves.get(i + 1).getPoint().getX());
+	/* @ pure */public boolean validPointsX(List<Move> moves) {
 		for (int i = 0; i < moves.size() - 1; i++) {
 			if (moves.get(i).getPoint().getX() != moves.get(i + 1).getPoint().getX()) {
 				printDEBUG("Tiles don't fit together");
@@ -240,11 +240,13 @@ public class ValidMove {
 	 * @param moves
 	 * @return
 	 */
-	//@ requires moves != null;
-	//@ requires moves.size() >= 2;
-	//@ ensures (\forall int i; i < (moves.size() - 1); moves.get(i).getPoint().getY() != moves.get(i + 1).getPoint().getY());
-	//@ ensures (\forall int i; i < (moves.size() - 1); moves.get(i).getPoint().getY() == moves.get(i + 1).getPoint().getY());
-	/*@ pure */public boolean validPointsY(List<Move> moves) {
+	// @ requires moves != null;
+	// @ requires moves.size() >= 2;
+	// @ ensures (\forall int i; i < (moves.size() - 1);
+	// moves.get(i).getPoint().getY() != moves.get(i + 1).getPoint().getY());
+	// @ ensures (\forall int i; i < (moves.size() - 1);
+	// moves.get(i).getPoint().getY() == moves.get(i + 1).getPoint().getY());
+	/* @ pure */public boolean validPointsY(List<Move> moves) {
 		for (int i = 0; i < moves.size() - 1; i++) {
 			if (moves.get(i).getPoint().getY() != moves.get(i + 1).getPoint().getY()) {
 				printDEBUG("Tiles don't fit together");

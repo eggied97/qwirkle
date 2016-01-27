@@ -464,18 +464,18 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 	 * time-for-a-method-thread .
 	 */
 	private void handleTurnPcPlayer() {
-		ExecutorService executor = Executors.newSingleThreadExecutor();
+		//ExecutorService executor = Executors.newSingleThreadExecutor();
 
-		Future<?> future = executor.submit(new Runnable() {
-			@Override
-			public void run() {
+		//Future<?> future = executor.submit(new Runnable() {
+			//@Override
+			//public void run() {
 				doPcTurn();
-			}
-		});
+			//}
+		//});
 
-		executor.shutdown(); // close it so nothing can join it
+		//executor.shutdown(); // close it so nothing can join it
 
-		try {
+		/*try {
 			// set waiting time
 			future.get(((ComputerPlayer) turnPlayer).getTime(), TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
@@ -486,18 +486,18 @@ public class Game implements ResultCallback, UserInterfaceCallback {
 			future.cancel(true); // interrupt it, because it took too long
 
 			// Player took too long -> we trade the first tile in our hand as
-		}
+		}*/
 
 		// TODO check how this works out
 		// wait all unfinished tasks for 2 sec
-		try {
+		/*try {
 			if (!executor.awaitTermination(2, TimeUnit.SECONDS)) {
 				// force them to quit by interrupting
 				executor.shutdownNow();
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	/**

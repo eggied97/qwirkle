@@ -45,8 +45,9 @@ public class DumbStrategy implements Strategy {
 			for (Point p : emptySpots) {
 				if (!moveIsValid) {
 					Move m = new Move(p, t);
-
-					moveIsValid = vm.isValidMove(m, b);
+					List<Move> moveset = new ArrayList<>();
+					moveset.add(m);
+					moveIsValid = vm.validMoveSet(moveset, b);
 
 					if (moveIsValid) {
 						result.add(m);
