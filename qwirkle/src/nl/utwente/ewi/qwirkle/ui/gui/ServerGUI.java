@@ -63,7 +63,7 @@ public class ServerGUI extends JFrame {
 				try {
 					port = Integer.parseInt(textField.getText());
 				} catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(contentPane, "Enter a valid port number", "Error!", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(contentPane, "Enter a valid port number (click on here to clear)", "Error!", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
