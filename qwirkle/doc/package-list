@@ -10,7 +10,6 @@ nl.utwente.ewi.qwirkle.model.player.strategy
 nl.utwente.ewi.qwirkle.protocol
 nl.utwente.ewi.qwirkle.server
 nl.utwente.ewi.qwirkle.server.connect
-nl.utwente.ewi.qwirkle.server.model
 nl.utwente.ewi.qwirkle.server.score
 nl.utwente.ewi.qwirkle.ui
 nl.utwente.ewi.qwirkle.ui.gui
