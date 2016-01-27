@@ -104,14 +104,15 @@ public class ConnectPanel extends JFrame {
 
 						callback.setAITime(time);
 
+						btnEnterQueues.setEnabled(true);
+						btnConnect.setEnabled(false);
 						
 					} catch (NumberFormatException ex) {
 						JOptionPane.showMessageDialog(contentPane, "You need to select a integer as a value");
 					}
 				}
 				
-				btnEnterQueues.setEnabled(true);
-				btnConnect.setEnabled(false);
+				
 
 			}
 		});
