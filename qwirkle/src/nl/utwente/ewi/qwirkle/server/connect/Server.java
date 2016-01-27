@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class Server {
 			try {
 				while(port == 0) {
 					port = gui.getPort();
-					System.out.println(port);
+					System.out.print("");
 				}
 				server = new Server(port, false);
 				gui.showRunning();
@@ -50,6 +51,7 @@ public class Server {
 			} catch (IOException e) {
 				System.err.println("this port is already in use, use another one.");
 				server = null;
+				port = 0;
 			} catch (NumberFormatException e) {
 				System.err.println("port is not a number");
 				server = null;
@@ -238,6 +240,7 @@ public class Server {
 	//TODO remove players from the other QUEUS?????? - Egbert
 	public void startGame(List<ClientHandler> list) {
 		List<Player> players = new ArrayList<>();
+		List<ClientHandler> list1 = new ArrayList<>(list);
 		for (ClientHandler ch : list) {
 			ch.getPlayer().newGame(); // So we start off clean
 
@@ -250,18 +253,22 @@ public class Server {
 		for (ClientHandler ch : list) {
 			ch.setGame(game);
 			ch.getGame().setRunning(true);
-			
 		}
 		broadcast(list, Protocol.getInstance().serverStartGame(players));
 
 		game.run();
 		
-
 		Player p = playerWithHighestScorePossible(players);
 
 		game.setTurn(players.indexOf(p));
 
 		broadcast(list, Protocol.getInstance().serverTurn(game.getPlayerTurn()));
+		
+		for(List<ClientHandler> l : queues.values()) {
+			for(ClientHandler c : list1) {
+				l.remove(c);
+			}
+		}
 	}
 
 	/**
@@ -296,6 +303,7 @@ public class Server {
 		for (Entry<Integer, List<ClientHandler>> entry : ((TreeMap<Integer, List<ClientHandler>>) queues)
 				.descendingMap().entrySet()) {
 			List<ClientHandler> queue = (List<ClientHandler>) entry.getValue();
+
 			if ((int) entry.getKey() == queue.size()) {
 
 				gameCounter++;
@@ -305,10 +313,6 @@ public class Server {
 				startGame(queues.get((int) entry.getKey()));
 
 				queues.get((int) entry.getKey()).clear();
-
-				for (ClientHandler ch : queue) {
-					removeHandler(ch);
-				}
 
 				return;
 			}

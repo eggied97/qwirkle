@@ -13,6 +13,8 @@ import nl.utwente.ewi.qwirkle.server.connect.Server;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 
@@ -57,7 +59,12 @@ public class ServerGUI extends JFrame {
 	}
 	
 	public void showRunning() {
-		JOptionPane.showMessageDialog(contentPane, "The Server is running", "Running...!", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(contentPane, "Press OK to run the Server", "Running...!", JOptionPane.PLAIN_MESSAGE);
+		try {
+			textField.setText("Server running on host: " + InetAddress.getLocalHost().getHostAddress() +  " and on port: " + getPort());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 		btnStart.setEnabled(false);
 	}
 	
