@@ -383,6 +383,9 @@ public class Server {
 	
 			case IProtocol.CLIENT_QUEUE:
 				if (inputArr.length > 1) {
+					if(ch.getClientName().equals("")) {
+						break;
+					}
 					//TODO check if user has entered name .
 					
 					removeHandler(ch);
