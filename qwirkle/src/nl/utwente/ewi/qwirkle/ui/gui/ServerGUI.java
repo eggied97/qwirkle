@@ -60,11 +60,13 @@ public class ServerGUI extends JFrame {
 	
 	public void showRunning() {
 		JOptionPane.showMessageDialog(contentPane, "Press OK to run the Server", "Running...!", JOptionPane.PLAIN_MESSAGE);
+		;
 		try {
 			textField.setText("Server running on host: " + InetAddress.getLocalHost().getHostAddress() +  " and on port: " + getPort());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+		port = 0;
 		btnStart.setEnabled(false);
 	}
 	

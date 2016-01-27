@@ -252,34 +252,14 @@ public class HandleCommand {
 		}
 
 		List<Tile> newTiles = new ArrayList<>();
-		List<Integer> newTilesInt = new ArrayList<>();
+		
+		ch.getPlayer().removeTilesFromHand(tiles);
 
-		
-
-		
-		if (ch.getGame().getBag().getAmountOfTiles() - tiles.size() >= 0) {
-			newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
-			ch.getPlayer().bagToHand(newTiles);
-			ch.sendMessage(Protocol.getInstance().serverDrawTile(newTiles));
-		} else {
-			if(ch.getGame().getBag().getAmountOfTiles() > 0) {
-				newTiles = ch.getGame().getBag()
-						.getRandomTile(ch.getGame().getBag().getAmountOfTiles());
-				ch.getPlayer().bagToHand(newTiles);
-				ch.sendMessage(Protocol.getInstance().serverDrawTile(newTiles));
-			}
-		}
-		
-		for(int i = 0; i < newTiles.size(); i++) {
-			ch.getPlayer().removeTilesFromHand(tiles);
-		}
-		
-		for (Tile t : newTiles) {
-			newTilesInt.add(t.getIntOfTile());
-		}
+		newTiles = ch.getGame().getBag().getRandomTile(tiles.size());
+		ch.getPlayer().bagToHand(newTiles);
+		ch.sendMessage(Protocol.getInstance().serverDrawTile(newTiles));
 		
 		ch.getGame().getBag().addTiles(tilesInt);
-		ch.getPlayer().bagToHand(newTiles);
 		
 		server.broadcast(ch.getGame().getPlayers(), protocol.serverMoveTrade(tilesInt.size()));
 

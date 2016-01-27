@@ -386,7 +386,6 @@ public class Server {
 					if(ch.getClientName().equals("")) {
 						break;
 					}
-					//TODO check if user has entered name .
 					
 					removeHandler(ch);
 					handle.handleQueue(inputArr, ch);
