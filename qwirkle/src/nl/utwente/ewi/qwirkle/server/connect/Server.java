@@ -245,14 +245,19 @@ public class Server {
 
 			players.add(ch.getPlayer());
 		}
+		
 		Game game = new Game(list);
+		
+		//TODO merge those two for loops together?
 		for (ClientHandler ch : list) {
 			ch.setGame(game);
 			ch.getGame().setRunning(true);
+			
 		}
 		broadcast(list, Protocol.getInstance().serverStartGame(players));
 
 		game.run();
+		
 
 		Player p = playerWithHighestScorePossible(players);
 

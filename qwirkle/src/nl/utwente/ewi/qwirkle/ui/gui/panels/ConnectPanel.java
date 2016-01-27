@@ -110,6 +110,9 @@ public class ConnectPanel extends JFrame {
 					} catch (NumberFormatException ex) {
 						JOptionPane.showMessageDialog(contentPane, "You need to select a integer as a value");
 					}
+				} else {
+					btnEnterQueues.setEnabled(true);
+					btnConnect.setEnabled(false);
 				}
 				
 				
