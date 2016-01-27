@@ -7,6 +7,7 @@ import nl.utwente.ewi.qwirkle.model.Board;
 import nl.utwente.ewi.qwirkle.model.Move;
 import nl.utwente.ewi.qwirkle.model.Point;
 import nl.utwente.ewi.qwirkle.model.Tile;
+import nl.utwente.ewi.qwirkle.model.enums.Direction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -145,6 +146,17 @@ public class ValidMove {
 	 * @return
 	 */
 	public boolean validMoveSet(List<Move> moves, Board b) {
+		Direction direction = Direction.HORIZONTAL;
+		if (moves.size() > 1) {
+			if (moves.get(0).getPoint().getX() == moves.get(1).getPoint().getX()) {
+				direction = Direction.VERTICAL;
+			}
+		}
+		List<Move> sortMoves = new ArrayList<>();
+		if(direction.equals(Direction.HORIZONTAL)) {
+			
+		}
+		
 		if (!(validPointsX(moves) || validPointsY(moves))) {
 			return false;
 		}
