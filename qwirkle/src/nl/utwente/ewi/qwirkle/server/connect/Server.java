@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class Server {
 			try {
 				while(port == 0) {
 					port = gui.getPort();
-					System.out.println(port);
+					System.out.print("");
 				}
 				server = new Server(port, false);
 				gui.showRunning();
@@ -50,6 +51,7 @@ public class Server {
 			} catch (IOException e) {
 				System.err.println("this port is already in use, use another one.");
 				server = null;
+				port = 0;
 			} catch (NumberFormatException e) {
 				System.err.println("port is not a number");
 				server = null;
@@ -252,14 +254,12 @@ public class Server {
 		for (ClientHandler ch : list) {
 			ch.setGame(game);
 			ch.getGame().setRunning(true);
-			removeHandler(ch);
 			
 		}
 		broadcast(list, Protocol.getInstance().serverStartGame(players));
 
 		game.run();
 		
-
 		Player p = playerWithHighestScorePossible(players);
 
 		game.setTurn(players.indexOf(p));
@@ -295,10 +295,15 @@ public class Server {
 	 * to start a <code> Game </code>
 	 */
 	
-	public void checkQueues() {
+	public void checkQueues() throws ConcurrentModificationException {
 		for (Entry<Integer, List<ClientHandler>> entry : ((TreeMap<Integer, List<ClientHandler>>) queues)
 				.descendingMap().entrySet()) {
 			List<ClientHandler> queue = (List<ClientHandler>) entry.getValue();
+			for(ClientHandler ch : queue) {
+				if(ch.getGame() != null) {
+					removeHandler(ch);
+				}
+			}
 			if ((int) entry.getKey() == queue.size()) {
 
 				gameCounter++;
@@ -309,9 +314,6 @@ public class Server {
 
 				queues.get((int) entry.getKey()).clear();
 
-				for (ClientHandler ch : queue) {
-					removeHandler(ch);
-				}
 				return;
 			}
 		}

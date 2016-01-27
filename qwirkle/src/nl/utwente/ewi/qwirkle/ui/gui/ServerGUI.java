@@ -57,7 +57,7 @@ public class ServerGUI extends JFrame {
 	}
 	
 	public void showRunning() {
-		JOptionPane.showMessageDialog(contentPane, "The Server is running", "Running...!", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(contentPane, "Press OK to run the Server", "Running...!", JOptionPane.PLAIN_MESSAGE);
 		btnStart.setEnabled(false);
 	}
 	
