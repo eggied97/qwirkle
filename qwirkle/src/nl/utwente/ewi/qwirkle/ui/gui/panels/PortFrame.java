@@ -24,6 +24,9 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 
@@ -57,7 +60,7 @@ public class PortFrame extends JFrame {
 		contentPane.setLayout(gbl_contentPane);
 		
 		try {
-			qwirkle = ImageIO.read(new File("Qwirkle.PNG"));
+			qwirkle = ImageIO.read(getClass().getResourceAsStream("/images/Qwirkle.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

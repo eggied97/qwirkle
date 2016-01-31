@@ -3,7 +3,10 @@ package nl.utwente.ewi.qwirkle.ui;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.invoke.SwitchPoint;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingConstants;
@@ -19,9 +22,8 @@ public class imageGetter {
 	
 	public imageGetter() {
 		try {
-			wholeImage = ImageIO.read(new File("tiles.PNG"));
+			wholeImage = ImageIO.read(getClass().getResourceAsStream("/images/tiles.PNG"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
