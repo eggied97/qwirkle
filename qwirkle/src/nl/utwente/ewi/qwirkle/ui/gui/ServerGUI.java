@@ -13,6 +13,8 @@ import nl.utwente.ewi.qwirkle.server.connect.Server;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.awt.event.ActionEvent;
@@ -43,6 +45,16 @@ public class ServerGUI extends JFrame {
 		contentPane.add(textField, BorderLayout.CENTER);
 		textField.setColumns(1);
 		
+		 textField.addMouseListener(new MouseAdapter(){
+	            @Override
+	            public void mouseClicked(MouseEvent e){
+	               
+	            	if(btnStart.isEnabled()){
+	            		textField.setText("");
+	            	}
+	            }
+	        });
+		
 		getRootPane().setDefaultButton(btnStart);
 		
 		btnStart = new JButton("Start server");
@@ -51,7 +63,7 @@ public class ServerGUI extends JFrame {
 				try {
 					port = Integer.parseInt(textField.getText());
 				} catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(contentPane, "Enter a valid port number", "Error!", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(contentPane, "Enter a valid port number (click on here to clear)", "Error!", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
